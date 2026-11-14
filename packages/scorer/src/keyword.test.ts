@@ -120,14 +120,66 @@ describe("keyword scorer", () => {
     }
   });
 
-  it("gives a low-confidence default for an appended question with no rule", () => {
+  it("gives a low-confidence default for an unknown question with no rule", () => {
     const extra = {
       ...V0_QUESTIONS[0],
-      id: "metric_interpretation" as TrackQuestion["id"],
+      id: "brand_new" as TrackQuestion["id"],
     };
     expect(scoreKeyword("Build me a CRM.", [extra])).toEqual([
-      { q: "metric_interpretation", a: "n/a", p: 0.5 },
+      { q: "brand_new", a: "n/a", p: 0.5 },
     ]);
+  });
+
+  it("scores the appended PM questions from direct text cues", () => {
+    const cases = [
+      [
+        "metric_interpretation",
+        "After launch, measure whether checkout conversion increased by 5%.",
+      ],
+      [
+        "audience_update",
+        "Send managers a weekly status update with the decision they need to make.",
+      ],
+      [
+        "stakeholder_tradeoff",
+        "Ask executives to choose between faster delivery and more customization.",
+      ],
+      [
+        "launch_readiness",
+        "Launch to existing users through an in-app banner.",
+      ],
+      ["launch_learning", "After launch, track activation and conversion."],
+      [
+        "strategic_tradeoff",
+        "Choose the onboarding work that supports our company goal of improving retention.",
+      ],
+      [
+        "commercial_impact",
+        "Prioritize the change that increases revenue and reduces support costs.",
+      ],
+      [
+        "agent_context",
+        "Create a reusable AGENTS.md file with project context and instructions for the AI agent.",
+      ],
+      [
+        "agent_workflow",
+        "Define a repeatable workflow for the AI agent, then require human review before merging.",
+      ],
+    ] as const;
+
+    for (const [id, prompt] of cases) {
+      const question = {
+        ...V0_QUESTIONS[0],
+        id: id as TrackQuestion["id"],
+      };
+      expect(scoreKeyword(prompt, [question])[0]).toMatchObject({
+        q: id,
+        a: "yes",
+      });
+      expect(scoreKeyword("Build a booking app.", [question])[0]).toMatchObject(
+        { q: id, a: "no" },
+      );
+    }
   });
 
   it("returns answers that make a valid report", async () => {
