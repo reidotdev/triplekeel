@@ -23,5 +23,16 @@ export interface Scorer {
   score(
     prompt: string,
     questions: readonly TrackQuestion[],
+    context?: ScoreContext,
   ): Promise<ScoredAnswer[]>;
 }
+
+/** Optional facts the caller knows about the prompt. Never prompt text. */
+export type ScoreContext = {
+  /**
+   * True if the prompt replies to the AI's earlier answer in the same chat,
+   * false if it starts a task. The extension knows this from the message
+   * index. If left out, the scorer guesses from the text.
+   */
+  followUp?: boolean;
+};
