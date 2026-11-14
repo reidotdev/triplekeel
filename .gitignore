@@ -9,3 +9,4 @@ build/
 coverage/
 apps/extension/triplekeel-extension.zip
 research-cache/
+__pycache__/
