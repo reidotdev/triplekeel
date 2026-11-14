@@ -1,4 +1,4 @@
-# Placeholder. REI-273 replaces this with the final PM track.
+# PM track definition.
 id: product-manager
 name: Product manager
 levels: [junior, mid, senior]

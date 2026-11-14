@@ -140,7 +140,7 @@ function features(prompt: string, followUp: boolean): Features {
   };
 }
 
-const RULES: Record<QuestionId, (f: Features) => Rule> = {
+const RULES: Partial<Record<QuestionId, (f: Features) => Rule>> = {
   target_user: (f) =>
     AUDIENCE_VAGUE.test(f.text)
       ? { a: "partly", p: 0.7 }

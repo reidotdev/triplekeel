@@ -1,5 +1,4 @@
-# Placeholder. The 16 v0 questions mapped to the draft areas in
-# job-titles-and-skills.md. REI-273 grows this to about 30.
+# The 16 v0 questions retain their IDs, wording and area assignments.
 questions:
   # Good
   - id: target_user
@@ -83,4 +82,51 @@ questions:
     text: Does it accept output without checking it?
     area: ai_product_sense
     polarity: bad
+    answers: [yes, partly, no, n/a]
+
+  # Added for REI-273. These IDs are appended after QUESTION_IDS_V0.
+  - id: metric_interpretation
+    text: Does it ask how the feature changed a product metric?
+    area: metrics
+    polarity: good
+    answers: [yes, partly, no, n/a]
+  - id: audience_update
+    text: Does it name who needs the update and what they need to decide?
+    area: stakeholder_comms
+    polarity: good
+    answers: [yes, partly, no, n/a]
+  - id: stakeholder_tradeoff
+    text: Does it state the trade-off stakeholders need to resolve?
+    area: stakeholder_comms
+    polarity: good
+    answers: [yes, partly, no, n/a]
+  - id: launch_readiness
+    text: Does it name the launch audience and channel?
+    area: go_to_market
+    polarity: good
+    answers: [yes, partly, no, n/a]
+  - id: launch_learning
+    text: Does it ask how launch results will be measured?
+    area: go_to_market
+    polarity: good
+    answers: [yes, partly, no, n/a]
+  - id: strategic_tradeoff
+    text: Does it connect the product decision to a company goal?
+    area: strategy
+    polarity: good
+    answers: [yes, partly, no, n/a]
+  - id: commercial_impact
+    text: Does it name a business outcome such as revenue, retention or cost?
+    area: strategy
+    polarity: good
+    answers: [yes, partly, no, n/a]
+  - id: agent_context
+    text: Does it provide reusable project context for an AI agent?
+    area: ai_agents_daily
+    polarity: good
+    answers: [yes, partly, no, n/a]
+  - id: agent_workflow
+    text: Does it define a repeatable AI workflow with human review?
+    area: ai_agents_daily
+    polarity: good
     answers: [yes, partly, no, n/a]

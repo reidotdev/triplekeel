@@ -1,183 +1,244 @@
-# Placeholder. Draft areas from job-titles-and-skills.md (2026-11-14).
-# REI-273 replaces this after the Exa skills check (REI-265).
+# Approved PM skill matrix from REI-268. Thresholds use REI-270's 0–3 scale.
 areas:
   - id: problem_discovery
     name: "Problem discovery and user research"
+    thresholds: { junior: 0, mid: 1, senior: 2 }
     levels:
       junior:
-        description: "Runs interviews from a script someone else wrote."
+        description: "Runs user interviews and reads feedback and usage data, with a senior PM checking the questions."
         exa_queries:
-          - "how junior product managers do problem discovery and user research now"
-          - "common mistakes junior product managers make with problem discovery and user research"
+          - "product managers talking about user interviews and continuous discovery"
+          - "mistakes product managers make with user research"
+          - "how junior product managers run user interviews now"
       mid:
         description: "Plans their own research and turns it into clear problem statements."
         exa_queries:
-          - "how mid-level product managers do problem discovery and user research now"
-          - "common mistakes mid-level product managers make with problem discovery and user research"
+          - "product managers talking about user interviews and continuous discovery"
+          - "mistakes product managers make with user research"
+          - "how mid-level product managers run user interviews now"
       senior:
         description: "Sets the research agenda for a product area and spots problems before users name them."
         exa_queries:
-          - "how senior product managers do problem discovery and user research now"
-          - "common mistakes senior product managers make with problem discovery and user research"
+          - "product managers talking about user interviews and continuous discovery"
+          - "mistakes product managers make with user research"
+          - "how senior product managers run user interviews now"
   - id: specs
     name: "Writing specs and PRDs"
+    thresholds: { junior: 0, mid: 1, senior: 2 }
     levels:
       junior:
-        description: "Writes specs from a template, with help."
+        description: "Writes clear tickets with user stories and acceptance criteria."
         exa_queries:
-          - "how junior product managers do writing specs and PRDs now"
-          - "common mistakes junior product managers make with writing specs and PRDs"
+          - "product managers talking about writing specs and PRDs"
+          - "product managers writing PRDs with AI"
+          - "common PRD mistakes engineers complain about"
       mid:
-        description: "Writes specs with the user, the problem, success metrics, scope and acceptance criteria."
+        description: "Drafts specs with AI, then stress-tests the draft against the user, problem, success metrics, scope and acceptance criteria."
         exa_queries:
-          - "how mid-level product managers do writing specs and PRDs now"
-          - "common mistakes mid-level product managers make with writing specs and PRDs"
+          - "product managers talking about writing specs and PRDs"
+          - "product managers writing PRDs with AI"
+          - "common PRD mistakes engineers complain about"
       senior:
-        description: "Writes short docs that align several teams and make the key trade-offs explicit."
+        description: "Reviews AI-drafted specs and keeps the decisions and reasons written down."
         exa_queries:
-          - "how senior product managers do writing specs and PRDs now"
-          - "common mistakes senior product managers make with writing specs and PRDs"
+          - "product managers talking about writing specs and PRDs"
+          - "product managers writing PRDs with AI"
+          - "common PRD mistakes engineers complain about"
   - id: prioritization
     name: "Prioritization and roadmapping"
+    thresholds: { junior: 0, mid: 1, senior: 2 }
     levels:
       junior:
         description: "Keeps a backlog in order."
         exa_queries:
-          - "how junior product managers do prioritization and roadmapping now"
-          - "common mistakes junior product managers make with prioritization and roadmapping"
+          - "product managers talking about prioritization and roadmapping"
+          - "mistakes product managers make with prioritization and roadmapping"
+          - "why product roadmaps fail"
       mid:
         description: "Prioritizes with a clear method and explains the trade-offs."
         exa_queries:
-          - "how mid-level product managers do prioritization and roadmapping now"
-          - "common mistakes mid-level product managers make with prioritization and roadmapping"
+          - "product managers talking about prioritization and roadmapping"
+          - "mistakes product managers make with prioritization and roadmapping"
+          - "why product roadmaps fail"
       senior:
         description: "Owns the roadmap for an area and says no to good ideas for better ones."
         exa_queries:
-          - "how senior product managers do prioritization and roadmapping now"
-          - "common mistakes senior product managers make with prioritization and roadmapping"
+          - "product managers talking about prioritization and roadmapping"
+          - "mistakes product managers make with prioritization and roadmapping"
+          - "why product roadmaps fail"
   - id: metrics
     name: "Metrics and experiments"
+    thresholds: { junior: 0, mid: 1, senior: 2 }
     levels:
       junior:
-        description: "Tracks the metrics they're given."
+        description: "Reads product metrics and reports how their features perform."
         exa_queries:
-          - "how junior product managers do metrics and experiments now"
-          - "common mistakes junior product managers make with metrics and experiments"
+          - "product managers talking about metrics and experiments"
+          - "mistakes product managers make with A/B tests"
+          - "how product managers evaluate AI feature quality"
       mid:
-        description: "Defines success metrics and designs A/B tests for their features."
+        description: "Defines success metrics, designs A/B tests for their features and evaluates AI output."
         exa_queries:
-          - "how mid-level product managers do metrics and experiments now"
-          - "common mistakes mid-level product managers make with metrics and experiments"
+          - "product managers talking about metrics and experiments"
+          - "mistakes product managers make with A/B tests"
+          - "how product managers evaluate AI feature quality"
       senior:
         description: "Sets the metric strategy for an area and judges trade-offs between metrics."
         exa_queries:
-          - "how senior product managers do metrics and experiments now"
-          - "common mistakes senior product managers make with metrics and experiments"
+          - "product managers talking about metrics and experiments"
+          - "mistakes product managers make with A/B tests"
+          - "how product managers evaluate AI feature quality"
   - id: eng_design_collab
-    name: "Working with engineering and design"
+    name: "Delivery with engineering and design"
+    thresholds: { junior: 0, mid: 1, senior: 2 }
     levels:
       junior:
-        description: "Answers questions and writes tickets."
+        description: "Runs the backlog, triages bugs and checks release readiness."
         exa_queries:
-          - "how junior product managers do working with engineering and design now"
-          - "common mistakes junior product managers make with working with engineering and design"
+          - "how PMs work with designers"
+          - "product manager and engineering lead relationship"
+          - "how junior product managers run backlog, bug triage and release readiness"
       mid:
-        description: "Breaks work into steps with the team and handles scope changes."
+        description: "Brings design and engineering in while the problem is still open, then handles scope changes."
         exa_queries:
-          - "how mid-level product managers do working with engineering and design now"
-          - "common mistakes mid-level product managers make with working with engineering and design"
+          - "how PMs work with designers"
+          - "product manager and engineering lead relationship"
+          - "PM and tech lead trade-offs"
       senior:
         description: "Shapes how the teams work together and unblocks across teams."
         exa_queries:
-          - "how senior product managers do working with engineering and design now"
-          - "common mistakes senior product managers make with working with engineering and design"
+          - "how PMs work with designers"
+          - "product manager and engineering lead relationship"
+          - "shipping with your engineering team"
   - id: stakeholder_comms
     name: "Stakeholder communication"
+    thresholds: { junior: 0, mid: 1, senior: 2 }
     levels:
       junior:
         description: "Shares updates when asked."
         exa_queries:
-          - "how junior product managers do stakeholder communication now"
-          - "common mistakes junior product managers make with stakeholder communication"
+          - "product managers talking about stakeholder communication"
+          - "mistakes product managers make with stakeholder communication"
+          - "how junior product managers write stakeholder updates"
       mid:
-        description: "Writes clear updates and handles pushback."
+        description: "Writes clear updates for each audience and influences without authority."
         exa_queries:
-          - "how mid-level product managers do stakeholder communication now"
-          - "common mistakes mid-level product managers make with stakeholder communication"
+          - "product managers talking about stakeholder communication"
+          - "mistakes product managers make with stakeholder communication"
+          - "how mid-level product managers write stakeholder updates"
       senior:
         description: "Aligns leaders on direction and handles conflict between teams."
         exa_queries:
-          - "how senior product managers do stakeholder communication now"
-          - "common mistakes senior product managers make with stakeholder communication"
+          - "product managers talking about stakeholder communication"
+          - "mistakes product managers make with stakeholder communication"
+          - "how senior product managers write stakeholder updates"
   - id: ai_prototyping
     name: "Prototyping with AI tools"
+    thresholds: { junior: 0, mid: 1, senior: 2 }
     levels:
       junior:
-        description: "Uses Lovable, v0 or Claude to make simple mock-ups."
+        description: "Builds clickable prototypes with AI tools so the team sees a working example."
         exa_queries:
-          - "how junior product managers do prototyping with AI tools now"
-          - "common mistakes junior product managers make with prototyping with AI tools"
+          - "product managers talking about prototyping with AI tools"
+          - "mistakes product managers make with prototyping with AI tools"
+          - "AI prototyping mistakes product managers make"
       mid:
-        description: "Builds working prototypes to test ideas with users."
+        description: "Builds working prototypes with the real prompt and realistic data, and tests them with users."
         exa_queries:
-          - "how mid-level product managers do prototyping with AI tools now"
-          - "common mistakes mid-level product managers make with prototyping with AI tools"
+          - "product managers talking about prototyping with AI tools"
+          - "mistakes product managers make with prototyping with AI tools"
+          - "AI prototyping mistakes product managers make"
       senior:
         description: "Uses prototypes to make decisions faster and teaches the team how."
         exa_queries:
-          - "how senior product managers do prototyping with AI tools now"
-          - "common mistakes senior product managers make with prototyping with AI tools"
+          - "product managers talking about prototyping with AI tools"
+          - "mistakes product managers make with prototyping with AI tools"
+          - "AI prototyping mistakes product managers make"
   - id: ai_product_sense
     name: "AI product sense"
+    thresholds: { junior: 0, mid: 1, senior: 2 }
     levels:
       junior:
-        description: "Knows what LLMs can and can't do."
+        description: "Knows what LLMs can and can’t do, and checks AI output instead of trusting it."
         exa_queries:
-          - "how junior product managers do AI product sense now"
-          - "common mistakes junior product managers make with AI product sense"
+          - "when not to use AI in a product"
+          - "LLM product decisions"
+          - "evals for AI features"
       mid:
         description: "Designs features with LLMs, including errors, evals and cost."
         exa_queries:
-          - "how mid-level product managers do AI product sense now"
-          - "common mistakes mid-level product managers make with AI product sense"
+          - "when not to use AI in a product"
+          - "LLM product decisions"
+          - "evals for AI features"
       senior:
-        description: "Decides where AI belongs in the product, and how to measure and govern it."
+        description: "Decides where AI belongs in the product, and treats trust as a product requirement."
         exa_queries:
-          - "how senior product managers do AI product sense now"
-          - "common mistakes senior product managers make with AI product sense"
+          - "when not to use AI in a product"
+          - "LLM product decisions"
+          - "evals for AI features"
   - id: go_to_market
     name: "Go-to-market and launch"
+    thresholds: { junior: 0, mid: 1, senior: 2 }
     levels:
       junior:
         description: "Helps with launch checklists."
         exa_queries:
-          - "how junior product managers do go-to-market and launches now"
-          - "common mistakes junior product managers make with go-to-market and launches"
+          - "product managers talking about launching a product with marketing and sales"
+          - "mistakes product managers make with go-to-market and launch"
+          - "how junior product managers prepare a product launch"
       mid:
         description: "Plans launches with marketing and sales."
         exa_queries:
-          - "how mid-level product managers do go-to-market and launches now"
-          - "common mistakes mid-level product managers make with go-to-market and launches"
+          - "product managers talking about launching a product with marketing and sales"
+          - "mistakes product managers make with go-to-market and launch"
+          - "how mid-level product managers prepare a product launch"
       senior:
         description: "Shapes positioning and pricing, and learns from launches."
         exa_queries:
-          - "how senior product managers do go-to-market and launches now"
-          - "common mistakes senior product managers make with go-to-market and launches"
+          - "product managers talking about launching a product with marketing and sales"
+          - "mistakes product managers make with go-to-market and launch"
+          - "senior product manager positioning and pricing decisions"
   - id: strategy
     name: "Strategy and vision"
+    thresholds: { junior: 0, mid: 1, senior: 2 }
     levels:
       junior:
         description: "Understands the product strategy."
         exa_queries:
-          - "how junior product managers do product strategy and vision now"
-          - "common mistakes junior product managers make with product strategy and vision"
+          - "product managers talking about strategy and vision"
+          - "mistakes product managers make with strategy and vision"
+          - "how junior product managers write a product strategy"
       mid:
-        description: "Connects their features to the strategy."
+        description: "Writes the strategy for their own product area, tied to company goals."
         exa_queries:
-          - "how mid-level product managers do product strategy and vision now"
-          - "common mistakes mid-level product managers make with product strategy and vision"
+          - "product managers talking about strategy and vision"
+          - "mistakes product managers make with strategy and vision"
+          - "how mid-level product managers write a product strategy"
       senior:
-        description: "Writes the strategy and vision for a product area."
+        description: "Owns the strategy for a domain or several products, and ties it to commercial results."
         exa_queries:
-          - "how senior product managers do product strategy and vision now"
-          - "common mistakes senior product managers make with product strategy and vision"
+          - "product managers talking about strategy and vision"
+          - "mistakes product managers make with strategy and vision"
+          - "how senior product managers write a product strategy"
+  - id: ai_agents_daily
+    name: "Working with AI agents day to day"
+    thresholds: { junior: 0, mid: 1, senior: 2 }
+    levels:
+      junior:
+        description: "Uses AI assistants for drafts, notes and research, and checks the output."
+        exa_queries:
+          - "how junior product managers use AI tools in their work"
+          - "product managers showing their AI workflow with Claude Code, Codex or Cursor"
+          - "how junior product managers use AI agents in their daily work"
+      mid:
+        description: "Keeps context files and reusable prompts or skills, and automates routine work."
+        exa_queries:
+          - "how mid-level product managers use AI tools in their work"
+          - "product managers showing their AI workflow with Claude Code, Codex or Cursor"
+          - "how mid-level product managers use AI agents in their daily work"
+      senior:
+        description: "Builds a shared AI workflow for the team."
+        exa_queries:
+          - "how senior product managers use AI tools in their work"
+          - "product managers showing their AI workflow with Claude Code, Codex or Cursor"
+          - "how senior product managers use AI agents in their daily work"

@@ -120,13 +120,13 @@ describe("keyword scorer", () => {
     }
   });
 
-  it("gives a low-confidence default for a question with no rule", () => {
+  it("gives a low-confidence default for an appended question with no rule", () => {
     const extra = {
       ...V0_QUESTIONS[0],
-      id: "brand_new" as TrackQuestion["id"],
+      id: "metric_interpretation" as TrackQuestion["id"],
     };
     expect(scoreKeyword("Build me a CRM.", [extra])).toEqual([
-      { q: "brand_new", a: "n/a", p: 0.5 },
+      { q: "metric_interpretation", a: "n/a", p: 0.5 },
     ]);
   });
 
