@@ -1,0 +1,86 @@
+# Placeholder. The 16 v0 questions mapped to the draft areas in
+# job-titles-and-skills.md. REI-273 grows this to about 30.
+questions:
+  # Good
+  - id: target_user
+    text: Does the prompt name a specific user or audience?
+    area: problem_discovery
+    polarity: good
+    answers: [yes, partly, no, n/a]
+  - id: problem
+    text: Does it state the problem, not only the feature?
+    area: problem_discovery
+    polarity: good
+    answers: [yes, partly, no, n/a]
+  - id: success_metric
+    text: Does it define what success looks like?
+    area: metrics
+    polarity: good
+    answers: [yes, partly, no, n/a]
+  - id: acceptance
+    text: Does it give acceptance criteria?
+    area: specs
+    polarity: good
+    answers: [yes, partly, no, n/a]
+  - id: scope_cut
+    text: Does it say what's out of scope or MVP-only?
+    area: prioritization
+    polarity: good
+    answers: [yes, partly, no, n/a]
+  - id: decomposed
+    text: Does it split the task into steps?
+    area: eng_design_collab
+    polarity: good
+    answers: [yes, partly, no, n/a]
+  - id: context_given
+    text: Does it give examples, references or existing context?
+    area: ai_prototyping
+    polarity: good
+    answers: [yes, partly, no, n/a]
+  - id: specific_feedback
+    text: When iterating, is the feedback specific?
+    area: ai_prototyping
+    polarity: good
+    answers: [yes, partly, no, n/a]
+  - id: asks_tests
+    text: Does it ask for a way to check the result?
+    area: ai_product_sense
+    polarity: good
+    answers: [yes, partly, no, n/a]
+  - id: cost_latency
+    text: Does it mention cost, speed or limits?
+    area: ai_product_sense
+    polarity: good
+    answers: [yes, partly, no, n/a]
+  - id: edge_cases
+    text: Does it mention errors, empty states or edge cases?
+    area: specs
+    polarity: good
+    answers: [yes, partly, no, n/a]
+  - id: constraints
+    text: Does it give technical constraints?
+    area: eng_design_collab
+    polarity: good
+    answers: [yes, partly, no, n/a]
+
+  # Bad (anti-patterns, feed "Stop doing")
+  - id: no_why
+    text: Does it ask for a feature with no user or reason behind it?
+    area: problem_discovery
+    polarity: bad
+    answers: [yes, partly, no, n/a]
+  - id: kitchen_sink
+    text: Does it ask for a whole product in one prompt, with no steps or priorities?
+    area: prioritization
+    polarity: bad
+    answers: [yes, partly, no, n/a]
+  - id: vague_fix
+    text: Is it a follow-up that only says "fix it"?
+    area: ai_prototyping
+    polarity: bad
+    answers: [yes, partly, no, n/a]
+  - id: blind_accept
+    text: Does it accept output without checking it?
+    area: ai_product_sense
+    polarity: bad
+    answers: [yes, partly, no, n/a]
