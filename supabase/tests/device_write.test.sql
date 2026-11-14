@@ -1,6 +1,6 @@
 begin;
 
-select plan(33);
+select plan(34);
 
 select has_table('public', 'profiles', 'profiles table exists');
 select has_table('public', 'devices', 'devices table exists');
@@ -95,6 +95,10 @@ select is((select count(*)::int from public.tracks where id = 'product-manager')
 select ok(not has_table_privilege('anon', 'public.signals', 'insert'), 'anon cannot insert directly');
 select ok(has_function_privilege('anon', 'public.write_device_signals(text,jsonb)', 'execute'), 'anon can execute only the device write entry point');
 select ok(not has_function_privilege('authenticated', 'public.write_device_signals(text,jsonb)', 'execute'), 'authenticated cannot invoke device write function');
+select ok(
+  (select proconfig @> array['search_path=""'] from pg_proc where oid = 'public.write_device_signals(text,jsonb)'::regprocedure),
+  'device write function has an empty search_path'
+);
 
 select * from finish();
 rollback;
