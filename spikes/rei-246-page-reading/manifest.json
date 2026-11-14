@@ -1,0 +1,16 @@
+{
+  "manifest_version": 3,
+  "name": "TripleKeel REI-246 Page Reading Spike",
+  "version": "0.1.0",
+  "description": "Local-only prompt and user-message reading spike.",
+  "permissions": ["activeTab"],
+  "host_permissions": ["https://claude.ai/*", "https://chatgpt.com/*"],
+  "action": { "default_popup": "popup.html" },
+  "content_scripts": [
+    {
+      "matches": ["https://claude.ai/*", "https://chatgpt.com/*"],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ]
+}
