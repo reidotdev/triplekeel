@@ -14,24 +14,24 @@
 
 The keyword scorer agrees on 249 of 289 scored labels (86.2%). Expected `n/a` labels are excluded. Gemma agreement and Gemma timing are unmeasured.
 
-| Question | Keyword | Gemma |
-|---|---:|---:|
-| target_user | 17/20 (85%) | Not measured |
-| problem | 15/20 (75%) | Not measured |
-| success_metric | 15/20 (75%) | Not measured |
-| acceptance | 18/20 (90%) | Not measured |
-| scope_cut | 19/20 (95%) | Not measured |
-| decomposed | 16/20 (80%) | Not measured |
-| context_given | 20/20 (100%) | Not measured |
-| specific_feedback | 4/5 (80%) | Not measured |
-| asks_tests | 19/20 (95%) | Not measured |
-| cost_latency | 16/20 (80%) | Not measured |
-| edge_cases | 18/20 (90%) | Not measured |
-| constraints | 14/20 (70%) | Not measured |
-| no_why | 19/20 (95%) | Not measured |
-| kitchen_sink | 15/20 (75%) | Not measured |
-| vague_fix | 4/4 (100%) | Not measured |
-| blind_accept | 20/20 (100%) | Not measured |
+| Question          |      Keyword |        Gemma |
+| ----------------- | -----------: | -----------: |
+| target_user       |  17/20 (85%) | Not measured |
+| problem           |  15/20 (75%) | Not measured |
+| success_metric    |  15/20 (75%) | Not measured |
+| acceptance        |  18/20 (90%) | Not measured |
+| scope_cut         |  19/20 (95%) | Not measured |
+| decomposed        |  16/20 (80%) | Not measured |
+| context_given     | 20/20 (100%) | Not measured |
+| specific_feedback |    4/5 (80%) | Not measured |
+| asks_tests        |  19/20 (95%) | Not measured |
+| cost_latency      |  16/20 (80%) | Not measured |
+| edge_cases        |  18/20 (90%) | Not measured |
+| constraints       |  14/20 (70%) | Not measured |
+| no_why            |  19/20 (95%) | Not measured |
+| kitchen_sink      |  15/20 (75%) | Not measured |
+| vague_fix         |   4/4 (100%) | Not measured |
+| blind_accept      | 20/20 (100%) | Not measured |
 
 ## Three keyword output samples
 
