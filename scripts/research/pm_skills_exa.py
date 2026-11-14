@@ -9,6 +9,7 @@ import json
 import os
 import sys
 import time
+import urllib.error
 import urllib.request
 from pathlib import Path
 
@@ -64,6 +65,27 @@ def build_queries():
     return out
 
 
+def post(body):
+    """POST /search. Returns (HTTP status, JSON body). Retries network errors and 5xx."""
+    req = urllib.request.Request(
+        "https://api.exa.ai/search",
+        data=json.dumps(body).encode(),
+        headers={"Content-Type": "application/json", "x-api-key": os.environ["EXA_API_KEY"]},
+    )
+    for attempt in range(4):
+        try:
+            with urllib.request.urlopen(req, timeout=90) as r:
+                return r.status, json.load(r)
+        except urllib.error.HTTPError as e:
+            if e.code < 500:
+                return e.code, {"error": e.read().decode(errors="replace")[:2000]}
+            print(f"  retry {attempt + 1}: HTTP {e.code}", file=sys.stderr)
+        except Exception as e:  # network error; never print headers
+            print(f"  retry {attempt + 1}: {type(e).__name__}", file=sys.stderr)
+        time.sleep(2**attempt)
+    raise RuntimeError("Exa request failed after retries")
+
+
 def search(q):
     body = {
         "query": q["query"],
@@ -73,19 +95,10 @@ def search(q):
         "endPublishedDate": END,
         "contents": {"highlights": True},
     }
-    req = urllib.request.Request(
-        "https://api.exa.ai/search",
-        data=json.dumps(body).encode(),
-        headers={"Content-Type": "application/json", "x-api-key": os.environ["EXA_API_KEY"]},
-    )
-    for attempt in range(4):
-        try:
-            with urllib.request.urlopen(req, timeout=90) as r:
-                return body, json.load(r)
-        except Exception as e:  # retry with backoff, never print headers
-            print(f"  retry {attempt + 1}: {type(e).__name__}: {str(e)[:120]}", file=sys.stderr)
-            time.sleep(2 ** attempt)
-    raise RuntimeError(f"failed: {q['id']}")
+    status, resp = post(body)
+    if status != 200:
+        raise RuntimeError(f"failed: {q['id']}: HTTP {status}")
+    return body, resp
 
 
 def main():
