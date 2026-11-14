@@ -11,5 +11,3 @@ TripleKeel scores prompts on your device. It sends score reports, never prompt t
 ## Checks
 
 Run `pnpm install`, `pnpm lint`, `pnpm typecheck`, `pnpm test`, and `pnpm build:extension`.
-
-Status: early hackathon build (Junction 2026)
