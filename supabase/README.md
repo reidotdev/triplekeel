@@ -15,7 +15,7 @@ supabase.rpc("write_device_signals", {
 
 The token hash is lowercase SHA-256 hex. The RPC signature is `public.write_device_signals(text, jsonb) returns integer`. `p_reports` is an array of 1–50 `triplekeel.signal.v1` reports. The return value is the number inserted; duplicate `(user_id, import_key)` rows are ignored and do not contribute to it.
 
-Only the `anon` database role has `EXECUTE` on the function. The role has no direct table write grants. The API can use the project's publishable/anon key; it must not use the service-role key. The function looks up an active device by token hash, derives `user_id` from that row, and allows up to 50 submitted reports per device in each database minute window. It raises `P0001` with one of `device_not_found`, `device_revoked`, `invalid_batch`, `invalid_report`, or `rate_limit_exceeded`.
+Only the `anon` database role has `EXECUTE` on the function. The role has no direct table write grants. The function has an empty `search_path` and schema-qualifies database objects. The API can use the project's publishable/anon key; it must not use the service-role key. The function looks up an active device by token hash, derives `user_id` from that row, and allows up to 50 submitted reports per device in each database minute window. It raises `P0001` with one of `device_not_found`, `device_revoked`, `invalid_batch`, `invalid_report`, or `rate_limit_exceeded`.
 
 The `authenticated` role can read a user's own profile, devices, signals, and levels using the Clerk JWT `sub`. It cannot read device token hashes or execute the device write function. Anonymous and authenticated users can read the seeded track catalog.
 
