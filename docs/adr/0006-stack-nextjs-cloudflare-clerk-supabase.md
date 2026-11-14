@@ -40,7 +40,22 @@ Chosen: **option 1.** Workers run the web app and the jobs. Clerk gives hosted s
 
 - **Workers Paid ($5/month), not Free.** The free plan allows 10 ms of CPU per request, and Next.js server rendering plus Clerk checks usually take 10–20 ms (Cloudflare limits page, 2026-11-13).
 - **The jobs Worker is separate** so it doesn't fight OpenNext over a `scheduled` handler.
-- **Secrets** live in Cloudflare Worker secrets and GitHub Actions secrets. `.env.example` lists every variable with no values. The Supabase service role key is used only in webhooks and the jobs Worker.
+- **Secrets** live in Cloudflare Worker secrets and GitHub Actions secrets. `.env.example` lists every variable with no values. The Supabase service role key is used only in webhooks and the jobs Worker. The signals route uses the restricted device-write function described below.
+
+## Device-authenticated signal writes
+
+The extension and paste page authenticate with per-device bearer tokens, not Clerk sessions. Supabase therefore has no Clerk `sub` to use for those requests. `POST /api/signals` validates each report with `parseReport()` and calls a narrowly scoped `SECURITY DEFINER` function to authenticate the device, enforce its rate limit, and insert reports for that device's user.
+
+The function is the only database write path for device-authenticated signals. It has a fixed `search_path`, exposes only the required operation, and does not grant broad table access. The route never uses the service role key. Device token hashes and request bodies must not be logged. The API rejects any report that does not match `triplekeel.signal.v1` before calling the function.
+
+This preserves Clerk `sub`-based RLS for user-session access while allowing a separate, narrowly scoped path for device writes. Table RLS remains enabled. The migration must explicitly grant only the table and function permissions each client needs.
+
+### Consequences
+
+- Good: device writes do not require the service role key or a second JWT issuer.
+- Good: the database limits the device write path to token verification, rate limiting, and signal insertion.
+- Bad: the function is security-sensitive and needs tests for token ownership, rate limits, privileges, and invalid writes.
+- Bad: device-authenticated requests do not use the Clerk `sub` RLS policy; the function must enforce the device-to-user relationship itself.
 
 ### Consequences
 
