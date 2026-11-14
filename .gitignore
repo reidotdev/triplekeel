@@ -1,0 +1,10 @@
+node_modules/
+dist/
+build/
+.turbo/
+.wrangler/
+.env*
+!.env.example
+*.tsbuildinfo
+coverage/
+apps/extension/triplekeel-extension.zip

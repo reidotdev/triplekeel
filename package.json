@@ -1,0 +1,19 @@
+{
+  "name": "triplekeel",
+  "private": true,
+  "packageManager": "pnpm@10.26.2",
+  "engines": {
+    "node": ">=22 <23"
+  },
+  "scripts": {
+    "lint": "biome check .",
+    "typecheck": "tsc -b",
+    "test": "vitest run",
+    "build:extension": "pnpm --filter @triplekeel/extension build"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^2.3.8",
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.8"
+  }
+}
