@@ -1,0 +1,31 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "triplekeel-web",
+  "main": ".open-next/worker.js",
+  "compatibility_date": "2026-11-14",
+  "compatibility_flags": ["nodejs_compat"],
+  "account_id": "ca958ade8066cf630277f9637e5bc13c",
+  "workers_dev": false,
+  "assets": {
+    "directory": ".open-next/assets",
+    "binding": "ASSETS"
+  },
+  "services": [
+    {
+      "binding": "WORKER_SELF_REFERENCE",
+      "service": "triplekeel-web"
+    }
+  ],
+  "routes": [
+    {
+      "pattern": "triplekeel.rei.dev",
+      "custom_domain": true
+    }
+  ],
+  "limits": {
+    "cpu_ms": 1000
+  },
+  "observability": {
+    "enabled": true
+  }
+}

@@ -3,6 +3,9 @@ dist/
 build/
 .turbo/
 .wrangler/
+.open-next/
+.next/
+.dev.vars
 .env*
 !.env.example
 *.tsbuildinfo
