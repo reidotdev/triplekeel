@@ -37,6 +37,7 @@ The project was renamed from Rei to **TripleKeel** on 2026-11-14, and the app mo
 | [0011](0011-scorer-interface-stub-first-on-device-routing.md) | One scorer interface, a stub first, and track routing on the device          | accepted | 2026-11-14 |
 | [0012](0012-keyword-scorer-for-the-mvp.md)                    | The MVP scores prompts with keyword rules, not Gemma                         | accepted | 2026-11-14 |
 | [0013](0013-supabase-migrations-and-free-plan-operations.md)  | Supabase migrations and Free plan operations                                 | accepted | 2026-11-14 |
+| [0014](0014-ui-stack-react-aria-tailwind.md)                  | UI foundation: React Aria Components and Tailwind                            | accepted | 2026-11-15 |
 
 ## Open decisions
 
