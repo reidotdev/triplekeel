@@ -43,7 +43,7 @@ select throws_ok(
   'P0001', 'invalid_batch', 'empty batch is rejected'
 );
 select throws_ok(
-  $$select public.write_device_signals(repeat('a', 64), (select jsonb_agg(jsonb_build_object('schema','triplekeel.signal.v1','track','product-manager','app','chatgpt','source','live','hour','2026-11-14T10:00Z','length_bucket','200-500','answers',jsonb_build_array(jsonb_build_object('q','target_user','a','yes','p',0.91))) from generate_series(1, 51)))$$,
+  $$select public.write_device_signals(repeat('a', 64), (select jsonb_agg(jsonb_build_object('schema','triplekeel.signal.v1','track','product-manager','app','chatgpt','source','live','hour','2026-11-14T10:00Z','length_bucket','200-500','answers',jsonb_build_array(jsonb_build_object('q','target_user','a','yes','p',0.91)))) from generate_series(1, 51)))$$,
   'P0001', 'invalid_batch', 'batch over 50 is rejected'
 );
 
