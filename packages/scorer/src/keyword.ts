@@ -190,6 +190,64 @@ const RULES: Partial<Record<QuestionId, (f: Features) => Rule>> = {
     return VAGUE_FIX.test(f.text) && f.short ? yes(0.9) : no(0.8);
   },
   blind_accept: (f) => (BLIND_ACCEPT.test(f.text) ? yes(0.85) : no(0.8)),
+
+  // PM questions added in REI-273. These rules use direct prompt cues only.
+  metric_interpretation: (f) =>
+    /\b(?:metrics?|kpis?|conversion|retention|activation|nps|measure\w*|track\w*|baseline)\b/i.test(
+      f.text,
+    )
+      ? yes(0.78)
+      : no(0.74),
+  audience_update: (f) =>
+    AUDIENCE.test(f.text) &&
+    /\b(?:update|status|brief|report)\b/i.test(f.text) &&
+    /\b(?:decision|decide|approve|choose|action)\b/i.test(f.text)
+      ? yes(0.78)
+      : no(0.74),
+  stakeholder_tradeoff: (f) =>
+    /\btrade[ -]?offs?\b|\bchoose between\b|\bversus\b|\bvs\.?\b/i.test(f.text)
+      ? yes(0.8)
+      : no(0.74),
+  launch_readiness: (f) =>
+    AUDIENCE.test(f.text) &&
+    /\b(?:launch|roll ?out|release)\b/i.test(f.text) &&
+    /\b(?:email|in-app|push notification|website|web page|app store|sales call|webinar|social media|channel)\b/i.test(
+      f.text,
+    )
+      ? yes(0.78)
+      : no(0.74),
+  launch_learning: (f) =>
+    /\b(?:launch|roll ?out|release)\b/i.test(f.text) &&
+    (f.metric ||
+      /\b(?:measure|track|monitor|compare|results?|outcomes?)\b/i.test(f.text))
+      ? yes(0.78)
+      : no(0.74),
+  strategic_tradeoff: (f) =>
+    /\b(?:company|business)\s+(?:goal|objective|strategy)\b|\b(?:supports?|aligns? with|ties? to)\b.{0,50}\b(?:company|business|strategy|objective|goal)\b/i.test(
+      f.text,
+    )
+      ? yes(0.78)
+      : no(0.74),
+  commercial_impact: (f) =>
+    /\b(?:revenue|profit|margin|retention|churn|customer acquisition|lifetime value|market share|costs?|sales)\b/i.test(
+      f.text,
+    )
+      ? yes(0.78)
+      : no(0.74),
+  agent_context: (f) =>
+    /\b(?:agents?\.md|claude\.md|context file|project context|agent instructions|persistent memory|context library)\b/i.test(
+      f.text,
+    )
+      ? yes(0.78)
+      : no(0.74),
+  agent_workflow: (f) =>
+    /\b(?:repeatable|reusable|workflow|process|steps?)\b/i.test(f.text) &&
+    /\b(?:ai agent|agent|assistant|claude code|codex|cursor)\b/i.test(f.text) &&
+    /\b(?:human review|review by a person|approve|approval|sign[ -]?off)\b/i.test(
+      f.text,
+    )
+      ? yes(0.78)
+      : no(0.74),
 };
 
 const FALLBACK_ORDER: readonly Answer[] = ["n/a", "no", "partly", "yes"];
