@@ -67,6 +67,12 @@ interface Scorer {
 - 17 scorer tests cover determinism, the heuristics, allowed answers, valid reports through `buildReport()`, and routing for product, off-topic and personal prompts (REI-260).
 - REI-275 implements the real scorer without changing the interface.
 
+## Update (2026-11-14)
+
+- `score()` takes an optional third argument, `{ followUp }`, so the extension can say whether a prompt replies to an earlier answer. Existing callers don't change.
+- Callers use `createScorer()`, which returns the keyword scorer ([ADR-0012](0012-keyword-scorer-for-the-mvp.md)).
+- Routing has a wider keyword list, health words in the personal filter are first-person, and `isPersonal()` is exported so callers can check follow-ups too.
+
 ## Pros and cons of the options
 
 ### 1. Interface and deterministic stub

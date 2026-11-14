@@ -35,8 +35,8 @@ The project was renamed from Rei to **TripleKeel** on 2026-11-14, and the app mo
 | [0009](0009-track-files-yaml-frozen-question-ids.md)          | Track files are YAML checked in CI, and question IDs are append-only         | accepted | 2026-11-14 |
 | [0010](0010-report-schema-signal-v1.md)                       | Report schema `triplekeel.signal.v1`: enums and fixed formats only           | accepted | 2026-11-14 |
 | [0011](0011-scorer-interface-stub-first-on-device-routing.md) | One scorer interface, a stub first, and track routing on the device          | accepted | 2026-11-14 |
+| [0012](0012-keyword-scorer-for-the-mvp.md)                    | The MVP scores prompts with keyword rules, not Gemma                         | accepted | 2026-11-14 |
 
 ## Open decisions
 
-- **REI-256: Gemma or keyword scorer for the MVP.** The REI-247 spike recommends keyword rules: 86.2% agreement with hand labels, well under the 3 s target. Gemma couldn't be measured in that environment. Write ADR-0012 once decided.
 - **REI-249: add Context.dev or not.**
