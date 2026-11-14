@@ -8,3 +8,4 @@ build/
 *.tsbuildinfo
 coverage/
 apps/extension/triplekeel-extension.zip
+research-cache/
