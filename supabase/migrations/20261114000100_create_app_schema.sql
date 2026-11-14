@@ -164,11 +164,11 @@ begin
     end if;
     begin
       if v_report->>'hour' !~ '^\d{4}-\d{2}-\d{2}T\d{2}:00Z$' then
-        raise exception;
+        raise;
       end if;
       v_hour := (v_report->>'hour')::timestamptz;
       if to_char(v_hour at time zone 'UTC', 'YYYY-MM-DD"T"HH24:MI"Z"') <> v_report->>'hour' then
-        raise exception;
+        raise;
       end if;
     exception when others then
       raise exception using errcode = 'P0001', message = 'invalid_report';
