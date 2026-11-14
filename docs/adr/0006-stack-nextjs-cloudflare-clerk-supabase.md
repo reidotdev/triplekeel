@@ -1,4 +1,5 @@
 ---
+
 status: accepted
 date: 2026-11-14
 decision-makers: Andrei
@@ -28,14 +29,14 @@ TripleKeel has to be a real app that strangers can sign up for and keep using. O
 
 Chosen: **option 1.** Workers run the web app and the jobs. Clerk gives hosted sign-up screens. Supabase gives Postgres with Row Level Security (RLS) tied to the Clerk user.
 
-| Layer | Choice |
-|---|---|
+| Layer           | Choice                                                                                          |
+| --------------- | ----------------------------------------------------------------------------------------------- |
 | Web app and API | Next.js (App Router) on Cloudflare Workers, via the OpenNext adapter (`@opennextjs/cloudflare`) |
-| Jobs | A separate Worker (`apps/jobs`) with Cron Triggers, for the daily Exa scan and due nudges |
-| Auth | Clerk. Supabase trusts Clerk as a third-party auth provider |
-| Data | Supabase Postgres. RLS checks `auth.jwt()->>'sub' = user_id` |
-| LLM | Claude, on the server only, never on prompt text |
-| Domain | `triplekeel.rei.dev`, read from `APP_URL`, never hardcoded |
+| Jobs            | A separate Worker (`apps/jobs`) with Cron Triggers, for the daily Exa scan and due nudges       |
+| Auth            | Clerk. Supabase trusts Clerk as a third-party auth provider                                     |
+| Data            | Supabase Postgres. RLS checks `auth.jwt()->>'sub' = user_id`                                    |
+| LLM             | Claude, on the server only, never on prompt text                                                |
+| Domain          | `triplekeel.rei.dev`, read from `APP_URL`, never hardcoded                                      |
 
 - **Workers Paid ($5/month), not Free.** The free plan allows 10 ms of CPU per request, and Next.js server rendering plus Clerk checks usually take 10–20 ms (Cloudflare limits page, 2026-11-13).
 - **The jobs Worker is separate** so it doesn't fight OpenNext over a `scheduled` handler.

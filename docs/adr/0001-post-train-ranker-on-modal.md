@@ -1,4 +1,5 @@
 ---
+
 status: accepted
 date: 2026-11-13
 decision-makers: Andrei

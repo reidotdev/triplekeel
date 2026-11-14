@@ -1,4 +1,5 @@
 ---
+
 status: accepted
 date: 2026-11-13
 decision-makers: Andrei
@@ -44,8 +45,18 @@ Chosen: **option 3, a Claude Code plugin.** The conversations are already in the
   "track": "agentic-product-builder",
   "checked_at": "2026-11-14T10:00:00Z",
   "areas": [
-    { "id": "evals", "level": 1, "confidence": 0.7, "signals": { "test_runs_per_session": 0.4 } },
-    { "id": "context-engineering", "level": 3, "confidence": 0.8, "signals": { "claude_md_files": 6 } }
+    {
+      "id": "evals",
+      "level": 1,
+      "confidence": 0.7,
+      "signals": { "test_runs_per_session": 0.4 }
+    },
+    {
+      "id": "context-engineering",
+      "level": 3,
+      "confidence": 0.8,
+      "signals": { "claude_md_files": 6 }
+    }
   ],
   "setup": { "hooks": 2, "skills": 14, "mcp_servers": 5, "subagents": 3 }
 }

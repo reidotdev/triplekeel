@@ -1,4 +1,5 @@
 ---
+
 status: accepted
 date: 2026-11-14
 decision-makers: Andrei
@@ -40,16 +41,16 @@ Chosen: **option 1.**
 }
 ```
 
-| Field | Rule |
-|---|---|
-| `track` | One of `TRACK_IDS`. CI checks it matches `tracks/` ([ADR-0009](0009-track-files-yaml-frozen-question-ids.md)) |
-| `app` | `chatgpt`, `claude`, or `other` for the paste page ([ADR-0008](0008-extension-runs-on-claude-and-chatgpt-only.md)) |
-| `source` | `live` (typed now), `import` (a past chat message) or `paste` (the paste page) |
-| `hour` | UTC, rounded down to the hour, exactly `YYYY-MM-DDTHH:00Z`, and a real date |
-| `length_bucket` | Prompt length in characters: `0-50`, `50-200`, `200-500`, `500-1000`, `1000-2000`, `2000-5000`, `5000+` |
-| `answers` | 1 to `QUESTION_IDS.length` entries, each question once. `a` is `yes`, `partly`, `no` or `n/a` |
-| `p` | 0 to 1, **at most 2 decimals** |
-| `import_key` | SHA-256 hex. Required for `import`, optional for `live`, not allowed for `paste` |
+| Field           | Rule                                                                                                               |
+| --------------- | ------------------------------------------------------------------------------------------------------------------ |
+| `track`         | One of `TRACK_IDS`. CI checks it matches `tracks/` ([ADR-0009](0009-track-files-yaml-frozen-question-ids.md))      |
+| `app`           | `chatgpt`, `claude`, or `other` for the paste page ([ADR-0008](0008-extension-runs-on-claude-and-chatgpt-only.md)) |
+| `source`        | `live` (typed now), `import` (a past chat message) or `paste` (the paste page)                                     |
+| `hour`          | UTC, rounded down to the hour, exactly `YYYY-MM-DDTHH:00Z`, and a real date                                        |
+| `length_bucket` | Prompt length in characters: `0-50`, `50-200`, `200-500`, `500-1000`, `1000-2000`, `2000-5000`, `5000+`            |
+| `answers`       | 1 to `QUESTION_IDS.length` entries, each question once. `a` is `yes`, `partly`, `no` or `n/a`                      |
+| `p`             | 0 to 1, **at most 2 decimals**                                                                                     |
+| `import_key`    | SHA-256 hex. Required for `import`, optional for `live`, not allowed for `paste`                                   |
 
 - **Every object is strict.** Unknown keys are rejected, including a `__proto__` key from JSON.
 - **The import key** is a SHA-256 hash of `triplekeel.import.v1` + site + conversation ID + message index, computed on the device with Web Crypto. The fields are JSON-encoded so `"1"+"23"` and `"12"+"3"` don't collide. The server can't turn the hash back into a conversation ID.

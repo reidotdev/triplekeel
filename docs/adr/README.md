@@ -22,19 +22,19 @@ The project was renamed from Rei to **TripleKeel** on 2026-11-14, and the app mo
 
 ## Index
 
-| # | Decision | Status | Date |
-|---|---|---|---|
-| [0001](0001-post-train-ranker-on-modal.md) | Post-train the material ranker on Modal with Modal Dojo (now a stretch goal) | accepted | 2026-11-13 |
-| [0002](0002-one-learning-track-agentic-product-builder.md) | Ship one learning track (now Product manager) | accepted | 2026-11-13 |
-| [0003](0003-local-skill-check-evals-only.md) | Local skill check in Claude Code, send only evals | accepted | 2026-11-13 |
-| [0004](0004-browser-extension-local-scoring-in-app-nudges.md) | Chrome extension with local scoring, in-app nudges instead of Telegram | accepted | 2026-11-13 |
-| [0005](0005-open-source-mit-monorepo-tracks-as-data.md) | Open source: MIT license, one public monorepo, tracks as data files | accepted | 2026-11-14 |
-| [0006](0006-stack-nextjs-cloudflare-clerk-supabase.md) | Stack: Next.js on Cloudflare Workers, Clerk, Supabase | accepted | 2026-11-14 |
-| [0007](0007-monorepo-tooling-pnpm-typescript-biome-vitest.md) | Monorepo tooling: pnpm, TypeScript project references, Biome, Vitest | accepted | 2026-11-14 |
-| [0008](0008-extension-runs-on-claude-and-chatgpt-only.md) | The extension runs on claude.ai and chatgpt.com only | accepted | 2026-11-14 |
-| [0009](0009-track-files-yaml-frozen-question-ids.md) | Track files are YAML checked in CI, and question IDs are append-only | accepted | 2026-11-14 |
-| [0010](0010-report-schema-signal-v1.md) | Report schema `triplekeel.signal.v1`: enums and fixed formats only | accepted | 2026-11-14 |
-| [0011](0011-scorer-interface-stub-first-on-device-routing.md) | One scorer interface, a stub first, and track routing on the device | accepted | 2026-11-14 |
+| #                                                             | Decision                                                                     | Status   | Date       |
+| ------------------------------------------------------------- | ---------------------------------------------------------------------------- | -------- | ---------- |
+| [0001](0001-post-train-ranker-on-modal.md)                    | Post-train the material ranker on Modal with Modal Dojo (now a stretch goal) | accepted | 2026-11-13 |
+| [0002](0002-one-learning-track-agentic-product-builder.md)    | Ship one learning track (now Product manager)                                | accepted | 2026-11-13 |
+| [0003](0003-local-skill-check-evals-only.md)                  | Local skill check in Claude Code, send only evals                            | accepted | 2026-11-13 |
+| [0004](0004-browser-extension-local-scoring-in-app-nudges.md) | Chrome extension with local scoring, in-app nudges instead of Telegram       | accepted | 2026-11-13 |
+| [0005](0005-open-source-mit-monorepo-tracks-as-data.md)       | Open source: MIT license, one public monorepo, tracks as data files          | accepted | 2026-11-14 |
+| [0006](0006-stack-nextjs-cloudflare-clerk-supabase.md)        | Stack: Next.js on Cloudflare Workers, Clerk, Supabase                        | accepted | 2026-11-14 |
+| [0007](0007-monorepo-tooling-pnpm-typescript-biome-vitest.md) | Monorepo tooling: pnpm, TypeScript project references, Biome, Vitest         | accepted | 2026-11-14 |
+| [0008](0008-extension-runs-on-claude-and-chatgpt-only.md)     | The extension runs on claude.ai and chatgpt.com only                         | accepted | 2026-11-14 |
+| [0009](0009-track-files-yaml-frozen-question-ids.md)          | Track files are YAML checked in CI, and question IDs are append-only         | accepted | 2026-11-14 |
+| [0010](0010-report-schema-signal-v1.md)                       | Report schema `triplekeel.signal.v1`: enums and fixed formats only           | accepted | 2026-11-14 |
+| [0011](0011-scorer-interface-stub-first-on-device-routing.md) | One scorer interface, a stub first, and track routing on the device          | accepted | 2026-11-14 |
 
 ## Open decisions
 
