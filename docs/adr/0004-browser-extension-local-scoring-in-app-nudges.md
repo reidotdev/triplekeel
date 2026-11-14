@@ -131,7 +131,7 @@ flowchart LR
 
 - The site allowlist is now `claude.ai` and `chatgpt.com` only. See [ADR-0008](0008-extension-runs-on-claude-and-chatgpt-only.md).
 - The report is now `triplekeel.signal.v1`, not `rei.signal.v1`. Its exact shape is in [ADR-0010](0010-report-schema-signal-v1.md).
-- Whether the MVP scorer is Gemma or keyword rules is still open (REI-256). The scorer interface that both fit behind is in [ADR-0011](0011-scorer-interface-stub-first-on-device-routing.md).
+- The MVP scorer is keyword rules, not Gemma ([ADR-0012](0012-keyword-scorer-for-the-mvp.md)). Both fit behind the scorer interface in [ADR-0011](0011-scorer-interface-stub-first-on-device-routing.md).
 
 ## More information
 

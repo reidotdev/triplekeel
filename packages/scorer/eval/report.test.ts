@@ -4,6 +4,7 @@
 // "dev" shows only the tuning set. Look at "all" only once tuning is done.
 import { describe, it } from "vitest";
 import { agreement } from "./agreement.js";
+import { baselineAndRecall } from "./baseline.js";
 import { DEV } from "./dev.js";
 import { HOLDOUT } from "./holdout.js";
 
@@ -19,6 +20,14 @@ function print(name: string, rows: typeof DEV, flag: boolean): void {
       (m) => `    ${m.id} ${m.q}: expected ${m.expected}, got ${m.got}`,
     ),
   ];
+  const b = baselineAndRecall(rows);
+  if (flag) {
+    lines.push(
+      `  always-"no" baseline: ${b.alwaysNo.correct}/${b.alwaysNo.total}`,
+      `  "yes" labels found: ${b.yes.found}/${b.yes.total}`,
+      `  false "yes": ${b.falseYes.count}/${b.falseYes.of}`,
+    );
+  }
   console.log(lines.join("\n"));
 }
 

@@ -63,7 +63,7 @@ const COST =
   /\b(?:costs?|budget|price|pricing|cheap\w*|expensive|latency|speed|fast\w*|slow\w*|performance|limits?|limited|quota|tokens?|in under|under \d+\s*(?:ms|s|sec\w*|min\w*|mb|kb)|within \d+\s*(?:ms|s|sec\w*|min\w*)|keep it (?:to|under)|\d+\s*(?:ms|seconds?|minutes?))\b/i;
 
 const EDGE =
-  /\b(?:edge cases?|errors?|error states?|empty states?|offline|fails?|failures?|failing|timeouts?|invalid|duplicates?|duplicate rows|missing|null|no results|when there (?:are|is) (?:none|no)|small screens?|mobile(?!-first)|iphone(?: se)?|slow (?:network|connection)|retry|retries|overdue|denied|permissions?|time ?zones?)\b/i;
+  /\b(?:edge cases?|errors?|error states?|empty(?: states?)?|offline|fails?|failures?|failing|timeouts?|invalid|duplicates?|duplicate rows|missing|null|no results|when there (?:are|is) (?:none|no)|small screens?|mobile(?!-first)|iphone(?: se)?|slow (?:network|connection)|retry|retries|overdue|denied|permissions?|time ?zones?)\b/i;
 const NEGATED_EDGE =
   /\b(?:don't|do not|no need to|without|skip|never|bother with)\b[^.!?]{0,30}\bedge cases?\b/i;
 
