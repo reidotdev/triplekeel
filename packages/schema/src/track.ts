@@ -100,6 +100,8 @@ export const QuestionsFileSchema = z
 export type TrackFile = z.infer<typeof TrackFileSchema>;
 export type SkillAreasFile = z.infer<typeof SkillAreasFileSchema>;
 export type QuestionsFile = z.infer<typeof QuestionsFileSchema>;
+/** One typed question from a track's questions.yaml. */
+export type TrackQuestion = z.infer<typeof QuestionSchema>;
 
 export type Track = {
   track: TrackFile;
