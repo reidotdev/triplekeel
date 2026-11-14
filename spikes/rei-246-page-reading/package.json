@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "test": "vitest run --environment jsdom",
+    "test": "vitest run --environment jsdom test/adapters.test.js",
     "build": "node scripts/build.mjs"
   },
   "devDependencies": {
