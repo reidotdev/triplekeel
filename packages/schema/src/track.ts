@@ -39,14 +39,31 @@ export const TrackFileSchema = z
 const AreaLevelSchema = z
   .object({
     description: TextSchema,
-    exa_queries: z.array(TextSchema).min(1).refine(unique, "must not repeat"),
+    exa_queries: z
+      .array(TextSchema)
+      .min(3)
+      .max(5)
+      .refine(unique, "must not repeat"),
   })
   .strict();
+
+const LevelThresholdsSchema = z
+  .object({
+    junior: z.number().min(0).max(3),
+    mid: z.number().min(0).max(3),
+    senior: z.number().min(0).max(3),
+  })
+  .strict()
+  .refine(
+    ({ junior, mid, senior }) => junior < mid && mid < senior,
+    "thresholds must increase from junior to mid to senior",
+  );
 
 const SkillAreaSchema = z
   .object({
     id: AreaIdSchema,
     name: TextSchema,
+    thresholds: LevelThresholdsSchema,
     levels: z
       .object({
         junior: AreaLevelSchema,
@@ -154,9 +171,19 @@ export function checkTrack(input: TrackInput): TrackCheckResult {
 
   if (skillAreas.success && questions.success) {
     const areaIds = new Set(skillAreas.data.areas.map((a) => a.id));
+    const questionCounts = new Map<string, number>();
     for (const q of questions.data.questions) {
       if (!areaIds.has(q.area)) {
         errors.push(`questions.yaml: ${q.id}: area "${q.area}" does not exist`);
+      }
+      questionCounts.set(q.area, (questionCounts.get(q.area) ?? 0) + 1);
+    }
+    for (const area of skillAreas.data.areas) {
+      const count = questionCounts.get(area.id) ?? 0;
+      if (count < 2) {
+        errors.push(
+          `skill-areas.yaml: area "${area.id}" has ${count} question${count === 1 ? "" : "s"}; at least 2 are required`,
+        );
       }
     }
   }

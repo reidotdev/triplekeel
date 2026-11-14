@@ -35,6 +35,17 @@ describe("question IDs v0", () => {
       ...QUESTION_IDS_V0,
     ]);
     expect(new Set(QUESTION_IDS).size).toBe(QUESTION_IDS.length);
+    expect(QUESTION_IDS.slice(QUESTION_IDS_V0.length)).toEqual([
+      "metric_interpretation",
+      "audience_update",
+      "stakeholder_tradeoff",
+      "launch_readiness",
+      "launch_learning",
+      "strategic_tradeoff",
+      "commercial_impact",
+      "agent_context",
+      "agent_workflow",
+    ]);
   });
 
   it("accepts known IDs and rejects anything else", () => {

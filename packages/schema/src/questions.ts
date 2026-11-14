@@ -26,7 +26,19 @@ export const QUESTION_IDS_V0 = [
 ] as const;
 
 /** Every known question ID. Starts with v0; later IDs are appended. */
-export const QUESTION_IDS = [...QUESTION_IDS_V0] as const;
+export const QUESTION_IDS = [
+  ...QUESTION_IDS_V0,
+  // Added for the PM track (REI-273). Keep appending; never reorder.
+  "metric_interpretation",
+  "audience_update",
+  "stakeholder_tradeoff",
+  "launch_readiness",
+  "launch_learning",
+  "strategic_tradeoff",
+  "commercial_impact",
+  "agent_context",
+  "agent_workflow",
+] as const;
 
 export type QuestionId = (typeof QUESTION_IDS)[number];
 

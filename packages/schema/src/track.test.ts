@@ -3,7 +3,7 @@ import { checkTrack, QUESTION_IDS_V0, type TrackInput } from "./index.js";
 
 const level = (name: string) => ({
   description: `${name} description`,
-  exa_queries: [`${name} query`],
+  exa_queries: [`${name} query`, `${name} practice`, `${name} mistakes`],
 });
 
 function validInput(): TrackInput {
@@ -20,6 +20,7 @@ function validInput(): TrackInput {
         {
           id: "area_one",
           name: "Area one",
+          thresholds: { junior: 0, mid: 1, senior: 2 },
           levels: {
             junior: level("junior"),
             mid: level("mid"),
@@ -85,6 +86,33 @@ describe("checkTrack", () => {
     errorsFor((i) => (i.skillAreas.areas[0].levels.junior.exa_queries = []));
   });
 
+  it("rejects an area with fewer than three or more than five Exa queries", () => {
+    const tooFew = errorsFor(
+      (i) => (i.skillAreas.areas[0].levels.junior.exa_queries = ["one", "two"]),
+    );
+    expect(tooFew.join()).toMatch(/exa_queries/);
+    const tooMany = errorsFor((i) =>
+      i.skillAreas.areas[0].levels.junior.exa_queries.push(
+        "fourth",
+        "fifth",
+        "sixth",
+      ),
+    );
+    expect(tooMany.join()).toMatch(/exa_queries/);
+  });
+
+  it("rejects thresholds outside the 0–3 scale or out of order", () => {
+    const outside = errorsFor(
+      (i) => (i.skillAreas.areas[0].thresholds.senior = 4),
+    );
+    expect(outside.join()).toMatch(/thresholds\.senior/);
+
+    const unordered = errorsFor(
+      (i) => (i.skillAreas.areas[0].thresholds.mid = 0),
+    );
+    expect(unordered.join()).toMatch(/thresholds/);
+  });
+
   it("rejects duplicate area IDs", () => {
     const errors = errorsFor((i) =>
       i.skillAreas.areas.push(structuredClone(i.skillAreas.areas[0])),
@@ -97,6 +125,27 @@ describe("checkTrack", () => {
     expect(errors).toContain(
       'questions.yaml: target_user: area "nope" does not exist',
     );
+  });
+
+  it("requires at least two questions for every area", () => {
+    const input = validInput() as Mutable;
+    input.skillAreas.areas.push({
+      id: "area_two",
+      name: "Area two",
+      thresholds: { junior: 0, mid: 1, senior: 2 },
+      levels: {
+        junior: level("junior"),
+        mid: level("mid"),
+        senior: level("senior"),
+      },
+    });
+    input.questions.questions[0].area = "area_two";
+    const result = checkTrack(input as TrackInput);
+    expect(result.ok).toBe(false);
+    if (!result.ok)
+      expect(result.errors).toContain(
+        'skill-areas.yaml: area "area_two" has 1 question; at least 2 are required',
+      );
   });
 
   it("rejects a missing v0 question", () => {
