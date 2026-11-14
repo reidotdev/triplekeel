@@ -26,6 +26,24 @@ OBJECTIVE = (
     "practices and mistakes the speakers name."
 )
 
+# Podcast-vocabulary queries for the two areas with weak coverage (follow-up run).
+TUNED = {
+    "eng_design_collab": [
+        "product trio",
+        "product manager and engineering lead relationship",
+        "how PMs work with designers",
+        "PM and tech lead trade-offs",
+        "shipping with your engineering team",
+    ],
+    "ai_product_sense": [
+        "building AI products",
+        "AI product manager",
+        "evals for AI features",
+        "LLM product decisions",
+        "when not to use AI in a product",
+    ],
+}
+
 
 def build_queries():
     areas = yaml.safe_load(AREAS.read_text())["areas"]
@@ -40,6 +58,9 @@ def build_queries():
                     "query": f"product managers talking about {name}"})
         out.append({"id": f"mistakes:{a['id']}", "area": a["id"], "kind": "mistakes",
                     "query": f"mistakes product managers make with {name}"})
+    for area, queries in TUNED.items():
+        for i, q in enumerate(queries, 1):
+            out.append({"id": f"tuned:{area}:{i}", "area": area, "kind": "tuned", "query": q})
     return out
 
 
