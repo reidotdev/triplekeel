@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Local benchmark for Gemma 3 270M WebGPU prompt scoring." />
+    <title>TripleKeel · Gemma speed spike</title>
+  </head>
+  <body>
+    <main class="shell">
+      <header class="topbar"><span class="wordmark">triplekeel<span> / lab</span></span><span class="ticket">REI-247</span></header>
+      <section class="intro">
+        <p class="eyebrow">ON-DEVICE MODEL SPIKE</p>
+        <h1>Can Gemma score a prompt in 3 seconds?</h1>
+        <p class="lede">Compare instruction-tuned Gemma 3 270M with a local keyword scorer on 20 invented PM prompts. Text stays in this browser.</p>
+      </section>
+      <section class="runtime card">
+        <div><p class="label">Runtime</p><p id="gpu-status" class="status"><span class="dot"></span>Checking WebGPU…</p></div>
+        <div class="model-meta"><p class="label">Model</p><p>Gemma 3 270M · Transformers.js ONNX</p></div>
+        <button id="run" class="primary" type="button" disabled>Run benchmark <span>→</span></button>
+      </section>
+      <section id="progress-wrap" class="progress-wrap hidden">
+        <div class="progress-label"><span id="progress-label">Waiting to load</span><span id="progress-value">0%</span></div>
+        <progress id="progress" value="0" max="100"></progress>
+        <p id="runtime-note" class="muted"></p>
+      </section>
+      <section class="summary-grid">
+        <article class="metric card"><span>Model load</span><strong id="load-time">—</strong><small>First load includes download</small></article>
+        <article class="metric card"><span>Median / prompt</span><strong id="median-time">—</strong><small>Gemma generation time</small></article>
+        <article class="metric card"><span>p95 / prompt</span><strong id="p95-time">—</strong><small>Gemma generation time</small></article>
+        <article class="metric card"><span>Memory</span><strong id="memory">—</strong><small>Browser-reported estimate</small></article>
+      </section>
+      <section class="results card">
+        <div class="section-heading"><div><p class="label">Results</p><h2>Agreement with hand labels</h2></div><button id="copy" class="secondary" type="button" disabled>Copy results</button></div>
+        <p id="run-state" class="muted">Run the benchmark to load Gemma and score the prompt set.</p>
+        <div class="table-scroll"><table><thead><tr><th>Question</th><th>Keyword</th><th>Gemma + fallback</th></tr></thead><tbody id="question-results"><tr><td colspan="3" class="empty">Results will appear here.</td></tr></tbody></table></div>
+        <div id="prompt-results" class="table-scroll prompt-table"></div>
+      </section>
+      <footer><span>Gemma terms apply. Model weights download from Hugging Face at runtime.</span><span>REI-247 · Local inference only</span></footer>
+    </main>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

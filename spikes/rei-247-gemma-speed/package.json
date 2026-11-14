@@ -1,0 +1,16 @@
+{
+  "name": "rei-247-gemma-speed-spike",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "vite build",
+    "dev": "vite --host 127.0.0.1",
+    "benchmark:node": "node src/node-benchmark.js"
+  },
+  "dependencies": {
+    "@huggingface/transformers": "^4.0.0"
+  },
+  "devDependencies": {
+    "vite": "^7.0.0"
+  }
+}
