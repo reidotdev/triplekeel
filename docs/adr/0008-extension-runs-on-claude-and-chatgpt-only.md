@@ -17,7 +17,7 @@ decision-makers: Andrei
 - The first track is Product manager ([ADR-0002](0002-one-learning-track-agentic-product-builder.md)). PMs, and marketers for the next track, mostly work in ChatGPT and Claude.
 - "Score this chat" (REI-266) needs past chat history. ChatGPT and Claude show it on the page.
 - Each site's prompt box is different and needs its own adapter. Fewer sites, fewer adapters to fix.
-- Broad host permissions get deeper Chrome Web Store review (ADR-0004), and a submission is planned (REI-296).
+- Broad host permissions get deeper Chrome Web Store review (ADR-0004), and a store listing is planned (REI-296).
 - Fewer permissions are easier to explain in the privacy notice.
 
 ## Considered options
@@ -37,7 +37,7 @@ Chosen: **option 2.** `apps/extension/manifest.json` lists `https://claude.ai/*`
 
 - Good: two adapters to build and keep working.
 - Good: a narrow permission list for review and for users.
-- Bad: builders who prompt in Lovable, Replit, v0 or Bolt aren't covered. The planning notes' demo ("type a vague prompt in Lovable") has to use Claude or ChatGPT instead.
+- Bad: builders who prompt in Lovable, Replit, v0 or Bolt aren't covered. Walkthroughs that used Lovable have to use Claude or ChatGPT instead.
 - Bad: both adapters depend on page attributes the sites can change at any time. The popup warns when a conversation page yields zero user messages.
 
 ### Confirmation

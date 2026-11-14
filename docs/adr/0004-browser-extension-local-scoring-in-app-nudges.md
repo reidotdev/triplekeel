@@ -8,15 +8,14 @@ decision-makers: Andrei
 
 ## Context and problem statement
 
-Rei needs real evidence of how someone builds products. A CV is weak evidence, and the Claude Code plugin ([ADR-0003](0003-local-skill-check-evals-only.md)) only reaches terminal users. Most product builders work in browser tools like Lovable, Replit, v0, Bolt, Claude and ChatGPT, and what they type there shows their product skill. The prompt text is private and must never reach Rei. The stack also has to shrink for one person in 30 hours, and Telegram adds a bot, chat linking, a webhook and a sender. Where do we capture skill signals, where do we score them, and how do nudges reach the user?
+Rei needs real evidence of how someone builds products. A CV is weak evidence, and the Claude Code plugin ([ADR-0003](0003-local-skill-check-evals-only.md)) only reaches terminal users. Most product builders work in browser tools like Lovable, Replit, v0, Bolt, Claude and ChatGPT, and what they type there shows their product skill. The prompt text is private and must never reach Rei. The stack also has to shrink for one person, and Telegram adds a bot, chat linking, a webhook and a sender. Where do we capture skill signals, where do we score them, and how do nudges reach the user?
 
 ## Decision drivers
 
 - **Hard rule: prompt text never reaches Rei's servers.** Only typed reports do (2026-11-13).
-- Judges and strangers must be able to install and use it during the event (requirements.md (notes repo: `requirements.md`)).
+- Strangers must be able to install and use it without our help (notes repo: `requirements.md`).
 - No paid accounts beyond what we already pay for.
-- Solo builder, 30 hours. Fewer moving parts.
-- The Gemma tech bounty rewards an innovative use of Gemma.
+- Solo builder. Fewer moving parts.
 
 ## Considered options
 
@@ -45,7 +44,7 @@ Chosen: **option 2, a Chrome extension with local scoring, and nudges option b, 
 - A small Gemma model runs in the extension with WebGPU. It answers ~30 typed questions per prompt, each with fixed answers and a probability (the "System One" pattern, done locally).
 - The text is dropped after scoring. Only a `rei.signal.v1` report is uploaded: enum IDs, answers, probabilities, the hour and a length bucket. No free text. Details and the draft questions are in g-browser-skill-meter.md (notes repo: `g-browser-skill-meter.md`).
 - `/api/signals` uses the same strict validator rule as ADR-0003: unknown keys and non-enum strings are rejected.
-- **This reverses one part of ADR-0003.** ADR-0003 rejected a local open model as "too much for 30 hours". For browser prompts there's no user-owned Claude session to do the scoring, and a cloud scorer would break the hard rule. So the local model is now required. The Claude Code plugin from ADR-0003 stays as a second input.
+- **This reverses one part of ADR-0003.** ADR-0003 rejected a local open model as too much for the MVP. For browser prompts there's no user-owned Claude session to do the scoring, and a cloud scorer would break the hard rule. So the local model is now required. The Claude Code plugin from ADR-0003 stays as a second input.
 
 **Connect:** the extension opens `agent.rei.dev/connect`. The signed-in page sends a device token to the extension (`externally_connectable`). It can be revoked in the app.
 
@@ -55,7 +54,7 @@ Chosen: **option 2, a Chrome extension with local scoring, and nudges option b, 
 - **Done**, **Skip** and **Too basic** are buttons in all three places.
 - Telegram, WhatsApp, chat linking, the inbound webhook and the message-sending cron are removed. One daily job stays: the Exa scan for new podcast segments and practices.
 
-**Distribution:** Chrome Web Store, with a one-time $5 developer fee (Chromium blog; third-party guides 2026). Submit around h10. Review time isn't guaranteed: a community post reported slower reviews in April 2026, and Google says broad host permissions get deeper review. Until approval, users install with "Load unpacked" from the GitHub zip.
+**Distribution:** Chrome Web Store, with a one-time $5 developer fee (Chromium blog; third-party guides 2026). Review time isn't guaranteed: a community post reported slower reviews in April 2026, and Google says broad host permissions get deeper review. Until approval, users install with "Load unpacked" from the GitHub zip.
 
 ```mermaid
 flowchart LR
@@ -78,23 +77,22 @@ flowchart LR
 ### Consequences
 
 - Good: covers the tools most product builders use, not only Claude Code.
-- Good: free for everyone to install, and judges can try it with their own prompts.
+- Good: free for everyone to install, and anyone can try it with their own prompts.
 - Good: a smaller stack. No bot, no chat linking, no message webhook, no WhatsApp track.
-- Good: a strong Gemma bounty story: private, on-device skill scoring.
+- Good: private, on-device skill scoring.
 - Bad: browser only. Desktop apps (Cursor, the Claude desktop app) aren't covered. The Mac app stays a later option, and needs a paid Apple account for others to install it.
-- Bad: nudges reach users only when they're at the browser. That's weaker for retention. Email or Telegram can come back after the event.
+- Bad: nudges reach users only when they're at the browser. That's weaker for retention. Email or Telegram can come back later.
 - Bad: on-device scoring in WebGPU is the biggest technical risk: download size, speed, and laptops without WebGPU.
 - Bad: each site's prompt box is different, and rich editors may need small per-site adapters.
 - Bad: the extension can be modified, so the server can't prove a report is honest. That's fine: it only affects the user's own levels.
-- Bad: Context.dev is no longer in the core flow, so the Context.dev submissions get weaker (idea-evals.md (notes repo: `idea-evals.md`)).
 
 ### Confirmation
 
-- **h3:** the content script reads the submitted prompt on at least 3 allowlisted sites.
-- **h4:** Gemma in WebGPU scores a prompt in under ~3 s on a normal laptop. If not, use a deterministic local scorer for the MVP. Still local, never a silent cloud fallback.
+- The content script reads the submitted prompt on at least 3 allowlisted sites.
+- Gemma in WebGPU scores a prompt in under ~3 s on a normal laptop. If not, use a deterministic local scorer for the MVP. Still local, never a silent cloud fallback.
 - A test report with free text, an unknown key or a non-enum string is rejected by `/api/signals`.
 - After a real session, grep Supabase and the request logs: no prompt text.
-- A stranger installs the extension, prompts, and gets a nudge without our help by h17.
+- A stranger installs the extension, prompts, and gets a nudge without our help.
 
 ## Pros and cons of the options
 
@@ -120,7 +118,7 @@ flowchart LR
 
 ### a. Telegram nudges
 
-- Good: reaches the user's phone. A strong demo moment.
+- Good: reaches the user's phone.
 - Bad: a bot, deep-link linking, an inbound webhook and a sender. Extra work for one person.
 
 ### b. In-app nudges

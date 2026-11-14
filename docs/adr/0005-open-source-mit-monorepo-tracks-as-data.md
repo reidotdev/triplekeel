@@ -17,7 +17,7 @@ Rei should live on GitHub as an open source portfolio project. It also makes a p
 - No secrets in the repo, ever. Our keys and bills stay with our deployment.
 - Others can run their own copy with their own keys.
 - Writing good questions per field is the hard part of scaling to any knowledge work (g-browser-skill-meter.md § Vision (notes repo: `g-browser-skill-meter.md`)). Outside experts should be able to help.
-- Solo builder, 30 hours. Setup must fit in M0.
+- Solo builder. Setup must fit in M0.
 
 ## Considered options
 
@@ -108,7 +108,7 @@ tracks/
 ### Two repos stay separate
 
 - **App repo (public):** everything above.
-- **This notes repo (private):** planning, the hackerpack credits file and personal details. ADRs and diagrams are copied into the app repo's `docs/` when they're final.
+- **The notes repo (private):** planning and personal details. ADRs and diagrams are copied into the app repo's `docs/` when they're final.
 
 ### Consequences
 
@@ -125,8 +125,8 @@ tracks/
 
 - At M0: secret scanning and push protection on. `.env.example` committed. No secret in `git log -p`.
 - At M0: the deploy works from the repo plus Cloudflare secrets only.
-- By h17: a GitHub Release with the extension zip exists and installs with "Load unpacked".
-- Before submitting: someone else follows the README and gets a local copy running, or we note where it breaks.
+- Before the MVP freeze: a GitHub Release with the extension zip exists and installs with "Load unpacked".
+- Before the first public release: someone else follows the README and gets a local copy running, or we note where it breaks.
 
 ## Pros and cons of the options
 
@@ -158,9 +158,8 @@ tracks/
 ### b. Separate repos
 
 - Good: clean boundaries.
-- Bad: the shared schema and scorer would need publishing or copying. Too much for 30 hours.
+- Bad: the shared schema and scorer would need publishing or copying. Too much for the MVP.
 
 ## More information
 
-- Check Junction's rules on code ownership and publishing at the info desk. Most hackathons allow it, and Context.dev already asks for a GitHub repo.
-- requirements.md § 9 (notes repo: `requirements.md`) and implementation-plan.md (notes repo: `implementation-plan.md`) M0 and h24–30 are updated for this decision.
+- requirements.md § 9 (notes repo: `requirements.md`) and implementation-plan.md (notes repo: `implementation-plan.md`) M0 and the release steps are updated for this decision.

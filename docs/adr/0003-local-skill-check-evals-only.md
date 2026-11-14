@@ -14,7 +14,7 @@ A CV says little about how someone actually builds with agents. The best evidenc
 
 - **Hard rule: conversations never reach Rei's servers.** Only evals do (2026-11-13).
 - The user must be able to see exactly what's sent before it's sent.
-- Solo builder, 30 hours. Reuse what's on the user's machine.
+- Solo builder. Reuse what's on the user's machine.
 - Results must map onto the skill areas from [ADR-0002](0002-one-learning-track-agentic-product-builder.md).
 
 ## Considered options
@@ -117,7 +117,7 @@ flowchart LR
 ### 4. Local open model
 
 - Good: the strongest privacy story. Nothing leaves the machine at all.
-- Bad: a big download, slow on laptops, weaker scoring. Too much for 30 hours. Possible later as a "fully offline" mode.
+- Bad: a big download, slow on laptops, weaker scoring. Too much for the MVP. Possible later as a "fully offline" mode.
 
 ## More information
 
