@@ -1,6 +1,7 @@
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import { completeOnboarding } from "@/app/profile-actions";
+import { BrandMark } from "@/components/brand-mark";
 import { ProfileForm } from "@/components/profile/profile-form";
 import { Card } from "@/components/ui";
 import { getProfile, isProfileComplete } from "@/src/lib/profile";
@@ -17,7 +18,7 @@ export default async function OnboardingPage() {
   return (
     <main className="mx-auto grid min-h-screen max-w-xl content-start gap-8 px-6 py-12">
       <header>
-        <p className="text-sm text-muted">TripleKeel</p>
+        <BrandMark />
         <h1 className="text-3xl font-semibold">Set your goal</h1>
         <p className="mt-2 text-sm text-muted">
           Tell us where you are and where you want to go.
