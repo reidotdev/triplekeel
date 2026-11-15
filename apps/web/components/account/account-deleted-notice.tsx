@@ -8,7 +8,7 @@ export function AccountDeletedNotice() {
   if (params.get("account") !== "deleted") return null;
   return (
     <p
-      className="mx-auto mt-6 w-fit max-w-[90%] rounded-card border border-[var(--muted-white)] px-4 py-2 text-center text-sm"
+      className="mx-auto mt-6 w-fit max-w-[90%] rounded-card border border-[var(--line)] px-4 py-2 text-center text-sm"
       role="status"
     >
       Your account and all its data are deleted.
