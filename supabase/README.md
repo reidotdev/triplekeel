@@ -56,3 +56,19 @@ The jobs Worker (`apps/jobs`) fills `public.picks` once a day: up to 3 recent po
 `public.replace_area_picks(date, text, text, text, jsonb, text)` is the only write path. It replaces one area and kind's set in one transaction, so readers always see a complete set from one run. Bad input raises `P0001` with `invalid_picks` or `unknown_area` and changes nothing. With an empty set it records a row in `public.pick_flags` instead (`no_candidates`, `no_good_picks`, `model_error`, `search_error` or `cap_reached`), keeps earlier picks that are still under 90 days old, and drops older ones. A later successful run on the same day clears the flag.
 
 Grants: `authenticated` can select `picks` and `pick_flags`, because picks are the same for everyone and hold no user data. `anon` has nothing. `service_role` has no table privileges on them; it can execute `replace_area_picks` and select `tracks` and `skill_areas` to read the queries. The function is `SECURITY DEFINER` with an empty `search_path`.
+
+## Keel check cards
+
+`public.build_keel_check()` builds the signed-in user's keel check card, stores it in `public.nudges` and returns it as JSON. `POST /api/keel-check` calls it with the Clerk-session client. It is deterministic: counts and stored picks, no model calls.
+
+- Window: the user's 20 newest reports on their profile's track. Per question it counts yes, partly and no answers. n/a and missing answers don't count.
+- Keep: the good question with the highest yes share, with at least 5 answers and yes in at least half. Its area's `practice` pick.
+- Stop: the bad question with the highest yes share ("yes" means the anti-pattern happened), with at least 5 answers, at least 2 yes, and yes in at least a fifth. Its area's `mistake` pick.
+- Test: the biggest gap, ranked like `read_level_gaps()`. At the target, the lowest-score area. Without any level yet, the weakest area in the window. No reports, no Test. Its area's `practice` pick.
+- Picks: same track, published in the last 90 days, podcast first, then newest. Test chooses first, and a pick appears once per card.
+- No evidence or no good pick: the item is left out. A card can be empty, and it is still stored.
+- Cap: 10 builds per user per UTC day. The 11th raises `keel_check_limit`.
+
+It raises `P0001` with `not_authenticated`, `profile_incomplete` (no track yet) or `keel_check_limit`. Items hold counts, IDs, the question's `card_label` and a copy of the pick, never sentences. Each item has a `status` (`open` when built). The migration `20261115120000_keel_check.sql` documents the exact rules and the JSON shape and holds the constants.
+
+Grants: `authenticated` can select its own `nudges` rows and execute `build_keel_check()`. Nobody can write `nudges` directly. `public.build_keel_check_for(text)` does the work for one user ID; no client role can execute it, so a device-token or scheduled variant must be another `SECURITY DEFINER` function that resolves the user first. In the web app, use `buildKeelCheck(supabase)` and `readLatestKeelCheck(supabase)` from `apps/web/src/lib/keel-check.ts`.
