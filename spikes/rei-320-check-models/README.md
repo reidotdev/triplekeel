@@ -64,3 +64,17 @@ While it runs, watch **Memory Pressure** in Activity Monitor. The model runs in 
 - The labels come from REI-247 and are one person's judgement. The keyword scorer was built against the same prompts, so its 86.2% is likely flattering.
 - 20 prompts is a small set. Treat differences of a few points as noise.
 - The harness was written on Linux, so it's only been compiled on a Mac by running it. If the build fails, paste the error into the session.
+
+## Decision models through Ollaya
+
+`check_ollaya.py` runs the same prompts and labels against a decision model, such as Kev, through a local [Ollaya](https://github.com/ollaya-dev/ollaya) server. Decision models pick from fixed answers and return probabilities instead of writing text, so they should be much faster than the Apple model.
+
+It asks all 16 habits in one request as `choice` questions (`yes`, `partly`, `no`, and `n/a` only for the two follow-up habits). It uses only the Python standard library.
+
+```bash
+ollaya pull kev:0.8b
+ollaya serve                      # in a separate Terminal window
+python3 check_ollaya.py --model kev:0.8b
+```
+
+The server speaks TypeSafe's decision API, so the same script can test another model with `--model`, or a hosted API with `--base` and a `TYPESAFE_API_KEY` environment variable. Use hosted APIs only with these invented prompts, because they send the text off the Mac.
