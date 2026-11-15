@@ -30,13 +30,20 @@ function env(name: string): string {
   return value;
 }
 
+function isJwt(key: string): boolean {
+  return key.split(".").length === 3 && key.startsWith("eyJ");
+}
+
 async function rest(path: string, key: string, init?: RequestInit) {
   const url = `${env("NEXT_PUBLIC_SUPABASE_URL").replace(/\/$/, "")}/rest/v1/${path}`;
-  const headers = {
+  // New-style keys (sb_publishable_..., sb_secret_...) are not JWTs and the
+  // API rejects them as a Bearer token; they go only in `apikey`. Legacy JWT
+  // keys (anon, service_role) also go in `Authorization`, like supabase-js.
+  const headers: Record<string, string> = {
     apikey: key,
-    authorization: `Bearer ${key}`,
     "content-type": "application/json",
   };
+  if (isJwt(key)) headers.authorization = `Bearer ${key}`;
   return fetch(url, { ...init, headers });
 }
 
