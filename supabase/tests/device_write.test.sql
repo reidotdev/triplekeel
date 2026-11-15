@@ -2,6 +2,11 @@ begin;
 
 select plan(34);
 
+-- Every user table references public.users (REI-286), so the test users
+-- need a users row first.
+insert into public.users (user_id, image_url, clerk_created_at, clerk_updated_at)
+select id, '', now(), now() from unnest(array['clerk_user_1', 'clerk_user_2']) as id;
+
 select has_table('public', 'profiles', 'profiles table exists');
 select has_table('public', 'devices', 'devices table exists');
 select has_table('public', 'signals', 'signals table exists');

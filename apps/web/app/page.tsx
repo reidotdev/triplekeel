@@ -1,6 +1,8 @@
 import { ArrowDownRight, ArrowUpRight, LockKeyhole } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { Suspense } from "react";
+import { AccountDeletedNotice } from "@/components/account/account-deleted-notice";
 import { ProcessTabs } from "@/components/marketing/process-tabs";
 
 const comparison = [
@@ -51,6 +53,10 @@ export default function HomePage() {
           </Link>
         </div>
       </header>
+
+      <Suspense fallback={null}>
+        <AccountDeletedNotice />
+      </Suspense>
 
       <section aria-labelledby="hero-title" className="hero-section">
         <div className="hero-copy">

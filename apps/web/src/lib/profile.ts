@@ -152,6 +152,17 @@ export async function saveProfile(
     );
   if (error) {
     console.error("Profile save failed", error.code);
+    // profiles references users (REI-286). Right after sign-up, the Clerk
+    // webhook may not have created the users row yet.
+    if (
+      error.code === "23503" &&
+      error.message?.includes("profiles_user_id_fkey")
+    ) {
+      return {
+        status: "error",
+        message: "Your account is still being set up. Try again in a minute.",
+      };
+    }
     return { status: "error", message: "Could not save. Try again." };
   }
   return { status: "saved" };

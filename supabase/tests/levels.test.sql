@@ -2,6 +2,11 @@ begin;
 
 select plan(37);
 
+-- Every user table references public.users (REI-286), so the test users
+-- need a users row first.
+insert into public.users (user_id, image_url, clerk_created_at, clerk_updated_at)
+select id, '', now(), now() from unnest(array['user_junior', 'user_mid', 'user_senior', 'user_few', 'user_zero', 'user_recent', 'user_p', 'user_na', 'user_polarity', 'user_device']) as id;
+
 -- Fixed reports, written straight into signals. Hours are in the past, so the
 -- newest report hour is the recency reference.
 create function pg_temp.add_signals(p_user text, p_count integer, p_answers jsonb, p_hour timestamptz default '2026-11-01T10:00Z', p_source text default 'live')

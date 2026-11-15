@@ -87,10 +87,10 @@ export default function PrivacyPage() {
             else's prompts.
           </li>
           <li>
-            Live scoring is being built. When it's ready, the extension will
-            also read each prompt as you send it. The last 20 prompts you sent
-            will be kept in your browser, so you can see what was scored. They
-            won't leave your browser.
+            While the extension is connected, it also reads each prompt you send
+            on claude.ai or chatgpt.com, and scores it in your browser. The last
+            20 scored prompts are kept only in your browser, so you can see what
+            was scored. They never leave it.
           </li>
         </List>
         <p>
@@ -102,8 +102,9 @@ export default function PrivacyPage() {
         <p>
           The extension also keeps a few things in your browser: a device token
           that links it to your account, your email and track for the popup,
-          your track's questions, and a random secret for import keys. Removing
-          the extension deletes them.
+          your track's questions, a random secret for import keys, and score
+          reports waiting to be sent. Disconnecting deletes the scored prompts
+          and the waiting reports. Removing the extension deletes all of it.
         </p>
       </Section>
 
@@ -159,8 +160,8 @@ export default function PrivacyPage() {
             a hash of its token. We never store the token itself.
           </li>
           <li>
-            Soon, your keel check cards and your replies to them. Keel checks
-            are being built.
+            Your keel check cards: up to three practice items each, picked from
+            your score reports and levels, with a link to a public source.
           </li>
         </List>
         <p>We don't store prompt text.</p>
@@ -206,31 +207,32 @@ export default function PrivacyPage() {
 
       <Section id="delete" title="Delete your account">
         <p>
-          There is no delete button yet. Full account deletion is being built.
-          Here is what you can do today:
+          Go to <Link href="/settings/account">Settings → Account</Link> and
+          choose <strong>Delete account</strong>. You type DELETE to confirm.
+          You can't undo it.
         </p>
+        <p>It deletes, at once:</p>
         <List>
-          <li>
-            Disconnect the extension in{" "}
-            <Link href="/settings/devices">Settings → Devices</Link>. A revoked
-            device stops working at once.
-          </li>
-          <li>
-            Remove the extension from Chrome. That deletes everything it kept in
-            your browser.
-          </li>
-          <li>
-            Ask us to delete your data.{" "}
-            <Link href={`${REPO_URL}/issues`}>Open an issue on GitHub</Link>,
-            and leave personal details out of it. We'll find a private way to
-            confirm it's you.
-          </li>
+          <li>your account details: name, email and profile picture link</li>
+          <li>your profile, score reports and levels</li>
+          <li>your keel check cards</li>
+          <li>your connected devices</li>
+          <li>your sign-in account at Clerk</li>
         </List>
         <p>
-          When a sign-in account is deleted in Clerk today, we delete its name,
-          email and picture link from our database. Its profile, score reports,
-          levels and device records aren't deleted yet. Full account deletion
-          will remove them too.
+          The extension disconnects the next time it talks to our server. It
+          then deletes its device token, your email and track, and the prompts
+          and reports it kept. To remove the rest of what it kept in your
+          browser, remove the extension from Chrome.
+        </p>
+        <p>
+          If your sign-in account is deleted in Clerk some other way, we delete
+          the same data from our database.
+        </p>
+        <p>
+          You can also disconnect just the extension in{" "}
+          <Link href="/settings/devices">Settings → Devices</Link>. A revoked
+          device stops working at once.
         </p>
       </Section>
 

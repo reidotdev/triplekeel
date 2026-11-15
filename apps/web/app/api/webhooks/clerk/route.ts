@@ -1,6 +1,10 @@
+// Relative imports keep the route testable without a path alias.
 import { Webhook } from "svix";
-import { type ClerkUserRecord, toUserRow } from "@/src/lib/clerk-user";
-import { createSupabaseAdmin } from "@/src/lib/supabase-admin";
+import {
+  type ClerkUserRecord,
+  toUserRow,
+} from "../../../../src/lib/clerk-user";
+import { createSupabaseAdmin } from "../../../../src/lib/supabase-admin";
 
 type ClerkWebhookEvent = { type: string; data: unknown };
 
@@ -85,6 +89,9 @@ export async function POST(request: Request) {
         { status: 400 },
       );
     }
+    // Foreign keys cascade this to all of the user's data (REI-286). The
+    // settings page usually deleted it already. Then this deletes nothing and
+    // still succeeds, so a repeated event is fine too.
     const supabase = createSupabaseAdmin();
     const { error } = await supabase
       .from("users")

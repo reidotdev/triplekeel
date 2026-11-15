@@ -21,6 +21,8 @@ export default async function ProfileSettingsPage() {
         <h1 className="text-3xl font-semibold">Your profile</h1>
         <p className="mt-2 text-sm">
           <Link href="/dashboard">Back to dashboard</Link>
+          {" · "}
+          <Link href="/settings/account">Account</Link>
         </p>
       </header>
       <Card>
@@ -40,6 +42,10 @@ export default async function ProfileSettingsPage() {
           <p className="text-sm">Could not load your profile. Try again.</p>
         )}
       </Card>
+      <p className="text-sm text-muted">
+        To delete your account and all your data, go to{" "}
+        <Link href="/settings/account">Account</Link>.
+      </p>
     </main>
   );
 }
