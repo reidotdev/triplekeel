@@ -1,5 +1,6 @@
 import { clerkMiddleware } from "@clerk/nextjs/server";
 import { isKillSwitchEnabled } from "@/src/lib/kill-switch";
+import { isProtectedPath } from "@/src/protected-routes";
 
 export default clerkMiddleware(async (auth, request) => {
   if (
@@ -13,7 +14,7 @@ export default clerkMiddleware(async (auth, request) => {
     );
   }
 
-  if (request.nextUrl.pathname.startsWith("/dashboard")) {
+  if (isProtectedPath(request.nextUrl.pathname)) {
     await auth.protect();
   }
 });

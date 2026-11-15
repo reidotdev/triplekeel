@@ -260,6 +260,25 @@ body {
   stroke-width: 1.6;
 }
 
+.site-footer {
+  border-top: 1px solid var(--line);
+  display: flex;
+  gap: 28px;
+  justify-content: center;
+  margin: 0 auto;
+  max-width: 1600px;
+  padding: 32px clamp(24px, 4vw, 64px);
+}
+
+.site-footer a {
+  color: var(--muted-white);
+  font-size: 14px;
+}
+
+.site-footer a:hover {
+  color: #c2caff;
+}
+
 @media (max-width: 740px) {
   .site-header {
     min-height: 72px;

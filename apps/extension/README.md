@@ -52,6 +52,10 @@ Open a past chat on claude.ai or chatgpt.com and open the popup. When you're con
 4. Click it again. It should say you scored this chat before.
 5. In DevTools, check the `/api/signals` request body. It has reports only, no prompt text.
 
+## Privacy notice
+
+The popup's **Privacy** link opens `/privacy` on the web app (`APP_URL`). The page is public, so it works signed out. For the Chrome Web Store listing, the privacy policy URL is https://triplekeel.rei.dev/privacy.
+
 ## Permissions
 
 Host permissions are `claude.ai` and `chatgpt.com` only. The build fails if the manifest lists any other host. The content script uses the site adapters from the REI-246 spike.

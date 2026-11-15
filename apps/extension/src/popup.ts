@@ -214,6 +214,8 @@ element("connect").addEventListener("click", () => openAppPage("/connect"));
 element("devices").addEventListener("click", () =>
   openAppPage("/settings/devices"),
 );
+element("privacy").hidden = !hasServer;
+element("privacy").addEventListener("click", () => openAppPage("/privacy"));
 element("score").addEventListener("click", () => void scoreThisChat());
 element("open-skills").addEventListener("click", () =>
   openAppPage("/dashboard"),
