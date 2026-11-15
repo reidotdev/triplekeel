@@ -39,13 +39,20 @@ final class Rewriter {
         \(habits.map { "- \($0.id): \($0.definition)" }.joined(separator: "\n"))
 
         Rules:
-        - Prefer vague words that should be specific, like "better", "nice", "fix it" or "an app".
-        - If a habit is missing entirely, quote the main request.
-        - The quote must be copied exactly from the prompt, a few words long, never the whole prompt.
-        - The replacement rewrites only the quoted words. Keep the author's meaning and voice.
-        - Put details only the author knows in square brackets, like [your users] or [2 seconds].
-        - The hint is one short, plain sentence on why this makes the result better.
+        - Look for vague words that should be specific, like "better", "nice", "good", "fix it" or "an app".
+        - The quote is 2 to 6 words copied exactly from the prompt: the vague word plus the words it belongs to. Never the whole prompt.
+        - The replacement rewrites only the quoted words so they still fit the sentence.
+        - The replacement must be clearly more specific than the quote. Never swap one vague word for another, like "better" for "faster".
+        - Put details only the author knows in square brackets, like [your users] or [5%]. Every replacement needs at least one bracket or number.
+        - The hint is one short question or sentence that names the gap, so the author learns the habit.
         - If the prompt is already strong, use habit none for both.
+
+        Examples:
+        - "converts better" → "converts [5%] of visitors to sign-ups, up from [2%]". success_metric. Hint: Better by how much? A number makes the result checkable.
+        - "make it nice" → "make it match [our brand colors] and pass [WCAG AA] contrast". acceptance. Hint: What would make you accept it? Name the conditions.
+        - "build an app" → "build an app for [who] who struggle with [problem]". target_user. Hint: Who is it for? The user shapes every design choice.
+        - "fix it" → "fix [what's broken] so that [what should happen]". specific_feedback. Hint: What's wrong, and what should it do instead?
+        - "add a login page" → "add a login page, then [the next step]; skip [what's out of scope] for now". scope_cut. Hint: What's not in this version?
         """
 
     private let schema: GenerationSchema
@@ -94,9 +101,13 @@ final class Rewriter {
             let replacement = try item.value(String.self, forProperty: "replacement")
             let hint = try item.value(String.self, forProperty: "hint")
             // Keep only fixes grounded in the prompt that change something.
+            // A real fix is longer than the quote and adds a detail: a
+            // [placeholder] or a number. This drops "better" → "faster".
+            let addsDetail = replacement.contains("[") || replacement.rangeOfCharacter(from: .decimalDigits) != nil
             guard habit != "none", !quote.isEmpty, quote.count < text.count,
                   text.range(of: quote, options: .caseInsensitive) != nil,
                   replacement.caseInsensitiveCompare(quote) != .orderedSame,
+                  replacement.count > quote.count, addsDetail,
                   !issues.contains(where: { $0.quote.caseInsensitiveCompare(quote) == .orderedSame })
             else { continue }
             issues.append(Issue(habit: habit, quote: quote, hint: hint, replacement: replacement))
