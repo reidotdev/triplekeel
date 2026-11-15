@@ -7,6 +7,7 @@ import { readTrackCatalog } from "./src/lib/track-files";
 const tracksDir = join(process.cwd(), "..", "..", "tracks");
 
 const nextConfig: NextConfig = {
+  transpilePackages: ["@triplekeel/schema"],
   env: {
     TRACK_CATALOG: JSON.stringify(readTrackCatalog(tracksDir)),
   },

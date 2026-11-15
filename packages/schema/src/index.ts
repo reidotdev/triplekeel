@@ -1,3 +1,3 @@
-export * from "./questions.js";
-export * from "./report.js";
-export * from "./track.js";
+export * from "./questions.ts";
+export * from "./report.ts";
+export * from "./track.ts";

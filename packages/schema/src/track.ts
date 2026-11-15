@@ -6,7 +6,7 @@ import {
   POLARITIES,
   QUESTION_IDS_V0,
   QuestionIdSchema,
-} from "./questions.js";
+} from "./questions.ts";
 
 const TrackIdSchema = z.string().regex(/^[a-z][a-z0-9]*(-[a-z0-9]+)*$/, {
   message: "must be lowercase kebab-case, for example product-manager",
