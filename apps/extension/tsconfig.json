@@ -1,5 +1,9 @@
 {
   "extends": "../../tsconfig.base.json",
-  "compilerOptions": { "outDir": "dist" },
-  "include": ["src/index.ts"]
+  "compilerOptions": {
+    "outDir": ".tsc",
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "types": ["chrome", "node"]
+  },
+  "include": ["src/**/*.ts"]
 }

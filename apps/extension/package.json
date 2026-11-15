@@ -5,5 +5,10 @@
   "type": "module",
   "scripts": {
     "build": "node scripts/build.mjs"
+  },
+  "devDependencies": {
+    "@types/chrome": "^0.3.7",
+    "esbuild": "^0.27.7",
+    "jsdom": "^26.1.0"
   }
 }
