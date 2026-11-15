@@ -1,11 +1,14 @@
 // The database catalog: what public.sync_track_catalog(p_catalog jsonb)
-// expects. Pure, so it runs anywhere. Area thresholds are not stored in the
-// database yet, so they are left out.
+// expects. Pure, so it runs anywhere.
 import type { Track } from "./track.ts";
+
+/** Level thresholds on the 0–3 scale used by public.recompute_user_levels. */
+export type CatalogThresholds = { junior: number; mid: number; senior: number };
 
 export type CatalogArea = {
   id: string;
   name: string;
+  thresholds: CatalogThresholds;
   junior_description: string;
   mid_description: string;
   senior_description: string;
@@ -40,6 +43,11 @@ export function buildCatalog(tracks: readonly Track[]): Catalog {
       areas: skillAreas.areas.map((area) => ({
         id: area.id,
         name: area.name,
+        thresholds: {
+          junior: area.thresholds.junior,
+          mid: area.thresholds.mid,
+          senior: area.thresholds.senior,
+        },
         junior_description: area.levels.junior.description,
         mid_description: area.levels.mid.description,
         senior_description: area.levels.senior.description,

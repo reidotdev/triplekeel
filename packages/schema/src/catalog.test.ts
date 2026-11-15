@@ -30,6 +30,15 @@ describe("database catalog", () => {
     );
   });
 
+  it("carries each area's level thresholds", () => {
+    // public.recompute_user_levels reads them from skill_areas.thresholds.
+    for (const area of catalog.tracks.flatMap((t) => t.areas)) {
+      expect(Object.keys(area.thresholds)).toEqual(["junior", "mid", "senior"]);
+      expect(area.thresholds.junior).toBeGreaterThanOrEqual(0);
+      expect(area.thresholds.senior).toBeLessThanOrEqual(3);
+    }
+  });
+
   it("fits the signals.answers ceiling of 100", () => {
     // parseReport() allows QUESTION_IDS.length answers. The table allows 100.
     expect(QUESTION_IDS.length).toBeLessThanOrEqual(100);
