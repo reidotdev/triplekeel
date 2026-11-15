@@ -1,6 +1,6 @@
 # Shared schema
 
-Shared IDs and schemas for TripleKeel. The extension, the scorer and the API import from here, so nothing is defined twice.
+Shared IDs and schemas for Triplekeel. The extension, the scorer and the API import from here, so nothing is defined twice.
 
 ## Question IDs
 

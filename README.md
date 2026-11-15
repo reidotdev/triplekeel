@@ -1,8 +1,8 @@
-# TripleKeel
+# Triplekeel
 
-Get better at your job on autopilot. TripleKeel learns from your AI chats, privately, and brings you the best new practices for your skill gaps.
+Get better at your job on autopilot. Triplekeel learns from your AI chats, privately, and brings you the best new practices for your skill gaps.
 
-TripleKeel scores prompts on your device. It sends score reports, never prompt text. A dashboard shows your skill matrix and weekly keel checks.
+Triplekeel scores prompts on your device. It sends score reports, never prompt text. A dashboard shows your skill matrix and weekly keel checks.
 
 ## Layout
 

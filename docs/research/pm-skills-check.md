@@ -396,7 +396,7 @@ Each area has a decision, its counts, level changes, a "Stop" item from the mist
 
 ### Working with AI agents day to day
 
-Recommended. This is how a PM uses AI agents for their own work: context files, reusable skills, automations, and checking what the agent did. It is not prototyping and not AI product sense. It is also close to what TripleKeel scores, since it is about how PMs prompt.
+Recommended. This is how a PM uses AI agents for their own work: context files, reusable skills, automations, and checking what the agent did. It is not prototyping and not AI product sense. It is also close to what Triplekeel scores, since it is about how PMs prompt.
 
 - Counts: 6 / 4 / 6 in podcasts (of 20), 3 / 3 / 2 in jobs, 27 / 37 / 37 on the web.
 - Podcast sources: a Figma PM: "I run this skill what's up like six times a day" (How I AI, [How Figma’s PMs actually use AI every day - Ezra Mechaber (PM, Figma)](https://exa.ai/library/podcast/1s07l76pf5j/episode/brj34qfs492) (2026-11-02), at 07:13). Teresa Torres on her own Claude Code task system: "this is exactly the type of thing that you should build for yourself" (How I AI, [Claude Code for product managers: research, writing, context libraries, custom to-do system, and more - Teresa Torres](https://exa.ai/library/podcast/1s07l76pf5j/episode/19rwv3b567x) (2026-01-19), at 04:36).

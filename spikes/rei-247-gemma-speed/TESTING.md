@@ -1,6 +1,6 @@
 # Manual browser test
 
-1. From the TripleKeel checkout, serve the prepared static page:
+1. From the Triplekeel checkout, serve the prepared static page:
 
    ```bash
    npx serve .spike-builds/rei-247/site

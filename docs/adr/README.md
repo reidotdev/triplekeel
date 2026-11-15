@@ -18,7 +18,7 @@ We use [MADR](https://adr.github.io/madr/) (Markdown Architectural Decision Reco
 - **0001–0005** were written in the private planning notes and copied here, as ADR-0005 planned. Event-specific details, like prizes, judging and the event schedule, were removed. Links to other planning files are plain text, marked "notes repo". They use the old project name, Rei.
 - **0006 and later** record decisions made while building this repo. Each one links the ticket and the code.
 
-The project was renamed from Rei to **TripleKeel** on 2026-11-14, and the app moved from `agent.rei.dev` to `triplekeel.rei.dev`.
+The project was renamed from Rei to **Triplekeel** on 2026-11-14, and the app moved from `agent.rei.dev` to `triplekeel.rei.dev`.
 
 ## Index
 

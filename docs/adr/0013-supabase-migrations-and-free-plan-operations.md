@@ -9,7 +9,7 @@ decision-makers: Andrei
 
 ## Context and problem statement
 
-TripleKeel uses Supabase for production data. The project is on the Free plan, which can pause after a week of low activity and does not provide daily backups. We need a repeatable way to test and deploy database changes, and a low-cost way to reduce the chance of an inactivity pause.
+Triplekeel uses Supabase for production data. The project is on the Free plan, which can pause after a week of low activity and does not provide daily backups. We need a repeatable way to test and deploy database changes, and a low-cost way to reduce the chance of an inactivity pause.
 
 ## Decision drivers
 

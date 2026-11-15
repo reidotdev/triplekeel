@@ -1,6 +1,6 @@
 # Chrome extension
 
-A Manifest V3 extension. It connects to a TripleKeel account, shows who is connected and their track, and scores past chats with **Score this chat**.
+A Manifest V3 extension. It connects to a Triplekeel account, shows who is connected and their track, and scores past chats with **Score this chat**.
 
 ## Build
 
