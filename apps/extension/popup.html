@@ -18,9 +18,66 @@
       <button id="open-skills" class="link" type="button" hidden>
         Open your skills
       </button>
-      <button id="devices" class="link" type="button" hidden>
-        Manage devices
-      </button>
+
+      <section id="capture" aria-labelledby="capture-heading" hidden>
+        <h2 id="capture-heading">Live capture</h2>
+        <label class="toggle">
+          <input id="pause-all" type="checkbox" />
+          Pause all
+        </label>
+        <fieldset>
+          <legend>Capture prompts on</legend>
+          <label class="toggle">
+            <input id="site-claude" type="checkbox" />
+            claude.ai
+          </label>
+          <label class="toggle">
+            <input id="site-chatgpt" type="checkbox" />
+            chatgpt.com
+          </label>
+        </fieldset>
+        <p id="capture-status" class="muted" aria-live="polite"></p>
+      </section>
+
+      <section id="sent" aria-labelledby="sent-heading" hidden>
+        <h2 id="sent-heading">What was sent</h2>
+        <p class="promise">
+          Your prompt text never leaves this browser. Only the reports below
+          each prompt are sent.
+        </p>
+        <p id="history-empty" class="muted" tabindex="-1">
+          Nothing scored yet. Prompts you send on claude.ai and chatgpt.com
+          show up here, newest first, with the report made from each one.
+          Personal and off-track prompts aren't scored or kept.
+        </p>
+        <ol id="history" aria-label="Last 20 scored prompts" hidden></ol>
+        <button id="clear-history" class="link" type="button" hidden>
+          Clear history
+        </button>
+      </section>
+
+      <section id="account" aria-label="Account" hidden>
+        <button id="devices" class="link" type="button">Manage devices</button>
+        <button id="disconnect" class="secondary" type="button">
+          Disconnect
+        </button>
+        <div id="disconnect-confirm" class="confirm" hidden>
+          <p>
+            Disconnect this browser? It forgets its device token and deletes
+            the history and any reports not sent yet. To revoke the device on
+            the server too, use Manage devices.
+          </p>
+          <div class="confirm-actions">
+            <button id="disconnect-yes" class="danger" type="button">
+              Yes, disconnect
+            </button>
+            <button id="disconnect-no" class="secondary" type="button">
+              Cancel
+            </button>
+          </div>
+        </div>
+      </section>
+
       <footer>
         <button id="privacy" class="link" type="button" hidden>Privacy</button>
       </footer>

@@ -7,6 +7,8 @@ export type PopupView = {
   note: string | null;
   showConnect: boolean;
   showDevices: boolean;
+  /** Live capture toggles, what was sent, and Disconnect. */
+  showControls: boolean;
 };
 
 /** Turns the session state into the popup's text. */
@@ -18,6 +20,7 @@ export function popupView(state: SessionState, hasServer: boolean): PopupView {
       note: "Build it again with TRIPLEKEEL_API_BASE set.",
       showConnect: false,
       showDevices: false,
+      showControls: false,
     };
   }
   if (!state.connected) {
@@ -27,6 +30,7 @@ export function popupView(state: SessionState, hasServer: boolean): PopupView {
       note: "Connect to link this browser to your account.",
       showConnect: true,
       showDevices: false,
+      showControls: false,
     };
   }
   const email = state.me?.email;
@@ -41,6 +45,7 @@ export function popupView(state: SessionState, hasServer: boolean): PopupView {
     note: state.stale ? "Can't reach TripleKeel. Showing saved info." : null,
     showConnect: false,
     showDevices: true,
+    showControls: true,
   };
 }
 
