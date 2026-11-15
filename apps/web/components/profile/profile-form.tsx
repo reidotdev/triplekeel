@@ -1,7 +1,7 @@
 "use client";
 
 import { useActionState, useState } from "react";
-import { Button, ComboBox, RadioGroup } from "@/components/ui";
+import { Button, ComboBox, Link, RadioGroup } from "@/components/ui";
 import {
   JOB_TITLE_MAX_LENGTH,
   LEVELS,
@@ -135,7 +135,8 @@ export function ProfileForm({
       />
 
       <p className="text-sm text-muted">
-        Your prompt text never leaves your device. Only scores do.
+        Your prompt text never leaves your device. Only scores do.{" "}
+        <Link href="/privacy">Privacy</Link>
       </p>
 
       <div className="flex flex-wrap items-center gap-3">
