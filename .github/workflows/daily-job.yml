@@ -1,0 +1,38 @@
+# Runs the daily Exa job once, on demand, for the demo. It runs the same
+# runDailyJob code as the jobs Worker's cron, in Node, with the production
+# secrets. The production environment needs the owner's approval first.
+name: Daily job (manual run)
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: daily-job
+  cancel-in-progress: false
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    environment: production
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.26.2
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Run the daily job
+        env:
+          EXA_API_KEY: ${{ secrets.EXA_API_KEY }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          SUPABASE_URL: ${{ vars.NEXT_PUBLIC_SUPABASE_URL }}
+          KILL_SWITCH: ${{ vars.KILL_SWITCH }}
+        run: node apps/jobs/src/cli.ts

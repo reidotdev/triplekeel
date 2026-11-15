@@ -48,3 +48,11 @@ A signed-in user can insert a device row for themselves (`user_id` and `token_ha
 The migration `20261115030000_compute_levels.sql` documents the exact formula and holds the constants.
 
 `public.read_level_gaps()` returns the signed-in user's areas for their profile's track: `rank, area_id, area_name, level, target_level, gap, score, confidence, n_prompts`. Gap is the target level minus the current level, never below 0. Rows are ranked by gap, then by the lowest score. Areas without enough evidence come last with a null level. It is `SECURITY INVOKER`, so row level security applies, and only `authenticated` can execute it. In the web app, call `readLevelGaps(supabase)` from `apps/web/src/lib/levels.ts` with the Clerk-session client.
+
+## Daily picks
+
+The jobs Worker (`apps/jobs`) fills `public.picks` once a day: up to 3 recent podcast episodes or web posts per skill area and kind. `kind` is `practice` (Test and Keep) or `mistake` (Stop). Each pick has a title, URL, publisher, `published_at` inside the last 90 days, `source` (`podcast` or `web`), an optional `podcast_timestamp_seconds`, a one-line `why_line`, and the `run_date` that stored it.
+
+`public.replace_area_picks(date, text, text, text, jsonb, text)` is the only write path. It replaces one area and kind's set in one transaction, so readers always see a complete set from one run. Bad input raises `P0001` with `invalid_picks` or `unknown_area` and changes nothing. With an empty set it records a row in `public.pick_flags` instead (`no_candidates`, `no_good_picks`, `model_error`, `search_error` or `cap_reached`), keeps earlier picks that are still under 90 days old, and drops older ones. A later successful run on the same day clears the flag.
+
+Grants: `authenticated` can select `picks` and `pick_flags`, because picks are the same for everyone and hold no user data. `anon` has nothing. `service_role` has no table privileges on them; it can execute `replace_area_picks` and select `tracks` and `skill_areas` to read the queries. The function is `SECURITY DEFINER` with an empty `search_path`.

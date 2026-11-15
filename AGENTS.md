@@ -5,7 +5,7 @@ Triplekeel is a personal coach for knowledge work that scores prompts locally in
 ## Repository layout
 
 - `apps/web`: dashboard and API placeholder.
-- `apps/jobs`: daily Exa job placeholder.
+- `apps/jobs`: daily Exa practice job (Cloudflare Worker with a Cron Trigger).
 - `apps/extension`: Chrome Manifest V3 extension.
 - `packages/schema`: shared report schema placeholder.
 - `packages/scorer`: shared local scorer placeholder.

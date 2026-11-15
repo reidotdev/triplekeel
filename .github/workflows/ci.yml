@@ -38,6 +38,10 @@ jobs:
       - run: pnpm lint
       - run: pnpm typecheck
       - run: pnpm test
+      - name: Build the jobs Worker
+        run: |
+          pnpm --filter @triplekeel/jobs build
+          pnpm --filter @triplekeel/jobs bundle
       - run: pnpm build:web:cloudflare
         env:
           APP_URL: http://localhost:3000
@@ -139,3 +143,14 @@ jobs:
           trap 'rm -f /tmp/triplekeel-worker-secrets.json' EXIT
           node -e 'const fs = require("node:fs"); const names = ["CLERK_SECRET_KEY", "CLERK_WEBHOOK_SECRET", "SUPABASE_SERVICE_ROLE_KEY", "EXA_API_KEY", "ANTHROPIC_API_KEY"]; const missing = names.filter((name) => !process.env[name]); if (missing.length) { console.error(`Missing GitHub secrets: ${missing.join(", ")}`); process.exit(1); } const values = Object.fromEntries(names.map((name) => [name, process.env[name]])); fs.writeFileSync("/tmp/triplekeel-worker-secrets.json", JSON.stringify(values), { mode: 0o600 });'
           pnpm --filter @triplekeel/web exec opennextjs-cloudflare deploy --keep-vars --secrets-file /tmp/triplekeel-worker-secrets.json --var "APP_URL:$APP_URL" --var "NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY:$NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY" --var "NEXT_PUBLIC_SUPABASE_URL:$NEXT_PUBLIC_SUPABASE_URL" --var "NEXT_PUBLIC_SUPABASE_ANON_KEY:$NEXT_PUBLIC_SUPABASE_ANON_KEY" --var "NEXT_PUBLIC_EXTENSION_ID:$NEXT_PUBLIC_EXTENSION_ID"
+      - name: Deploy the jobs Worker and upload its secrets
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          EXA_API_KEY: ${{ secrets.EXA_API_KEY }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          trap 'rm -f /tmp/triplekeel-jobs-secrets.json' EXIT
+          node -e 'const fs = require("node:fs"); const names = ["SUPABASE_SERVICE_ROLE_KEY", "EXA_API_KEY", "ANTHROPIC_API_KEY"]; const missing = names.filter((name) => !process.env[name]); if (missing.length) { console.error(`Missing GitHub secrets: ${missing.join(", ")}`); process.exit(1); } const values = Object.fromEntries(names.map((name) => [name, process.env[name]])); fs.writeFileSync("/tmp/triplekeel-jobs-secrets.json", JSON.stringify(values), { mode: 0o600 });'
+          pnpm --filter @triplekeel/jobs exec wrangler deploy --keep-vars --secrets-file /tmp/triplekeel-jobs-secrets.json --var "SUPABASE_URL:$NEXT_PUBLIC_SUPABASE_URL"
