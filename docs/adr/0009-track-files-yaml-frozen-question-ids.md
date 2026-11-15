@@ -91,3 +91,4 @@ tracks/<track-id>/
 
 - Ticket: REI-258. Code: `packages/schema/src/questions.ts`, `track.ts`, `track-files.ts`.
 - Draft areas and the question mapping: notes repo, `job-titles-and-skills.md`.
+- REI-311 added the seed step: `public.sync_track_catalog` and `scripts/sync-catalog.mts`. See `supabase/README.md`.

@@ -3,7 +3,7 @@
 import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
 import { join } from "node:path";
 import { parse } from "yaml";
-import { checkTrack, type TrackCheckResult } from "./track.ts";
+import { checkTrack, type Track, type TrackCheckResult } from "./track.ts";
 
 export const TRACK_FILES = {
   track: "track.yaml",
@@ -59,4 +59,17 @@ export function loadTrackFolder(
 
   if (errors.length > 0) return { ok: false, errors };
   return checkTrack({ folder, ...parsed });
+}
+
+/** Reads every track folder, and throws with all errors if one is invalid. */
+export function loadAllTracks(tracksDir: string): Track[] {
+  const tracks: Track[] = [];
+  const errors: string[] = [];
+  for (const folder of listTrackFolders(tracksDir)) {
+    const result = loadTrackFolder(tracksDir, folder);
+    if (result.ok) tracks.push(result.track);
+    else errors.push(...result.errors.map((error) => `${folder}/${error}`));
+  }
+  if (errors.length > 0) throw new Error(errors.join("\n"));
+  return tracks;
 }
