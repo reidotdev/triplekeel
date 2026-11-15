@@ -1,7 +1,18 @@
 {
   "manifest_version": 3,
   "name": "TripleKeel",
-  "version": "0.0.1",
+  "version": "0.1.0",
+  "description": "A personal coach for knowledge work. Prompts are scored in your browser and never leave it.",
+  "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA2k+sDvAmhm5J44DxBX/PQD6vU+dlKpOqfDUbkzvZYXL16C0DymYzJ6BOj+edkN2yZz3ycUl1pg9irwQmzD7xofr4qBhh+/5cpHGkhty7ZQf66zGTsgoBXoDAwPe66OvCsV0Iek/UZOGTgrQ8xWNepEox+4LnJj0oTQ+eFi8Z/5XW2teuxc+z8emyBi2KkArbh2VUO52f+iDMakmhxQOd/Y7CUYEQsArsRoXpcCsXG0TDEaVxLiUS4bZDU7vVMrhInCRBPfqSV9Mzf50nSWxs97GX4G13NMxTULEmv5hKsWkV9X6w6sbXlZZI/BpPptRZBl49si0KhYqb3RcZmy9+NwIDAQAB",
   "action": { "default_popup": "popup.html" },
-  "host_permissions": ["https://claude.ai/*", "https://chatgpt.com/*"]
+  "background": { "service_worker": "background.js" },
+  "permissions": ["storage"],
+  "host_permissions": ["https://claude.ai/*", "https://chatgpt.com/*"],
+  "content_scripts": [
+    {
+      "matches": ["https://claude.ai/*", "https://chatgpt.com/*"],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ]
 }

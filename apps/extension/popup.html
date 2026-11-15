@@ -4,9 +4,19 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>TripleKeel</title>
+    <link rel="stylesheet" href="popup.css" />
   </head>
   <body>
-    <h1>TripleKeel</h1>
-    <script src="api-base.js"></script>
+    <main>
+      <h1>TripleKeel</h1>
+      <p id="status" aria-live="polite">Loading…</p>
+      <p id="track" hidden></p>
+      <p id="note" class="muted" hidden></p>
+      <button id="connect" type="button" hidden>Connect</button>
+      <button id="devices" class="link" type="button" hidden>
+        Manage devices
+      </button>
+    </main>
+    <script src="popup.js"></script>
   </body>
 </html>

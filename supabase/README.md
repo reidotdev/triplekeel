@@ -20,3 +20,9 @@ Only the `anon` database role has `EXECUTE` on the function. The role has no dir
 The `authenticated` role can read a user's own profile, devices, signals, and levels using the Clerk JWT `sub`. It cannot read device token hashes or execute the device write function. Anonymous and authenticated users can read the seeded track catalog.
 
 `signals` stores only the report fields: track, app, source, UTC hour, length bucket, answers, and optional import key. It has no prompt text or arbitrary text field. The RPC validates exact report and answer keys before insertion. The SQL seed mirrors the placeholder PM track files under `tracks/product-manager/`, including skill descriptions, Exa queries, and questions.
+
+## Device connect
+
+A signed-in user can insert a device row for themselves (`user_id` and `token_hash` only) and set `revoked_at` on their own devices. A revoked device can't be made active again. Users still can't read token hashes.
+
+`public.read_device_context(text)` takes a token hash and returns the owner's `email`, `track_id` and `track_name`. It backs `GET /api/me` and `GET /api/questions`. Like the write function, it is `SECURITY DEFINER` with an empty `search_path`, and only `anon` can execute it. It raises `P0001` with `device_not_found` or `device_revoked`.
