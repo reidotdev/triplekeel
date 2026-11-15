@@ -1,0 +1,17 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "triplekeel-jobs",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-11-14",
+  "account_id": "ca958ade8066cf630277f9637e5bc13c",
+  // No public URL: the Worker has no fetch handler and no route.
+  "workers_dev": false,
+  "preview_urls": false,
+  "triggers": {
+    // Daily at 04:17 UTC, off-peak.
+    "crons": ["17 4 * * *"]
+  },
+  "observability": {
+    "enabled": true
+  }
+}
