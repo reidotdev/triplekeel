@@ -1,6 +1,6 @@
 # Chrome extension
 
-A Manifest V3 extension. It connects to a Triplekeel account, shows who is connected and their track, scores each prompt you send on claude.ai and chatgpt.com (**live capture**), and scores past chats with **Score this chat**.
+A Manifest V3 extension. It connects to a Triplekeel account, shows who is connected and their track, scores each prompt you send on claude.ai and chatgpt.com (**live capture**), and scores past chats with **Score this chat**. The popup lets you pause capture and shows what was sent.
 
 ## Build
 
@@ -78,7 +78,7 @@ Live capture runs only when the device token, your track and its questions are s
 - The queue holds at most 200 reports. Past that, the oldest are dropped and counted in `liveSendState.dropped`.
 - A report sent but not confirmed, like when the network drops, is sent again, so it can count twice. A live prompt you later score with Score this chat also counts twice, because live reports have no import key.
 
-### Settings (for the popup's toggles, REI-272)
+### Settings
 
 `settings` in `chrome.storage.local`:
 
@@ -91,7 +91,7 @@ type Settings = {
 
 A missing or bad value means capture is on. Use `readSettings()` and `saveSettings()` from `src/settings.ts`. Open tabs pick up a change at once through `chrome.storage.onChanged`, and stop reading the prompt box while capture is off. Pausing doesn't drop reports already queued.
 
-### History (for the "what was sent" view, REI-272)
+### History
 
 `liveHistory` in `chrome.storage.local` holds the last 20 scored prompts, newest first. `readHistory()` in `src/live-store.ts` returns them with a status:
 
@@ -116,7 +116,27 @@ Dropped prompts (personal or off-track) aren't kept. Disconnecting, a 401 or a n
 4. Your levels on `/dashboard` should change.
 5. To see the requests, open the service worker's DevTools from `chrome://extensions` (**Inspect views: service worker**) and look at the Network tab. Each `/api/signals` body has `reports` only, with `source: "live"`, and no prompt text.
 6. Send a personal prompt, like one about "my doctor". It isn't scored, sent or kept.
-7. In the service worker's console, run `chrome.storage.local.set({ settings: { paused: true, sites: { claude: true, chatgpt: true } } })`. New prompts aren't captured. Set `paused: false` to turn it back on.
+7. In the popup, check **Pause all**. New prompts aren't captured. Uncheck it to turn capture back on.
+
+## Privacy controls in the popup
+
+When you're connected, the popup shows these, in order, under the account and **Score this chat**. Code: `src/popup-privacy.ts`.
+
+- **Live capture.** **Pause all**, and a checkbox each for claude.ai and chatgpt.com. They save `settings` with `saveSettings()`, and open tabs stop reading the prompt box at once. A line says in words what is on.
+- **What was sent.** The last 20 prompts live capture scored, newest first. Each row shows the status in words (Sent, Waiting to send, Not sent), the site, the time and the start of the prompt. Open a row to see the full prompt and, under it, the report JSON exactly as stored. Score this chat keeps no text, so its prompts aren't listed.
+- **Clear history** deletes `liveHistory` only. Queued reports are still sent.
+- **Manage devices** and **Disconnect**. Disconnect asks first, in the popup. **Yes, disconnect** removes the device token, the cached account and questions, `liveQueue`, `liveHistory` and `liveSendState`. Your capture settings stay. It doesn't revoke the device on the server. Use Manage devices for that.
+
+Prompt text comes from the pages you visit, so the popup writes it, and the JSON, with `textContent`. It never parses them as HTML.
+
+### Manual check
+
+1. Build with `TRIPLEKEEL_API_BASE` set, load `dist/` with **Load unpacked**, and connect.
+2. On claude.ai, send a product prompt with HTML in it, like `Write a PRD for the <b>checkout</b> page <img src=x onerror=alert(1)>`. Open the popup. **What was sent** lists it as "Waiting to send". The tags show as text and no alert opens.
+3. Open the row. The prompt is on top and the report JSON is under it. No words from the prompt are in the JSON.
+4. Once the batch goes (10 prompts, or open the popup after 3 minutes), the row says "Sent". The JSON matches the report in the `/api/signals` body in the service worker's DevTools.
+5. Check **Pause all** and send another prompt. It isn't listed. Uncheck it. Then turn off claude.ai only and check that claude.ai prompts aren't listed but chatgpt.com ones are.
+6. Click **Disconnect**, then **Cancel**. You're still connected. Click **Disconnect** and **Yes, disconnect**. The popup says "Not connected." and the history is gone.
 
 ## Privacy notice
 

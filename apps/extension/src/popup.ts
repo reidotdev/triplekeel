@@ -9,6 +9,7 @@ import {
   type ScoreChatEvent,
   type ScoreChatRequest,
 } from "./page-protocol.js";
+import { mountPrivacy } from "./popup-privacy.js";
 import {
   doneText,
   type PageInfo,
@@ -60,6 +61,9 @@ function render() {
   setText("note", view.note);
   element("connect").hidden = !view.showConnect;
   element("devices").hidden = !view.showDevices;
+  for (const id of ["capture", "sent", "account"]) {
+    element(id).hidden = !view.showControls;
+  }
 
   const score = scoreView(state, hasServer, page);
   const active = run.phase === "busy" || run.phase === "done";
@@ -222,6 +226,24 @@ element("open-skills").addEventListener("click", () =>
   openAppPage("/dashboard"),
 );
 
+// Pause, the site toggles, what was sent, and Disconnect.
+mountPrivacy(document, {
+  store: deps.store,
+  watchStore: (listener) => {
+    const onChanged = (changes: object, area: string) => {
+      if (area === "local") listener(Object.keys(changes));
+    };
+    chrome.storage.onChanged.addListener(onChanged);
+    return () => chrome.storage.onChanged.removeListener(onChanged);
+  },
+  onDisconnected: () => {
+    state = { connected: false };
+    run = { phase: "idle" };
+    render();
+    element("connect").focus();
+  },
+});
+
 // Show the saved state first, then check it with the server. A revoked
 // device gets a 401 here and the popup goes back to "Not connected".
 async function main() {
@@ -235,7 +257,9 @@ async function main() {
     hasServer && state.connected ? refresh(deps) : state,
     readPage(),
   ]);
-  state = fresh;
+  // Disconnect may have been clicked while the server check ran.
+  const stillConnected = (await readState(deps.store)).connected;
+  state = stillConnected ? fresh : { connected: false };
   ({ tabId, page } = active);
   render();
 }
