@@ -76,7 +76,9 @@ enum Derived {
         guard let user = answers["target_user"], let problem = answers["problem"] else {
             return [Verdict(habit: "no_why", answer: "missing", quote: "")]
         }
-        let answer = (user == "no" && problem == "no") ? "yes" : "no"
+        // A bare "fix it" follow-up is vague_fix, not a feature request.
+        let followUp = answers["vague_fix"] == "yes"
+        let answer = (user == "no" && problem == "no" && !followUp) ? "yes" : "no"
         return [Verdict(habit: "no_why", answer: answer, quote: "")]
     }
 }

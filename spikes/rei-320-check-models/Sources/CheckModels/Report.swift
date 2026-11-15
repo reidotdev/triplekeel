@@ -37,7 +37,7 @@ struct Report {
         out.append("- **Strict:** the answer matches the label exactly. Labels of n/a are skipped, as in REI-247.")
         out.append("- **Found vs not found:** yes and partly count as the same.")
         out.append("- **Quote in prompt:** for yes and partly answers, the quote appears word for word in the prompt.")
-        out.append("- **Derived:** `no_why` isn't asked. It's yes when `target_user` and `problem` are both no. n/a is offered only for `specific_feedback` and `vague_fix`.")
+        out.append("- **Derived:** `no_why` isn't asked. It's yes when `target_user` and `problem` are both no and the prompt isn't a bare \"fix it\" follow-up. n/a is offered only for `specific_feedback` and `vague_fix`.")
         out.append("")
 
         // Per-habit table.
