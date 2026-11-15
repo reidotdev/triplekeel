@@ -10,6 +10,17 @@ Run `pnpm --filter @triplekeel/web dev` for Next.js development or `pnpm --filte
 
 Create a Clerk webhook for `POST ${APP_URL}/api/webhooks/clerk` and enable `user.created`, `user.updated`, and `user.deleted`. Save its signing secret as `CLERK_WEBHOOK_SECRET` in GitHub Actions and in the local environment when testing. The endpoint returns a 400 response when Svix verification fails.
 
+## Signals API
+
+`POST /api/signals` stores score reports from the extension. Send `Authorization: Bearer tkd_...` and a JSON body `{ "reports": [...] }` with 1 to 50 `triplekeel.signal.v1` reports. It returns `{ "received": n, "inserted": m }`. Duplicate import keys are not inserted again.
+
+- `400`: the body or any report is invalid. The response never repeats the input.
+- `401`: the device token is missing, malformed, unknown or revoked.
+- `429`: the device sent more than 50 reports in a minute.
+- `503`: the kill switch is on.
+
+The route uses the Supabase anon key and the `write_device_signals` function. It never uses the service-role key and never logs request content.
+
 ## Cloudflare controls
 
 The `routes` entry in `wrangler.jsonc` attaches `triplekeel.rei.dev` as a Workers Custom Domain during deployment. Do not add a DNS record by hand.

@@ -1,6 +1,6 @@
 // Inputs that must never be accepted as a report. This is the privacy
 // boundary, so the same list runs against parseReport() and /api/signals.
-import { QUESTION_IDS } from "./questions.js";
+import { QUESTION_IDS } from "./questions.ts";
 
 export type RejectionCase = { name: string; input: unknown };
 

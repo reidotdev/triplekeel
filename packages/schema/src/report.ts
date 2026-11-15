@@ -8,7 +8,7 @@ import {
   QUESTION_IDS,
   type QuestionId,
   QuestionIdSchema,
-} from "./questions.js";
+} from "./questions.ts";
 
 export const REPORT_SCHEMA_ID = "triplekeel.signal.v1";
 
