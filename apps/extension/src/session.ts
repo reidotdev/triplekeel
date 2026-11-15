@@ -2,7 +2,10 @@ import {
   type ApiDeps,
   apiGet,
   type Me,
+  postSignals,
   type QuestionSet,
+  RateLimitedError,
+  type SignalsResult,
   type Track,
   type TrackQuestion,
   UnauthorizedError,
@@ -146,6 +149,35 @@ export async function refresh(deps: SessionDeps): Promise<SessionState> {
     }
     const cached = await readState(store);
     return cached.connected ? { ...cached, stale: true } : cached;
+  }
+}
+
+export type SendResult =
+  | ({ ok: true } & SignalsResult)
+  | { ok: false; error: "not_connected" | "rate_limited" | "failed" };
+
+/**
+ * Sends score reports with the device token. A 401 forgets the token, the
+ * same as refresh(). Nothing from the reports is logged.
+ */
+export async function sendReports(
+  deps: SessionDeps,
+  reports: readonly unknown[],
+  onWait?: (ms: number) => void,
+): Promise<SendResult> {
+  const token = (await deps.store.get([TOKEN_KEY]))[TOKEN_KEY];
+  if (!isDeviceToken(token)) return { ok: false, error: "not_connected" };
+  try {
+    return { ok: true, ...(await postSignals(deps, token, reports, onWait)) };
+  } catch (error) {
+    if (error instanceof UnauthorizedError) {
+      await disconnect(deps.store);
+      return { ok: false, error: "not_connected" };
+    }
+    if (error instanceof RateLimitedError) {
+      return { ok: false, error: "rate_limited" };
+    }
+    return { ok: false, error: "failed" };
   }
 }
 

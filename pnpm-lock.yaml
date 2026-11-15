@@ -19,6 +19,13 @@ importers:
         version: 4.1.12(@types/node@22.20.5)(jsdom@26.1.0)(vite@8.3.8(@types/node@22.20.5)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.46.0)(yaml@2.9.1))
 
   apps/extension:
+    dependencies:
+      '@triplekeel/schema':
+        specifier: workspace:*
+        version: link:../../packages/schema
+      '@triplekeel/scorer':
+        specifier: workspace:*
+        version: link:../../packages/scorer
     devDependencies:
       '@types/chrome':
         specifier: ^0.3.7

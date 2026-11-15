@@ -4,7 +4,12 @@ export type SiteAdapter = {
   siteId: SiteId;
   matches(candidate: URL): boolean;
   isConversationPage(): boolean;
+  /** The conversation ID from the page URL, or null if this isn't a chat. */
+  conversationId(): string | null;
+  /** The last `limit` user messages on the page, oldest first. */
   getUserMessages(limit?: number): string[];
+  /** Every user message rendered on the page, oldest first. */
+  getAllUserMessages(): string[];
   onPromptSubmit(callback: (text: string) => void): () => void;
 };
 
@@ -16,6 +21,13 @@ type QueryRoot = {
 const SITE_HOSTS: Record<SiteId, string> = {
   claude: "claude.ai",
   chatgpt: "chatgpt.com",
+};
+
+// Chat and share paths. ChatGPT also puts chats under a GPT or a project:
+// /g/<gpt-or-project>/c/<id>.
+const CONVERSATION_PATHS: Record<SiteId, RegExp> = {
+  claude: /^\/(?:chat|share)\/([^/?#]+)/,
+  chatgpt: /^\/(?:g\/[^/]+\/)?(?:c|share)\/([^/?#]+)/,
 };
 
 export function textFromElement(element: Element | null | undefined): string {
@@ -49,6 +61,21 @@ export function createAdapterBase(
   messageTextSelector: string | null,
 ): Omit<SiteAdapter, "onPromptSubmit"> {
   const expectedHost = SITE_HOSTS[siteId];
+  const conversationId = () => {
+    // Chats change URL without a page load, so read the live address.
+    const liveUrl = new URL(doc.location?.href || url.href);
+    const currentUrl = liveUrl.hostname === expectedHost ? liveUrl : url;
+    return CONVERSATION_PATHS[siteId].exec(currentUrl.pathname)?.[1] ?? null;
+  };
+  const getAllUserMessages = () =>
+    [...doc.querySelectorAll(messageSelector)]
+      .map((message) => {
+        const textNode = messageTextSelector
+          ? message.querySelector(messageTextSelector)
+          : message;
+        return textFromElement(textNode || message);
+      })
+      .filter(Boolean);
   return {
     siteId,
     matches(candidate) {
@@ -56,24 +83,11 @@ export function createAdapterBase(
         candidate.protocol === "https:" && candidate.hostname === expectedHost
       );
     },
-    isConversationPage() {
-      const liveUrl = new URL(doc.location?.href || url.href);
-      const currentUrl = liveUrl.hostname === expectedHost ? liveUrl : url;
-      return siteId === "claude"
-        ? /^\/(?:chat|share)\//.test(currentUrl.pathname)
-        : /^\/(?:c|share)\//.test(currentUrl.pathname);
-    },
-    getUserMessages(limit = 20) {
-      const messages = [...doc.querySelectorAll(messageSelector)]
-        .map((message) => {
-          const textNode = messageTextSelector
-            ? message.querySelector(messageTextSelector)
-            : message;
-          return textFromElement(textNode || message);
-        })
-        .filter(Boolean);
-      return limitedOldestFirst(messages, limit);
-    },
+    conversationId,
+    isConversationPage: () => conversationId() !== null,
+    getAllUserMessages,
+    getUserMessages: (limit = 20) =>
+      limitedOldestFirst(getAllUserMessages(), limit),
   };
 }
 
