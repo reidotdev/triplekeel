@@ -12,7 +12,7 @@ export const API_BASE = clean(
   typeof __TRIPLEKEEL_API_BASE__ === "string" ? __TRIPLEKEEL_API_BASE__ : "",
 );
 
-/** Web app URL, from `APP_URL` at build time. Defaults to the API base. */
+/** Web app URL, from `EXTENSION_APP_URL` at build time. Defaults to the API base. */
 export const APP_URL =
   clean(
     typeof __TRIPLEKEEL_APP_URL__ === "string" ? __TRIPLEKEEL_APP_URL__ : "",

@@ -1,5 +1,6 @@
 // @vitest-environment jsdom
 import { readFileSync } from "node:fs";
+import { join } from "node:path";
 import { beforeEach, describe, expect, it } from "vitest";
 import { createChatGPTAdapter } from "./chatgpt.js";
 import { createClaudeAdapter } from "./claude.js";
@@ -8,7 +9,7 @@ import { isSafePromptEditor } from "./shared.js";
 
 function loadFixture(name: string) {
   document.body.innerHTML = readFileSync(
-    new URL(`./fixtures/${name}`, import.meta.url),
+    join(import.meta.dirname, "fixtures", name),
     "utf8",
   );
 }

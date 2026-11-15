@@ -34,10 +34,9 @@ function openAppPage(path: string) {
 }
 
 element("connect").addEventListener("click", () => openAppPage("/connect"));
-element("devices").addEventListener("click", (event) => {
-  event.preventDefault();
-  openAppPage("/settings/devices");
-});
+element("devices").addEventListener("click", () =>
+  openAppPage("/settings/devices"),
+);
 
 // Show the saved state first, then check it with the server. A revoked
 // device gets a 401 here and the popup goes back to "Not connected".

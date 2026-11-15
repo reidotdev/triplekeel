@@ -10,6 +10,14 @@ Run `pnpm --filter @triplekeel/web dev` for Next.js development or `pnpm --filte
 
 Create a Clerk webhook for `POST ${APP_URL}/api/webhooks/clerk` and enable `user.created`, `user.updated`, and `user.deleted`. Save its signing secret as `CLERK_WEBHOOK_SECRET` in GitHub Actions and in the local environment when testing. The endpoint returns a 400 response when Svix verification fails.
 
+## Extension connect
+
+Set `NEXT_PUBLIC_EXTENSION_ID` to the extension's pinned ID, `pdnjcggmbannclgepccjfphlfchijfln`. Add it as a GitHub Actions variable in the `production` environment. The deploy fails without it.
+
+`/connect` creates a device token for the signed-in user and sends it to the extension. Only the token's SHA-256 hash is stored in `devices`. `/settings/devices` lists devices and revokes them. Both use the Supabase client with the Clerk session token, so row level security applies.
+
+The extension calls `GET /api/me` and `GET /api/questions` with `Authorization: Bearer tkd_...`. Both return 401 for an unknown or revoked device.
+
 ## Cloudflare controls
 
 The `routes` entry in `wrangler.jsonc` attaches `triplekeel.rei.dev` as a Workers Custom Domain during deployment. Do not add a DNS record by hand.

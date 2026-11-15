@@ -61,8 +61,14 @@ button {
   cursor: pointer;
 }
 
-a {
+button.link {
+  min-height: 0;
+  justify-self: start;
+  padding: 0;
+  background: none;
   color: inherit;
+  font-weight: 400;
+  text-decoration: underline;
 }
 
 :focus-visible {
