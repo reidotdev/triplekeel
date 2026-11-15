@@ -71,6 +71,10 @@ export default function HomePage() {
           your device.
         </p>
       </section>
+
+      <footer className="site-footer">
+        <Link href="/privacy">Privacy</Link>
+      </footer>
     </main>
   );
 }

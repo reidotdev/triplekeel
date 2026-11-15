@@ -118,6 +118,10 @@ Dropped prompts (personal or off-track) aren't kept. Disconnecting, a 401 or a n
 6. Send a personal prompt, like one about "my doctor". It isn't scored, sent or kept.
 7. In the service worker's console, run `chrome.storage.local.set({ settings: { paused: true, sites: { claude: true, chatgpt: true } } })`. New prompts aren't captured. Set `paused: false` to turn it back on.
 
+## Privacy notice
+
+The popup's **Privacy** link opens `/privacy` on the web app (`APP_URL`). The page is public, so it works signed out. For the Chrome Web Store listing, the privacy policy URL is https://triplekeel.rei.dev/privacy.
+
 ## Permissions
 
 Host permissions are `claude.ai` and `chatgpt.com` only. The build fails if the manifest lists any other host. The content script uses the site adapters from the REI-246 spike. Live capture needs no new permission: it uses `storage`, which the extension already has, and no `alarms`.
