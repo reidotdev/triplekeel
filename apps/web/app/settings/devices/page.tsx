@@ -70,6 +70,8 @@ export default async function DevicesPage() {
       <p className="text-sm">
         <Link href="/connect">Connect this browser</Link>
         {" · "}
+        <Link href="/settings/account">Account</Link>
+        {" · "}
         <Link href="/dashboard">Back to dashboard</Link>
       </p>
     </main>

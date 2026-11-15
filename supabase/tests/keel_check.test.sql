@@ -2,6 +2,11 @@ begin;
 
 select plan(47);
 
+-- Every user table references public.users (REI-286), so the test users
+-- need a users row first.
+insert into public.users (user_id, image_url, clerk_created_at, clerk_updated_at)
+select id, '', now(), now() from unnest(array['alex', 'blair', 'casey', 'dana', 'erin', 'finn', 'gale', 'capped', 'waitlisted']) as id;
+
 -- Table, RLS and grants.
 select has_table('public', 'nudges', 'nudges exists');
 select ok((select relrowsecurity from pg_class where oid = 'public.nudges'::regclass), 'nudges has RLS on');

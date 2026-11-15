@@ -2,6 +2,11 @@ begin;
 
 select plan(20);
 
+-- Every user table references public.users (REI-286), so the test users
+-- need a users row first.
+insert into public.users (user_id, image_url, clerk_created_at, clerk_updated_at)
+select id, '', now(), now() from unnest(array['clerk_user_1', 'clerk_user_2']) as id;
+
 select has_column('public', 'profiles', 'waitlisted', 'profiles has a waitlisted column');
 select ok((select relrowsecurity from pg_class where oid = 'public.profiles'::regclass), 'profiles RLS enabled');
 select ok(

@@ -48,6 +48,25 @@ describe("privacy page", () => {
     }
   });
 
+  it("explains how to delete an account and what goes", () => {
+    expect(html).toContain('href="/settings/account"');
+    expect(text).toContain("Delete account");
+    expect(text).not.toContain("There is no delete button yet");
+    expect(text).toContain("your profile, score reports and levels");
+    expect(text).toContain("your connected devices");
+    expect(text).toContain("your sign-in account at Clerk");
+    expect(text).toContain("The extension disconnects");
+  });
+
+  it("describes live capture as shipped", () => {
+    expect(text).not.toContain("Live scoring is being built");
+    expect(text).toContain("each prompt you send on claude.ai or chatgpt.com");
+    expect(text).toContain(
+      "The last 20 scored prompts are kept only in your browser",
+    );
+    expect(text).toContain("anything that looks personal");
+  });
+
   it("lists the report fields and the 20-message cap", () => {
     expect(text).toContain("up to the last 20");
     expect(text).toContain("the hour it was scored");

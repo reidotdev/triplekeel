@@ -31,7 +31,7 @@ const valid = {
   unsupported_choice: "wait",
 };
 
-type DbError = { code: string } | null;
+type DbError = { code: string; message?: string } | null;
 
 function mockSupabase(options: { error?: DbError; row?: unknown } = {}) {
   const upsert = vi.fn().mockResolvedValue({ error: options.error ?? null });
@@ -260,6 +260,29 @@ describe("saveProfile", () => {
       message: "Could not save. Try again.",
     });
     expect(log).toHaveBeenCalledWith("Profile save failed", "42501");
+  });
+
+  it("asks to retry when the users row doesn't exist yet", async () => {
+    const log = vi.spyOn(console, "error").mockImplementation(() => {});
+    const supabase = mockSupabase({
+      error: {
+        code: "23503",
+        message:
+          'insert or update on table "profiles" violates foreign key constraint "profiles_user_id_fkey"',
+      },
+    });
+    const state = await saveProfile(
+      supabase.client,
+      "user_1",
+      form(valid),
+      catalog,
+    );
+
+    expect(state).toEqual({
+      status: "error",
+      message: "Your account is still being set up. Try again in a minute.",
+    });
+    expect(log).toHaveBeenCalledWith("Profile save failed", "23503");
   });
 });
 

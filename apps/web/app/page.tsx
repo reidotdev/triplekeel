@@ -1,5 +1,7 @@
 import { ArrowUpRight, LockKeyhole } from "lucide-react";
 import Link from "next/link";
+import { Suspense } from "react";
+import { AccountDeletedNotice } from "@/components/account/account-deleted-notice";
 
 export default function HomePage() {
   return (
@@ -21,6 +23,10 @@ export default function HomePage() {
           </Link>
         </div>
       </header>
+
+      <Suspense fallback={null}>
+        <AccountDeletedNotice />
+      </Suspense>
 
       <section aria-labelledby="hero-title" className="hero-section">
         <h1 id="hero-title">Get better at your job on autopilot.</h1>

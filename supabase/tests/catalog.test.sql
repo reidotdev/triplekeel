@@ -2,6 +2,11 @@ begin;
 
 select plan(24);
 
+-- Every user table references public.users (REI-286), so the test users
+-- need a users row first.
+insert into public.users (user_id, image_url, clerk_created_at, clerk_updated_at)
+select id, '', now(), now() from unnest(array['clerk_user_catalog']) as id;
+
 -- seed.sql loads the catalog from tracks/ through sync_track_catalog.
 select is((select count(*)::int from public.questions where track_id = 'product-manager'), 25, 'seed loads all 25 PM questions');
 select is((select count(*)::int from public.skill_areas where track_id = 'product-manager'), 11, 'seed loads all 11 PM areas');
