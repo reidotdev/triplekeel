@@ -1,11 +1,16 @@
 begin;
 
-select plan(16);
+select plan(20);
 
 -- seed.sql loads the catalog from tracks/ through sync_track_catalog.
 select is((select count(*)::int from public.questions where track_id = 'product-manager'), 25, 'seed loads all 25 PM questions');
 select is((select count(*)::int from public.skill_areas where track_id = 'product-manager'), 11, 'seed loads all 11 PM areas');
 select ok(exists (select 1 from public.skill_areas where id = 'ai_agents_daily'), 'seed loads the ai_agents_daily area');
+select is(
+  (select thresholds from public.skill_areas where id = 'problem_discovery'),
+  '{"junior": 0, "mid": 1, "senior": 2}'::jsonb,
+  'seed loads area thresholds from the track file'
+);
 
 insert into public.devices (id, user_id, token_hash)
 values ('00000000-0000-0000-0000-000000000011', 'clerk_user_catalog', repeat('d', 64));
@@ -41,7 +46,7 @@ select throws_ok(
 create temporary table catalog_input as
 select jsonb_build_object('tracks', jsonb_build_array(jsonb_build_object(
   'id', t.id, 'name', t.name, 'alt_titles', to_jsonb(t.alt_titles),
-  'areas', (select jsonb_agg(jsonb_build_object('id', a.id, 'name', a.name, 'junior_description', a.junior_description, 'mid_description', a.mid_description, 'senior_description', a.senior_description, 'exa_queries', a.exa_queries)) from public.skill_areas a where a.track_id = t.id),
+  'areas', (select jsonb_agg(jsonb_build_object('id', a.id, 'name', a.name, 'thresholds', a.thresholds, 'junior_description', a.junior_description, 'mid_description', a.mid_description, 'senior_description', a.senior_description, 'exa_queries', a.exa_queries)) from public.skill_areas a where a.track_id = t.id),
   'questions', (select jsonb_agg(jsonb_build_object('id', q.id, 'area_id', q.area_id, 'question_text', q.question_text, 'polarity', q.polarity, 'answers', to_jsonb(q.answers))) from public.questions q where q.track_id = t.id)
 ))) as catalog
 from public.tracks t where t.id = 'product-manager';
@@ -69,6 +74,25 @@ select public.sync_track_catalog(jsonb_set(
    where q->>'id' <> 'agent_workflow')
 ));
 select is((select question_text from public.questions where id = 'problem'), 'New wording?', 'sync updates changed question text');
+
+select public.sync_track_catalog(jsonb_set(
+  (select catalog from catalog_input), '{tracks,0,areas}',
+  (select jsonb_agg(case when a->>'id' = 'specs' then jsonb_set(a, '{thresholds}', '{"junior": 0, "mid": 1.5, "senior": 2.5}') else a end)
+   from jsonb_array_elements((select catalog from catalog_input)->'tracks'->0->'areas') as a)
+));
+select is(
+  (select thresholds from public.skill_areas where id = 'specs'),
+  '{"junior": 0, "mid": 1.5, "senior": 2.5}'::jsonb,
+  'sync updates changed thresholds'
+);
+select throws_ok(
+  $$select public.sync_track_catalog(jsonb_set((select catalog from catalog_input), '{tracks,0,areas,0}', ((select catalog from catalog_input)->'tracks'->0->'areas'->0) - 'thresholds'))$$,
+  'P0001', 'invalid_catalog', 'an area without thresholds is rejected'
+);
+select throws_ok(
+  $$select public.sync_track_catalog(jsonb_set((select catalog from catalog_input), '{tracks,0,areas,0,thresholds}', '{"junior": 0, "mid": 2, "senior": 1}'))$$,
+  '23514', null, 'thresholds that do not increase are rejected'
+);
 select ok(exists (select 1 from public.questions where id = 'agent_workflow'), 'sync never deletes a question missing from the files');
 
 insert into public.tracks (id, name) values ('other-track', 'Other');

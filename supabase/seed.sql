@@ -17,6 +17,11 @@ select public.sync_track_catalog($catalog${
         {
           "id": "problem_discovery",
           "name": "Problem discovery and user research",
+          "thresholds": {
+            "junior": 0,
+            "mid": 1,
+            "senior": 2
+          },
           "junior_description": "Runs user interviews and reads feedback and usage data, with a senior PM checking the questions.",
           "mid_description": "Plans their own research and turns it into clear problem statements.",
           "senior_description": "Sets the research agenda for a product area and spots problems before users name them.",
@@ -41,6 +46,11 @@ select public.sync_track_catalog($catalog${
         {
           "id": "specs",
           "name": "Writing specs and PRDs",
+          "thresholds": {
+            "junior": 0,
+            "mid": 1,
+            "senior": 2
+          },
           "junior_description": "Writes clear tickets with user stories and acceptance criteria.",
           "mid_description": "Drafts specs with AI, then stress-tests the draft against the user, problem, success metrics, scope and acceptance criteria.",
           "senior_description": "Reviews AI-drafted specs and keeps the decisions and reasons written down.",
@@ -65,6 +75,11 @@ select public.sync_track_catalog($catalog${
         {
           "id": "prioritization",
           "name": "Prioritization and roadmapping",
+          "thresholds": {
+            "junior": 0,
+            "mid": 1,
+            "senior": 2
+          },
           "junior_description": "Keeps a backlog in order.",
           "mid_description": "Prioritizes with a clear method and explains the trade-offs.",
           "senior_description": "Owns the roadmap for an area and says no to good ideas for better ones.",
@@ -89,6 +104,11 @@ select public.sync_track_catalog($catalog${
         {
           "id": "metrics",
           "name": "Metrics and experiments",
+          "thresholds": {
+            "junior": 0,
+            "mid": 1,
+            "senior": 2
+          },
           "junior_description": "Reads product metrics and reports how their features perform.",
           "mid_description": "Defines success metrics, designs A/B tests for their features and evaluates AI output.",
           "senior_description": "Sets the metric strategy for an area and judges trade-offs between metrics.",
@@ -113,6 +133,11 @@ select public.sync_track_catalog($catalog${
         {
           "id": "eng_design_collab",
           "name": "Delivery with engineering and design",
+          "thresholds": {
+            "junior": 0,
+            "mid": 1,
+            "senior": 2
+          },
           "junior_description": "Runs the backlog, triages bugs and checks release readiness.",
           "mid_description": "Brings design and engineering in while the problem is still open, then handles scope changes.",
           "senior_description": "Shapes how the teams work together and unblocks across teams.",
@@ -137,6 +162,11 @@ select public.sync_track_catalog($catalog${
         {
           "id": "stakeholder_comms",
           "name": "Stakeholder communication",
+          "thresholds": {
+            "junior": 0,
+            "mid": 1,
+            "senior": 2
+          },
           "junior_description": "Shares updates when asked.",
           "mid_description": "Writes clear updates for each audience and influences without authority.",
           "senior_description": "Aligns leaders on direction and handles conflict between teams.",
@@ -161,6 +191,11 @@ select public.sync_track_catalog($catalog${
         {
           "id": "ai_prototyping",
           "name": "Prototyping with AI tools",
+          "thresholds": {
+            "junior": 0,
+            "mid": 1,
+            "senior": 2
+          },
           "junior_description": "Builds clickable prototypes with AI tools so the team sees a working example.",
           "mid_description": "Builds working prototypes with the real prompt and realistic data, and tests them with users.",
           "senior_description": "Uses prototypes to make decisions faster and teaches the team how.",
@@ -185,6 +220,11 @@ select public.sync_track_catalog($catalog${
         {
           "id": "ai_product_sense",
           "name": "AI product sense",
+          "thresholds": {
+            "junior": 0,
+            "mid": 1,
+            "senior": 2
+          },
           "junior_description": "Knows what LLMs can and can’t do, and checks AI output instead of trusting it.",
           "mid_description": "Designs features with LLMs, including errors, evals and cost.",
           "senior_description": "Decides where AI belongs in the product, and treats trust as a product requirement.",
@@ -209,6 +249,11 @@ select public.sync_track_catalog($catalog${
         {
           "id": "go_to_market",
           "name": "Go-to-market and launch",
+          "thresholds": {
+            "junior": 0,
+            "mid": 1,
+            "senior": 2
+          },
           "junior_description": "Helps with launch checklists.",
           "mid_description": "Plans launches with marketing and sales.",
           "senior_description": "Shapes positioning and pricing, and learns from launches.",
@@ -233,6 +278,11 @@ select public.sync_track_catalog($catalog${
         {
           "id": "strategy",
           "name": "Strategy and vision",
+          "thresholds": {
+            "junior": 0,
+            "mid": 1,
+            "senior": 2
+          },
           "junior_description": "Understands the product strategy.",
           "mid_description": "Writes the strategy for their own product area, tied to company goals.",
           "senior_description": "Owns the strategy for a domain or several products, and ties it to commercial results.",
@@ -257,6 +307,11 @@ select public.sync_track_catalog($catalog${
         {
           "id": "ai_agents_daily",
           "name": "Working with AI agents day to day",
+          "thresholds": {
+            "junior": 0,
+            "mid": 1,
+            "senior": 2
+          },
           "junior_description": "Uses AI assistants for drafts, notes and research, and checks the output.",
           "mid_description": "Keeps context files and reusable prompts or skills, and automates routine work.",
           "senior_description": "Builds a shared AI workflow for the team.",
