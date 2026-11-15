@@ -2,8 +2,10 @@ import { UserButton } from "@clerk/nextjs";
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import { AutoRefresh } from "@/components/dashboard/auto-refresh";
+import { KeelCheckPanel } from "@/components/keel-check";
 import { SkillMatrix } from "@/components/skill-matrix";
 import { Card, Link } from "@/components/ui";
+import { readKeelCheckHistory } from "@/src/lib/keel-check";
 import {
   getProfile,
   isProfileComplete,
@@ -13,6 +15,9 @@ import type { SkillMatrixData } from "@/src/lib/skill-matrix";
 import { loadSkillMatrix } from "@/src/lib/skill-matrix-data";
 import { createSupabaseServerClient } from "@/src/lib/supabase-server";
 import { getTrackCatalog } from "@/src/lib/tracks";
+
+/** The latest keel check card plus this many earlier ones. */
+const EARLIER_KEEL_CHECKS = 10;
 
 /** Changes when new reports arrive, so polling keeps going while they do. */
 function matrixVersion(matrix: SkillMatrixData | null): string {
@@ -31,16 +36,21 @@ export default async function DashboardPage() {
     result.ok && isProfileComplete(result.profile) ? result.profile : null;
   const catalog = getTrackCatalog();
 
-  // Waitlisted users without a track get no matrix.
+  // Waitlisted users without a track get no matrix and no keel check.
   const trackId = profile?.track_id ?? null;
-  const matrix =
+  const [matrix, keelChecks] =
     profile && trackId
-      ? await loadSkillMatrix(
-          supabase,
-          { ...profile, track_id: trackId },
-          catalog,
-        )
-      : null;
+      ? await Promise.all([
+          loadSkillMatrix(supabase, { ...profile, track_id: trackId }, catalog),
+          readKeelCheckHistory(supabase, EARLIER_KEEL_CHECKS + 1),
+        ])
+      : [null, null];
+  const keelCheck = keelChecks ? (
+    <KeelCheckPanel
+      history={keelChecks}
+      totalPrompts={matrix?.kind === "levels" ? matrix.totalPrompts : 0}
+    />
+  ) : null;
 
   return (
     <main className="mx-auto grid min-h-screen max-w-4xl content-start gap-8 px-6 py-12">
@@ -80,18 +90,16 @@ export default async function DashboardPage() {
       {profile && trackId ? (
         <>
           {matrix ? (
-            <SkillMatrix
-              data={matrix}
-              keelCheckSlot={
-                <Card className="border-dashed text-sm text-muted">
-                  Weekly practice suggestions will appear here.
-                </Card>
-              }
-            />
+            <SkillMatrix data={matrix} keelCheckSlot={keelCheck} />
           ) : (
-            <Card>
-              <p className="text-sm">Could not load your skills. Try again.</p>
-            </Card>
+            <>
+              <Card>
+                <p className="text-sm">
+                  Could not load your skills. Try again.
+                </p>
+              </Card>
+              {keelCheck}
+            </>
           )}
           <AutoRefresh version={matrixVersion(matrix)} />
         </>

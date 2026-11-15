@@ -1,6 +1,6 @@
 // The keel check card (REI-279). public.build_keel_check() builds a card from
 // the user's reports, levels and the day's picks, stores it in public.nudges
-// and returns it. Both calls here use a Supabase client that sends the Clerk
+// and returns it. The calls here use a Supabase client that sends the Clerk
 // session token, so row level security limits them to the user's own cards.
 //
 // A card holds counts, IDs and copied picks, never sentences: the UI phrases
@@ -247,6 +247,53 @@ export async function readLatestKeelCheck(
     return { status: "failed" };
   }
   return { status: "ok", card: data };
+}
+
+export type KeelCheckHistoryResult =
+  | { status: "ok"; cards: KeelCheckCard[] }
+  | { status: "failed" };
+
+/** The most cards one history read returns. */
+export const KEEL_CHECK_HISTORY_MAX = 50;
+
+/**
+ * The signed-in user's newest cards, newest first, up to `limit` (1 to 50).
+ * The first card is the latest one. A row that doesn't look like a card is
+ * left out and logged by code, so one bad row doesn't hide the rest.
+ */
+export async function readKeelCheckHistory(
+  supabase: SupabaseClient,
+  limit = 10,
+): Promise<KeelCheckHistoryResult> {
+  const size = Math.min(
+    KEEL_CHECK_HISTORY_MAX,
+    Math.max(1, Math.trunc(limit) || 1),
+  );
+  let data: unknown;
+  let error: { code?: string } | null;
+  try {
+    ({ data, error } = await supabase
+      .from("nudges")
+      .select("id, track_id, created_at, items")
+      .order("created_at", { ascending: false })
+      .limit(size));
+  } catch {
+    console.error("Keel check history read failed", "client_error");
+    return { status: "failed" };
+  }
+  if (error) {
+    console.error("Keel check history read failed", safeCode(error));
+    return { status: "failed" };
+  }
+  if (!Array.isArray(data)) {
+    console.error("Keel check history read failed", "bad_result");
+    return { status: "failed" };
+  }
+  const cards = data.filter(isKeelCheckCard);
+  if (cards.length < data.length) {
+    console.error("Keel check history skipped rows", "bad_result");
+  }
+  return { status: "ok", cards };
 }
 
 /** Seconds until the daily cap resets at midnight UTC. At least 1. */
