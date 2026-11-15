@@ -7,8 +7,9 @@ const appUrl = process.env.APP_URL ?? "http://localhost:3000";
 
 export const metadata: Metadata = {
   metadataBase: new URL(appUrl),
-  title: "TripleKeel",
-  description: "A personal coach for knowledge work.",
+  title: "TripleKeel — Get better at your job on autopilot",
+  description:
+    "A personal coach for knowledge work. Spot your strengths and find one small thing to practice next, with prompt scoring that stays on your device.",
 };
 
 export default function RootLayout({
