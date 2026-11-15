@@ -9,172 +9,19 @@ import {
   REPORT_SCHEMA_ID,
   toHour,
 } from "./index.js";
+import { rejectionCases, validReport } from "./rejection-cases.js";
 
 const KEY = "a".repeat(64);
 
-function validReport(): Record<string, unknown> {
-  return {
-    schema: "triplekeel.signal.v1",
-    track: "product-manager",
-    app: "chatgpt",
-    source: "live",
-    hour: "2026-11-14T10:00Z",
-    length_bucket: "200-500",
-    answers: [
-      { q: "target_user", a: "yes", p: 0.91 },
-      { q: "success_metric", a: "no", p: 0.84 },
-    ],
-  };
-}
-
-// biome-ignore lint/suspicious/noExplicitAny: tests break nested fixtures on purpose.
-type Mutable = Record<string, any>;
-
-function rejects(mutate: (r: Mutable) => void): void {
-  const report = validReport() as Mutable;
-  mutate(report);
-  const result = parseReport(report);
-  expect(result.ok, JSON.stringify(report)).toBe(false);
-}
-
 // Rejection tests come first: this is the privacy boundary.
+// The cases live in rejection-cases.ts so /api/signals runs the same list.
 describe("parseReport rejects", () => {
-  it("anything that isn't an object", () => {
-    for (const input of [null, undefined, 1, "report", [], [validReport()]]) {
-      expect(parseReport(input).ok).toBe(false);
-    }
+  it("has the full list of cases", () => {
+    expect(rejectionCases().length).toBeGreaterThanOrEqual(70);
   });
 
-  it("unknown keys at the top level", () => {
-    rejects((r) => (r.prompt = "Write a PRD for a todo app"));
-    rejects((r) => (r.text = ""));
-    rejects((r) => (r.extra = 1));
-  });
-
-  it("unknown keys inside an answer", () => {
-    rejects((r) => (r.answers[0].evidence = "the user said X"));
-    rejects((r) => (r.answers[0].note = 1));
-  });
-
-  it("a __proto__ key from JSON", () => {
-    const input = JSON.parse(
-      JSON.stringify(validReport()).replace("{", '{"__proto__":{"x":1},'),
-    );
+  it.each(rejectionCases())("$name", ({ input }) => {
     expect(parseReport(input).ok).toBe(false);
-  });
-
-  it("free-text strings in any field", () => {
-    const text = "Write a PRD for a todo app for busy parents";
-    rejects((r) => (r.track = text));
-    rejects((r) => (r.app = text));
-    rejects((r) => (r.source = text));
-    rejects((r) => (r.hour = text));
-    rejects((r) => (r.length_bucket = text));
-    rejects((r) => (r.answers[0].q = text));
-    rejects((r) => (r.answers[0].a = text));
-    rejects((r) => (r.import_key = text));
-  });
-
-  it("strings that aren't allowed enum values", () => {
-    rejects((r) => (r.schema = "triplekeel.signal.v2"));
-    rejects((r) => (r.track = "Product-Manager"));
-    rejects((r) => (r.app = "lovable"));
-    rejects((r) => (r.source = "LIVE"));
-    rejects((r) => (r.length_bucket = "200-499"));
-    rejects((r) => (r.answers[0].q = "made_up"));
-    rejects((r) => (r.answers[0].a = "maybe"));
-    rejects((r) => (r.answers[0].q = " target_user"));
-  });
-
-  it("path-like strings", () => {
-    for (const path of [
-      "../etc/passwd",
-      "/home/user/notes.md",
-      "C:\\x",
-      "~/x",
-    ]) {
-      rejects((r) => (r.track = path));
-      rejects((r) => (r.answers[0].q = path));
-      rejects((r) => (r.import_key = path));
-    }
-  });
-
-  it("a too-long answers array", () => {
-    rejects((r) => {
-      r.answers = Array.from({ length: QUESTION_IDS.length + 1 }, (_, i) => ({
-        q: QUESTION_IDS[i % QUESTION_IDS.length],
-        a: "yes",
-        p: 0.5,
-      }));
-    });
-  });
-
-  it("an empty answers array", () => {
-    rejects((r) => (r.answers = []));
-  });
-
-  it("the same question twice", () => {
-    rejects((r) => r.answers.push({ q: "target_user", a: "no", p: 0.5 }));
-  });
-
-  it("any missing field", () => {
-    for (const key of Object.keys(validReport())) {
-      rejects((r) => delete r[key]);
-    }
-    for (const key of ["q", "a", "p"]) {
-      rejects((r) => delete r.answers[0][key]);
-    }
-  });
-
-  it("p outside 0–1 or not a plain number", () => {
-    for (const p of [-0.01, 1.01, 2, "0.5", null, Number.NaN, Infinity]) {
-      rejects((r) => (r.answers[0].p = p));
-    }
-  });
-
-  it("p with more than two decimals", () => {
-    rejects((r) => (r.answers[0].p = 0.912345));
-  });
-
-  it("an hour that isn't rounded to the hour", () => {
-    for (const hour of [
-      "2026-11-14T10:30Z",
-      "2026-11-14T10:00:00Z",
-      "2026-11-14T10:00:00.000Z",
-      "2026-11-14T10:00+02:00",
-      "2026-11-14",
-      "2026-13-01T10:00Z",
-      "2026-02-30T10:00Z",
-      "2026-11-14T24:00Z",
-    ]) {
-      rejects((r) => (r.hour = hour));
-    }
-  });
-
-  it("an import key that isn't a 64-character lowercase hex hash", () => {
-    for (const key of [
-      "a".repeat(63),
-      "a".repeat(65),
-      "A".repeat(64),
-      "g".repeat(64),
-      1,
-    ]) {
-      rejects((r) => {
-        r.source = "import";
-        r.import_key = key;
-      });
-    }
-  });
-
-  it("an import report without an import key", () => {
-    rejects((r) => (r.source = "import"));
-  });
-
-  it("a paste report with an import key", () => {
-    rejects((r) => {
-      r.source = "paste";
-      r.import_key = KEY;
-    });
   });
 });
 

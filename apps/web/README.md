@@ -18,6 +18,17 @@ Set `NEXT_PUBLIC_EXTENSION_ID` to the extension's pinned ID, `pdnjcggmbannclgepc
 
 The extension calls `GET /api/me` and `GET /api/questions` with `Authorization: Bearer tkd_...`. Both return 401 for an unknown or revoked device.
 
+## Signals API
+
+`POST /api/signals` stores score reports from the extension. Send `Authorization: Bearer tkd_...` and a JSON body `{ "reports": [...] }` with 1 to 50 `triplekeel.signal.v1` reports. It returns `{ "received": n, "inserted": m }`. Duplicate import keys are not inserted again.
+
+- `400`: the body or any report is invalid. The response never repeats the input.
+- `401`: the device token is missing, malformed, unknown or revoked.
+- `429`: the device sent more than 50 reports in a minute.
+- `503`: the kill switch is on.
+
+The route uses the Supabase anon key and the `write_device_signals` function. It never uses the service-role key and never logs request content.
+
 ## Cloudflare controls
 
 The `routes` entry in `wrangler.jsonc` attaches `triplekeel.rei.dev` as a Workers Custom Domain during deployment. Do not add a DNS record by hand.

@@ -3,7 +3,7 @@
 import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
 import { join } from "node:path";
 import { parse } from "yaml";
-import { checkTrack, type TrackCheckResult } from "./track.js";
+import { checkTrack, type TrackCheckResult } from "./track.ts";
 
 export const TRACK_FILES = {
   track: "track.yaml",

@@ -1,5 +1,14 @@
 import { notFound } from "next/navigation";
-import { Button, Card, Dialog, Link, Select, TextField } from "@/components/ui";
+import {
+  Button,
+  Card,
+  ComboBox,
+  Dialog,
+  Link,
+  RadioGroup,
+  Select,
+  TextField,
+} from "@/components/ui";
 
 export default function UiPreviewPage() {
   if (process.env.NODE_ENV !== "development") notFound();
@@ -19,6 +28,24 @@ export default function UiPreviewPage() {
           options={[
             { id: "beginner", label: "Beginner" },
             { id: "intermediate", label: "Intermediate" },
+          ]}
+        />
+        <ComboBox
+          label="Combo box"
+          placeholder="Type or pick"
+          allowsCustomValue
+          options={[
+            { id: "first", label: "First suggestion" },
+            { id: "second", label: "Second suggestion" },
+          ]}
+        />
+        <RadioGroup
+          label="Radio group"
+          defaultValue="mid"
+          options={[
+            { id: "junior", label: "Junior" },
+            { id: "mid", label: "Mid" },
+            { id: "senior", label: "Senior" },
           ]}
         />
         <Dialog title="Dialog" trigger="Open dialog">
