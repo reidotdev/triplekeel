@@ -8,10 +8,10 @@ enum Schemas {
     /// when every habit allowed it.
     static let naHabits: Set<String> = ["specific_feedback", "vague_fix"]
 
-    static let answerDescription =
-        "yes if the prompt clearly shows the habit, partly if only partly, no if it doesn't."
     static let quoteDescription =
-        "Only if the answer is yes or partly: the exact words copied from the prompt that show the habit. Otherwise an empty string."
+        "The exact words copied from the prompt that show this habit. An empty string if nothing in the prompt shows it."
+    static let answerDescription =
+        "yes if the quote clearly shows the habit, partly if only partly, no if the quote is empty."
 
     private static func answer(allowNA: Bool) -> DynamicGenerationSchema {
         DynamicGenerationSchema(
@@ -21,15 +21,15 @@ enum Schemas {
         )
     }
 
-    /// One habit check. The answer comes first, and the quote is only
-    /// asked for when the answer is yes or partly. The first run, with the
-    /// quote first, nearly always found something to quote.
+    /// One habit check. The quote comes first so the answer rests on
+    /// evidence. Answer-first was tried and was less accurate: the model
+    /// said yes without any quote.
     private static func habitCheck(allowNA: Bool) -> DynamicGenerationSchema {
         DynamicGenerationSchema(
             name: allowNA ? "HabitCheckWithNA" : "HabitCheck",
             properties: [
-                .init(name: "answer", description: answerDescription, schema: DynamicGenerationSchema(referenceTo: allowNA ? "AnswerWithNA" : "Answer")),
                 .init(name: "quote", description: quoteDescription, schema: DynamicGenerationSchema(type: String.self)),
+                .init(name: "answer", description: answerDescription, schema: DynamicGenerationSchema(referenceTo: allowNA ? "AnswerWithNA" : "Answer")),
             ]
         )
     }

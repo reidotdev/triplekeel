@@ -27,16 +27,20 @@ struct Report {
         out.append("|---|---:|---:|---:|---:|---:|---:|")
         out.append("| Keyword (REI-247) | \(base.correct)/\(base.total) (\(pct(base.correct, base.total))) | – | – | <1 | <8 | – |")
         for mode in modes {
-            let a = agreement(mode: mode)
             let q = quotes(mode: mode)
             let perPrompt = promptTimes(mode: mode)
             let errors = calls.filter { $0.mode == mode && $0.error != nil }.count
-            out.append("| Apple, \(mode) | \(a.strict)/\(a.total) (\(pct(a.strict, a.total))) | \(a.lenient)/\(a.total) (\(pct(a.lenient, a.total))) | \(q.found)/\(q.total) (\(pct(q.found, q.total))) | \(fmt(percentile(perPrompt, 0.5))) | \(fmt(percentile(perPrompt, 0.95))) | \(errors) |")
+            for grounded in [false, true] {
+                let a = agreement(mode: mode, grounded: grounded)
+                let name = grounded ? "Apple, \(mode) + grounding" : "Apple, \(mode)"
+                out.append("| \(name) | \(a.strict)/\(a.total) (\(pct(a.strict, a.total))) | \(a.lenient)/\(a.total) (\(pct(a.lenient, a.total))) | \(q.found)/\(q.total) (\(pct(q.found, q.total))) | \(fmt(percentile(perPrompt, 0.5))) | \(fmt(percentile(perPrompt, 0.95))) | \(errors) |")
+            }
         }
         out.append("")
         out.append("- **Strict:** the answer matches the label exactly. Labels of n/a are skipped, as in REI-247.")
         out.append("- **Found vs not found:** yes and partly count as the same.")
         out.append("- **Quote in prompt:** for yes and partly answers, the quote appears word for word in the prompt.")
+        out.append("- **Grounding:** a yes or partly answer whose quote is empty or not in the prompt counts as no. The per-habit table and the misses use grounding.")
         out.append("- **Derived:** `no_why` isn't asked. It's yes when `target_user` and `problem` are both no and the prompt isn't a bare \"fix it\" follow-up. n/a is offered only for `specific_feedback` and `vague_fix`.")
         out.append("")
 
@@ -48,7 +52,7 @@ struct Report {
         out.append("|---|" + String(repeating: "---:|", count: modes.count))
         for habit in habits {
             let cells = modes.map { mode -> String in
-                let a = agreement(mode: mode, habit: habit.id)
+                let a = agreement(mode: mode, habit: habit.id, grounded: true)
                 return "\(a.strict)/\(a.total) · FP \(a.falsePositive) · FN \(a.falseNegative)"
             }
             out.append("| \(habit.id) | \(cells.joined(separator: " | ")) |")
@@ -114,7 +118,8 @@ struct Report {
     /// All answers for each run and prompt, including derived habits.
     /// Habits with no answer, for example after an error, are "missing",
     /// so a crash can't raise the score.
-    private func answerSets(mode: String) -> [(promptID: String, answers: [String: Verdict])] {
+    private func answerSets(mode: String, grounded: Bool = true) -> [(promptID: String, answers: [String: Verdict])] {
+        let texts = Dictionary(uniqueKeysWithValues: rows.map { ($0.id, normalize($0.text)) })
         var groups: [String: (promptID: String, answers: [String: Verdict])] = [:]
         var order: [String] = []
         for call in calls where call.mode == mode {
@@ -127,6 +132,14 @@ struct Report {
         }
         return order.compactMap { key in
             guard var group = groups[key] else { return nil }
+            if grounded {
+                for (habit, verdict) in group.answers where verdict.answer == "yes" || verdict.answer == "partly" {
+                    let quote = normalize(verdict.quote)
+                    if quote.isEmpty || texts[group.promptID]?.contains(quote) != true {
+                        group.answers[habit] = Verdict(habit: habit, answer: "no", quote: verdict.quote)
+                    }
+                }
+            }
             let plain = group.answers.mapValues(\.answer)
             for verdict in Derived.verdicts(from: plain) { group.answers[verdict.habit] = verdict }
             for habit in habits where group.answers[habit.id] == nil {
@@ -136,10 +149,10 @@ struct Report {
         }
     }
 
-    func agreement(mode: String, habit: String? = nil) -> Agreement {
+    func agreement(mode: String, habit: String? = nil, grounded: Bool = true) -> Agreement {
         var a = Agreement()
         let expected = Dictionary(uniqueKeysWithValues: rows.map { ($0.id, $0.expected) })
-        for entry in answerSets(mode: mode) {
+        for entry in answerSets(mode: mode, grounded: grounded) {
             for id in habits.map(\.id) where habit == nil || habit == id {
                 guard let label = expected[entry.promptID]?[id], label != "n/a" else { continue }
                 a.total += 1
