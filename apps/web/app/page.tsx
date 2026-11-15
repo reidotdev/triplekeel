@@ -54,12 +54,10 @@ export default function HomePage() {
 
       <section aria-labelledby="hero-title" className="hero-section">
         <div className="hero-copy">
-          <p className="eyebrow">A personal coach for knowledge work</p>
           <h1 id="hero-title">Get better at your job on autopilot.</h1>
           <p className="hero-description">
-            Your everyday AI chats already show how you work. Triplekeel spots
-            the skills behind them and gives you one useful thing to practice
-            next.
+            Triplekeel finds the skills in your AI chats and gives you one
+            useful thing to practice next.
           </p>
           <div className="hero-actions">
             <Link className="button" href="/sign-up">
@@ -99,12 +97,10 @@ export default function HomePage() {
         className="manifesto-section"
         id="problem"
       >
-        <p className="eyebrow">The missing link</p>
         <h2 id="problem-title">The work moves on. The learning gets lost.</h2>
         <p>
-          Your best work leaves clues in the questions you ask and the problems
-          you solve. But it is hard to see those patterns while you are busy
-          getting things done.
+          Everyday AI chats hold clues to how you work, but it is hard to spot
+          patterns while you are busy getting things done.
         </p>
       </section>
 
@@ -128,12 +124,10 @@ export default function HomePage() {
           <span className="placeholder-label">Scored on your device</span>
         </div>
         <div className="split-copy">
-          <p className="eyebrow">A better feedback loop</p>
           <h2 id="how-title">Turn your work into your next practice.</h2>
           <p>
-            Triplekeel scores prompts in your browser, then brings the useful
-            patterns together in a personal skill picture. No extra homework.
-            Just a clearer next step, based on the work you already do.
+            Triplekeel scores prompts in your browser, then turns the patterns
+            into a personal skill picture and a focused suggestion for the week.
           </p>
           <a className="text-link" href="#features">
             Explore the features <ArrowDownRight aria-hidden="true" size={18} />
@@ -161,8 +155,7 @@ export default function HomePage() {
       </section>
 
       <section aria-labelledby="exa-title" className="exa-section">
-        <p className="eyebrow">Good practice, kept current</p>
-        <h2 id="exa-title">A little better, week by week.</h2>
+        <h2 id="exa-title">Powered by Exa</h2>
         <p>
           Exa helps Triplekeel find fresh ideas and examples from across the
           web. Your weekly suggestion connects that new practice to the skills
@@ -176,8 +169,7 @@ export default function HomePage() {
         id="features"
       >
         <div className="features-heading">
-          <p className="eyebrow">A coach that keeps up</p>
-          <h2 id="features-title">Notice. Understand. Grow.</h2>
+          <h2 id="features-title">Turn your work into your next practice.</h2>
         </div>
         <ProcessTabs />
       </section>
@@ -191,7 +183,6 @@ export default function HomePage() {
           <LockKeyhole className="privacy-icon" size={26} strokeWidth={1.6} />
         </div>
         <div className="privacy-copy">
-          <p className="eyebrow">Private by design</p>
           <h2 id="privacy-title">Your prompt text stays on your device.</h2>
           <p>
             Triplekeel scores prompts in your browser. Only score reports leave
@@ -212,7 +203,6 @@ export default function HomePage() {
             width={142}
           />
         </Link>
-        <span>Better work, one small practice at a time.</span>
         <Link href="/privacy">Privacy</Link>
       </footer>
     </main>
