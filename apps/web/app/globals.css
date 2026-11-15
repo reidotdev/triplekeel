@@ -12,6 +12,13 @@
   --radius-card: var(--radius);
   --spacing: var(--space-unit);
   --font-sans: var(--font-family);
+  --font-display: var(--font-display-family);
+  --font-mono: var(--font-mono-family);
+  --color-matrix-track: var(--matrix-track);
+  --color-matrix-bar: var(--matrix-bar);
+  --color-matrix-target: var(--matrix-target);
+  --color-matrix-gap: var(--matrix-gap);
+  --color-matrix-gap-surface: var(--matrix-gap-surface);
 }
 
 @font-face {
@@ -43,6 +50,15 @@
   --radius: 0.625rem;
   --space-unit: 0.25rem;
   --font-family: ui-sans-serif, system-ui, sans-serif;
+  /* The homepage fonts, for headings and data in the app. */
+  --font-display-family: "Drago", Georgia, serif;
+  --font-mono-family: "Intel One Mono", ui-monospace, monospace;
+  /* Skill matrix: the bar track, the current level, the target marker, gaps. */
+  --matrix-track: #e6e8f4;
+  --matrix-bar: #4c5bd4;
+  --matrix-target: #171717;
+  --matrix-gap: #b4430b;
+  --matrix-gap-surface: #fdeee4;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -56,6 +72,11 @@
     --primary: #e5e5e5;
     --primary-foreground: #171717;
     --focus: #d4d4d4;
+    --matrix-track: #2b2e3b;
+    --matrix-bar: #8197ff;
+    --matrix-target: #f6f6f6;
+    --matrix-gap: #ffb38a;
+    --matrix-gap-surface: #3a2216;
   }
 }
 

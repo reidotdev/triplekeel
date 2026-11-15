@@ -18,6 +18,9 @@ export default function UiPreviewPage() {
       <header>
         <p className="text-sm text-muted">Development only</p>
         <h1 className="text-3xl font-semibold">UI foundation</h1>
+        <p className="mt-2 text-sm">
+          <Link href="/dev/skill-matrix">Skill matrix preview</Link>
+        </p>
       </header>
       <Card className="grid gap-5">
         <Button>Button</Button>
