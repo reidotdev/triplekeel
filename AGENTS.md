@@ -1,6 +1,6 @@
-# TripleKeel
+# Triplekeel
 
-TripleKeel is a personal coach for knowledge work that scores prompts locally in the user's browser. It sends score reports to a web app, which shows a role skill matrix and weekly practice suggestions.
+Triplekeel is a personal coach for knowledge work that scores prompts locally in the user's browser. It sends score reports to a web app, which shows a role skill matrix and weekly practice suggestions.
 
 ## Repository layout
 

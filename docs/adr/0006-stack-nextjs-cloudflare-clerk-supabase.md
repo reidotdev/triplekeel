@@ -9,7 +9,7 @@ decision-makers: Andrei
 
 ## Context and problem statement
 
-TripleKeel has to be a real app that strangers can sign up for and keep using. One person builds it. The stack was chosen in the planning notes (notes repo: `requirements.md`, 2026-11-13) but never got its own ADR. This ADR records it, because the scaffold (REI-254), `.env.example` and the infrastructure tickets already depend on it. What runs the web app, the API, auth, data and background jobs?
+Triplekeel has to be a real app that strangers can sign up for and keep using. One person builds it. The stack was chosen in the planning notes (notes repo: `requirements.md`, 2026-11-13) but never got its own ADR. This ADR records it, because the scaffold (REI-254), `.env.example` and the infrastructure tickets already depend on it. What runs the web app, the API, auth, data and background jobs?
 
 ## Decision drivers
 

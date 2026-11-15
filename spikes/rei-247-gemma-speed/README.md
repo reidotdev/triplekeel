@@ -1,6 +1,6 @@
 # REI-247 Gemma speed spike
 
-This is a standalone local benchmark for the 16 TripleKeel prompt habits. It compares the keyword rules with Gemma 3 270M IT on 20 invented PM prompts. Prompt text is processed locally. The page makes no scoring API calls.
+This is a standalone local benchmark for the 16 Triplekeel prompt habits. It compares the keyword rules with Gemma 3 270M IT on 20 invented PM prompts. Prompt text is processed locally. The page makes no scoring API calls.
 
 ## Model choice
 
