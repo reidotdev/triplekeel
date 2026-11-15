@@ -1,216 +1,120 @@
-import { ArrowDownRight, ArrowUpRight, LockKeyhole } from "lucide-react";
-import Image from "next/image";
 import Link from "next/link";
-import { Suspense } from "react";
-import { AccountDeletedNotice } from "@/components/account/account-deleted-notice";
-import { ProcessTabs } from "@/components/marketing/process-tabs";
 
-const comparison = [
+const growthSteps = [
   {
-    title: "The usual way",
-    quote: "You finish the work. The lessons disappear into the next task.",
-    tags: [
-      "No clear pattern",
-      "Practice when there's time",
-      "Start over each week",
-    ],
+    title: "Know your gaps",
+    description:
+      "Get your current skill levels and a career goal to identify where to improve to get there.",
   },
   {
-    title: "With Triplekeel",
-    quote: "Small signals become a clearer picture of how you work.",
-    tags: [
-      "See what is growing",
-      "One useful next step",
-      "Built around your work",
-    ],
+    title: "Learn best practices",
+    description:
+      "Accept suggestions thoughtfully–Triplekeel won’t let you do that on autopilot so you pause to reflect.",
+  },
+  {
+    title: "Close your gaps",
+    description:
+      "After several corrections, you’ll start applying new ways by yourself, growing in your career",
   },
 ];
+
+const skillCards = [
+  {
+    title: "Skill growth monitoring",
+    description:
+      "See which practices you adapt quickly and which are taking time to get used to",
+  },
+  {
+    title: "Always relevant advice",
+    description:
+      "Triplekeel’s skill matrices update monthly based on newly published podcast episodes",
+  },
+  { title: "{Title}", description: "{Description}" },
+];
+
+function LogoPlaceholders({ className = "" }: { className?: string }) {
+  return (
+    <div aria-hidden="true" className={`logo-placeholders ${className}`}>
+      {[1, 2, 3].map((logo) => (
+        <div className="logo-placeholder" key={logo}>
+          Logo
+        </div>
+      ))}
+    </div>
+  );
+}
 
 export default function HomePage() {
   return (
     <main className="marketing-site">
-      <header className="site-header">
-        <Link aria-label="Triplekeel home" className="brand" href="/">
-          <Image
-            alt="Triplekeel"
-            height={32}
-            priority
-            src="/brand/logo.svg"
-            width={142}
-          />
-        </Link>
-        <nav aria-label="Main navigation" className="site-nav">
-          <a href="#how-it-works">How it works</a>
-          <a href="#features">Features</a>
-          <a href="#privacy">Privacy</a>
-        </nav>
-        <div className="header-actions">
-          <Link className="sign-in-link" href="/sign-in">
-            Sign in
-          </Link>
-          <Link className="button button-small" href="/sign-up">
-            Get started <ArrowUpRight aria-hidden="true" size={18} />
-          </Link>
-        </div>
-      </header>
-
-      <Suspense fallback={null}>
-        <AccountDeletedNotice />
-      </Suspense>
-
       <section aria-labelledby="hero-title" className="hero-section">
         <div className="hero-copy">
-          <h1 id="hero-title">Get better at your job on autopilot.</h1>
+          <h1 id="hero-title">Grammarly for upskilling</h1>
           <p className="hero-description">
-            Triplekeel finds the skills in your AI chats and gives you one
-            useful thing to practice next.
+            Triplekeel teaches you best practices by fixing your prompts.
           </p>
-          <div className="hero-actions">
-            <Link className="button" href="/sign-up">
-              Get started <ArrowUpRight aria-hidden="true" size={19} />
-            </Link>
-            <a className="text-link" href="#how-it-works">
-              See how it works <ArrowDownRight aria-hidden="true" size={18} />
-            </a>
-          </div>
+          <Link className="button" href="/sign-up">
+            Get started
+          </Link>
         </div>
         <div className="hero-visual">
-          <div
-            aria-label="Product preview placeholder"
-            className="dotted-placeholder hero-placeholder"
-            role="img"
-          >
-            <span className="placeholder-label">Your work, taking shape</span>
-            <div className="preview-card preview-card-main">
-              <span className="preview-kicker">Your skill picture</span>
-              <span className="preview-title">Product thinking</span>
-              <span className="skill-bar">
-                <span />
-              </span>
-              <span className="preview-meta">Growing steadily</span>
-            </div>
-            <div className="preview-card preview-card-float">
-              <span className="preview-kicker">This week</span>
-              <span className="preview-title">Try a clearer brief</span>
-              <span className="preview-meta">A 5 minute practice</span>
+          <div aria-hidden="true" className="hero-dots" />
+          <div className="prompt-card">
+            <span>JUNIOR</span>
+            <p>“Make me a fitness app.”</p>
+            <div className="prompt-tags">
+              <span>Target user: no</span>
+              <span>Success metric: no</span>
+              <span>Scope: yes</span>
             </div>
           </div>
         </div>
       </section>
 
-      <section
-        aria-labelledby="problem-title"
-        className="manifesto-section"
-        id="problem"
-      >
-        <h2 id="problem-title">The work moves on. The learning gets lost.</h2>
+      <section aria-labelledby="gaps-title" className="gaps-section">
+        <h2 id="gaps-title">Your prompts show your skill gaps</h2>
         <p>
-          Everyday AI chats hold clues to how you work, but it is hard to spot
-          patterns while you are busy getting things done.
+          Modern knowledge work happens in AI chats. By analyzing the way your
+          prompt AI in your daily work, we can understand your current skill
+          levels, your gaps, and your progression over time.
         </p>
       </section>
 
-      <section
-        aria-labelledby="how-title"
-        className="split-section"
-        id="how-it-works"
-      >
-        <div
-          aria-label="A private prompt scoring illustration placeholder"
-          className="dotted-placeholder split-placeholder"
-          role="img"
-        >
-          <div className="signal-stack">
-            <span>your prompt</span>
-            <i aria-hidden="true" />
-            <span>local score</span>
-            <i aria-hidden="true" />
-            <span>skill signal</span>
-          </div>
-          <span className="placeholder-label">Scored on your device</span>
-        </div>
-        <div className="split-copy">
-          <h2 id="how-title">Turn your work into your next practice.</h2>
-          <p>
-            Triplekeel scores prompts in your browser, then turns the patterns
-            into a personal skill picture and a focused suggestion for the week.
-          </p>
-          <a className="text-link" href="#features">
-            Explore the features <ArrowDownRight aria-hidden="true" size={18} />
-          </a>
-        </div>
-      </section>
-
-      <section
-        aria-label="A comparison of working without and with Triplekeel"
-        className="comparison-section"
-      >
-        <div className="comparison-grid">
-          {comparison.map((item) => (
-            <article className="comparison-card" key={item.title}>
-              <h3>{item.title}</h3>
-              <p className="comparison-quote">“{item.quote}”</p>
-              <ul>
-                {item.tags.map((tag) => (
-                  <li key={tag}>{tag}</li>
-                ))}
-              </ul>
+      <section aria-labelledby="growth-title" className="growth-section">
+        <h2 id="growth-title">Here’s how to close them</h2>
+        <div className="growth-cards">
+          {growthSteps.map((step) => (
+            <article className="growth-card" key={step.title}>
+              <h3>{step.title}</h3>
+              <p>{step.description}</p>
             </article>
           ))}
         </div>
       </section>
 
       <section aria-labelledby="exa-title" className="exa-section">
-        <h2 id="exa-title">Powered by Exa</h2>
-        <p>
-          Exa searches the web for recent articles, podcasts, and examples of
-          the skills you want to build. Triplekeel uses what it finds to shape a
-          focused practice suggestion for your week.
-        </p>
-      </section>
-
-      <section
-        aria-labelledby="features-title"
-        className="features-section"
-        id="features"
-      >
-        <div className="features-heading">
-          <h2 id="features-title">Turn your work into your next practice.</h2>
-        </div>
-        <ProcessTabs />
-      </section>
-
-      <section
-        aria-labelledby="privacy-title"
-        className="privacy-section"
-        id="privacy"
-      >
-        <div aria-hidden="true" className="privacy-icon-wrap">
-          <LockKeyhole className="privacy-icon" size={26} strokeWidth={1.6} />
-        </div>
-        <div className="privacy-copy">
-          <h2 id="privacy-title">Your prompt text stays on your device.</h2>
+        <LogoPlaceholders className="logos-top" />
+        <div className="exa-copy">
+          <h2 id="exa-title">Best practices form the best tech podcasts</h2>
           <p>
-            Triplekeel scores prompts in your browser. Only score reports leave
-            your device, never the words you wrote.
+            Triplekeel is powered by Exa’s database of 3.2 million podcasts
+            episodes from which it derives targeted hints.
           </p>
         </div>
-        <Link className="button button-outline" href="/sign-up">
-          Start with privacy <ArrowUpRight aria-hidden="true" size={18} />
-        </Link>
+        <LogoPlaceholders className="logos-bottom" />
       </section>
 
-      <footer className="site-footer">
-        <Link aria-label="Triplekeel home" className="brand" href="/">
-          <Image
-            alt="Triplekeel"
-            height={32}
-            src="/brand/logo.svg"
-            width={142}
-          />
-        </Link>
-        <Link href="/privacy">Privacy</Link>
-      </footer>
+      <section aria-labelledby="skills-title" className="skills-section">
+        <h2 id="skills-title">Skill management</h2>
+        <div className="skill-cards">
+          {skillCards.map((card) => (
+            <article className="skill-card" key={card.title}>
+              <h3>{card.title}</h3>
+              <p>{card.description}</p>
+            </article>
+          ))}
+        </div>
+      </section>
     </main>
   );
 }
