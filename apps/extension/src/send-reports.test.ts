@@ -147,6 +147,7 @@ describe("the Score this chat button", () => {
     status: {
       site: "claude",
       isConversationPage: true,
+      isSharedChat: false,
       userMessageCount: count,
     },
   });
@@ -170,10 +171,25 @@ describe("the Score this chat button", () => {
         status: {
           site: "chatgpt",
           isConversationPage: false,
+          isSharedChat: false,
           userMessageCount: 0,
         },
       }),
     ).toEqual({ showButton: false, note: "Open a chat to score it." });
+    expect(
+      scoreView(connected, true, {
+        kind: "page",
+        status: {
+          site: "chatgpt",
+          isConversationPage: true,
+          isSharedChat: true,
+          userMessageCount: 4,
+        },
+      }),
+    ).toEqual({
+      showButton: false,
+      note: "Shared chats can't be scored. Open one of your own chats.",
+    });
     expect(scoreView(connected, true, chatPage(0)).note).toBe(
       "No messages found on this page.",
     );

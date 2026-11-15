@@ -81,6 +81,7 @@ function isPageStatus(value: unknown): value is PageStatus {
   const status = value as Partial<PageStatus> | null;
   return (
     typeof status?.isConversationPage === "boolean" &&
+    typeof status.isSharedChat === "boolean" &&
     typeof status.userMessageCount === "number"
   );
 }

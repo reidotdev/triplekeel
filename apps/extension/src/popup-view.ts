@@ -67,6 +67,9 @@ export function scoreView(
   if (!page.status.isConversationPage) {
     return { showButton: false, note: "Open a chat to score it." };
   }
+  if (page.status.isSharedChat) {
+    return { showButton: false, note: SCORE_TEXT.shared_chat };
+  }
   if (page.status.userMessageCount === 0) {
     return { showButton: false, note: "No messages found on this page." };
   }
@@ -81,6 +84,7 @@ export const SCORE_TEXT = {
   no_questions: "Your questions haven't loaded. Try again in a minute.",
   unsupported_track: "Your track can't be scored yet.",
   not_conversation: "Open a chat to score it.",
+  shared_chat: "Shared chats can't be scored. Open one of your own chats.",
   no_messages: "No messages found on this page.",
   none_on_track: "No prompts in this chat match your track.",
   failed: "Something went wrong. Reload the page and try again.",

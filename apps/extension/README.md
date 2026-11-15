@@ -30,7 +30,7 @@ The `key` in `manifest.json` is a public key. It pins the extension ID to `pdnjc
 
 ## Score this chat
 
-Open a past chat on claude.ai or chatgpt.com and open the popup. When you're connected, it shows **Score this chat**.
+Open a past chat on claude.ai or chatgpt.com and open the popup. When you're connected, it shows **Score this chat**. Shared chat links (`/share/...`) can't be scored, because they may show someone else's prompts.
 
 1. The content script reads the user's own messages from the page, oldest first, up to the last 20. It reads only what the page shows and never calls the site's APIs.
 2. `routeTrack()` drops messages outside your track. A message with no track words, like "fix it", takes the route of the chat's first message. Personal messages are always dropped.

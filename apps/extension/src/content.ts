@@ -45,6 +45,7 @@ if (adapter) {
     const status: PageStatus = {
       site: adapter.siteId,
       isConversationPage: adapter.isConversationPage(),
+      isSharedChat: adapter.isSharedChat(),
       userMessageCount: adapter.getUserMessages().length,
     };
     sendResponse(status);

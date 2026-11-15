@@ -68,7 +68,10 @@ export type ScoredMessage = {
   importKey: string;
 };
 
-export type ScoreChatErrorCode = "not_conversation" | "no_messages";
+export type ScoreChatErrorCode =
+  | "not_conversation"
+  | "shared_chat"
+  | "no_messages";
 
 export class ScoreChatError extends Error {
   constructor(readonly code: ScoreChatErrorCode) {
@@ -99,6 +102,8 @@ export async function scoreChat(
   const { adapter, scorer } = input;
   const conversationId = adapter.conversationId();
   if (!conversationId) throw new ScoreChatError("not_conversation");
+  // A shared link may show someone else's prompts. Never score them as ours.
+  if (adapter.isSharedChat()) throw new ScoreChatError("shared_chat");
   const chat = collectUserMessages(adapter);
   if (chat.messages.length === 0) throw new ScoreChatError("no_messages");
   const kept = keepOnTrack(chat, input.trackId);

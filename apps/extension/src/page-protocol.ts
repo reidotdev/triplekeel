@@ -11,6 +11,7 @@ export const PAGE_STATUS_MESSAGE = "triplekeel.page-status";
 export type PageStatus = {
   site: SiteId;
   isConversationPage: boolean;
+  isSharedChat: boolean;
   userMessageCount: number;
 };
 

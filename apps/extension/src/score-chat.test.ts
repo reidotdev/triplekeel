@@ -229,6 +229,37 @@ describe("scoring a chat", () => {
     expect(contexts).toEqual([{ followUp: false }, { followUp: true }]);
   });
 
+  it("refuses shared chat links on both sites, even with messages", async () => {
+    document.body.innerHTML = fixture("claude-share.html");
+    await expect(
+      score(
+        createClaudeAdapter(document, new URL("https://claude.ai/share/abc")),
+      ),
+    ).rejects.toEqual(new ScoreChatError("shared_chat"));
+    document.body.innerHTML = fixture("chatgpt-share.html");
+    await expect(
+      score(
+        createChatGPTAdapter(
+          document,
+          new URL("https://chatgpt.com/share/abc"),
+        ),
+      ),
+    ).rejects.toEqual(new ScoreChatError("shared_chat"));
+  });
+
+  it("tells shared links apart from the user's own chats", () => {
+    const claude = (url: string) =>
+      createClaudeAdapter(document, new URL(url)).isSharedChat();
+    const chatgpt = (url: string) =>
+      createChatGPTAdapter(document, new URL(url)).isSharedChat();
+    expect(claude("https://claude.ai/share/abc")).toBe(true);
+    expect(claude("https://claude.ai/chat/abc")).toBe(false);
+    expect(chatgpt("https://chatgpt.com/share/abc")).toBe(true);
+    expect(chatgpt("https://chatgpt.com/g/g-123-gpt/share/abc")).toBe(true);
+    expect(chatgpt("https://chatgpt.com/c/abc")).toBe(false);
+    expect(chatgpt("https://chatgpt.com/g/g-p-123-notes/c/abc")).toBe(false);
+  });
+
   it("refuses a page that isn't a chat, or shows no messages", async () => {
     const notChat = createClaudeAdapter(
       document,
