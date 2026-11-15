@@ -4,22 +4,42 @@ import type { KeyValueStore } from "./session.js";
 export const TEST_TOKEN = `tkd_${"A".repeat(43)}`;
 export const TEST_API = "https://app.example";
 
+/**
+ * An in-memory chrome.storage.local. Like Chrome, it stores copies, and
+ * `watch` gets the changed keys, like chrome.storage.onChanged.
+ */
 export function memoryStore(
   initial: Record<string, unknown> = {},
-): KeyValueStore & { data: Record<string, unknown> } {
-  const data: Record<string, unknown> = { ...initial };
+): KeyValueStore & {
+  data: Record<string, unknown>;
+  watch(listener: (keys: string[]) => void): () => void;
+} {
+  const data: Record<string, unknown> = structuredClone(initial);
+  const listeners = new Set<(keys: string[]) => void>();
+  const notify = (keys: string[]) => {
+    if (keys.length) for (const listener of listeners) listener(keys);
+  };
   return {
     data,
     async get(keys) {
-      return Object.fromEntries(
-        keys.filter((key) => key in data).map((key) => [key, data[key]]),
+      return structuredClone(
+        Object.fromEntries(
+          keys.filter((key) => key in data).map((key) => [key, data[key]]),
+        ),
       );
     },
     async set(items) {
-      Object.assign(data, items);
+      Object.assign(data, structuredClone(items));
+      notify(Object.keys(items));
     },
     async remove(keys) {
-      for (const key of keys) delete data[key];
+      const removed = keys.filter((key) => key in data);
+      for (const key of removed) delete data[key];
+      notify(removed);
+    },
+    watch(listener) {
+      listeners.add(listener);
+      return () => listeners.delete(listener);
     },
   };
 }

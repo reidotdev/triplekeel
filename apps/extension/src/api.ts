@@ -49,9 +49,10 @@ function retryDelayMs(response: Response, attempt: number): number {
   return Math.min(wait, MAX_WAIT_MS);
 }
 
-/** The server stayed busy (429) after one retry. */
+/** The server stayed busy (429). */
 export class RateLimitedError extends Error {
-  constructor() {
+  /** The server's Retry-After in milliseconds, or null if it gave none. */
+  constructor(readonly retryAfterMs: number | null = null) {
     super("rate_limited");
     this.name = "RateLimitedError";
   }
@@ -73,6 +74,14 @@ function retryAfterMs(response: Response, now: number): number | null {
   return Number.isNaN(date) ? null : Math.max(0, date - now);
 }
 
+export type PostOptions = {
+  /**
+   * False: on a 429, throw at once instead of waiting and retrying. Live
+   * capture uses this and waits on its own schedule.
+   */
+  wait?: boolean;
+};
+
 export type SignalsResult = {
   /** Reports the server accepted. */
   received: number;
@@ -82,14 +91,15 @@ export type SignalsResult = {
 
 /**
  * Sends score reports in batches of 50. On a 429 it waits (Retry-After if
- * given) and retries once. Throws UnauthorizedError on 401,
- * RateLimitedError if still busy, and ApiError on other failures.
+ * given) and retries once, unless `wait` is false. Throws UnauthorizedError
+ * on 401, RateLimitedError if still busy, and ApiError on other failures.
  */
 export async function postSignals(
   deps: ApiDeps,
   token: string,
   reports: readonly unknown[],
   onWait?: (ms: number) => void,
+  options: PostOptions = {},
 ): Promise<SignalsResult> {
   const sleep = deps.sleep ?? defaultSleep;
   const result: SignalsResult = { received: 0, inserted: 0 };
@@ -109,10 +119,14 @@ export async function postSignals(
       });
       if (response.status === 401) throw new UnauthorizedError();
       if (response.status === 429) {
-        const wait =
-          retryAfterMs(response, Date.now()) ?? SIGNALS_DEFAULT_WAIT_MS;
-        if (attempt > 0 || wait > SIGNALS_MAX_WAIT_MS) {
-          throw new RateLimitedError();
+        const retryAfter = retryAfterMs(response, Date.now());
+        const wait = retryAfter ?? SIGNALS_DEFAULT_WAIT_MS;
+        if (
+          options.wait === false ||
+          attempt > 0 ||
+          wait > SIGNALS_MAX_WAIT_MS
+        ) {
+          throw new RateLimitedError(retryAfter);
         }
         onWait?.(wait);
         await sleep(wait);

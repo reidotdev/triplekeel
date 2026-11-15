@@ -1,6 +1,7 @@
 import type { Report } from "@triplekeel/schema";
 import { adapterForPage } from "./adapters/index.js";
 import { API_BASE, APP_URL } from "./config.js";
+import { LIVE_FLUSH_MESSAGE } from "./live-store.js";
 import {
   PAGE_STATUS_MESSAGE,
   type PageStatus,
@@ -222,6 +223,10 @@ element("open-skills").addEventListener("click", () =>
 // Show the saved state first, then check it with the server. A revoked
 // device gets a 401 here and the popup goes back to "Not connected".
 async function main() {
+  // Live capture sends its queued reports now if a send is due.
+  chrome.runtime
+    .sendMessage({ type: LIVE_FLUSH_MESSAGE })
+    .catch(() => undefined);
   state = await readState(deps.store);
   render();
   const [fresh, active] = await Promise.all([

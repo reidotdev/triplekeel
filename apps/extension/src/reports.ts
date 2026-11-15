@@ -1,5 +1,5 @@
-// Turns scored messages into triplekeel.signal.v1 reports, in the popup.
-// The content script never sends prompt text, so none can get in here.
+// Turns scored messages into triplekeel.signal.v1 reports. buildReport()
+// takes answers and a length, never text, so no prompt text can get in.
 import {
   ANSWERS,
   type Answer,
@@ -12,6 +12,7 @@ import {
   type TrackId,
   type TrackQuestion,
 } from "@triplekeel/schema";
+import type { ScoredAnswer } from "@triplekeel/scorer";
 import type { TrackQuestion as ApiQuestion } from "./api.js";
 import type { ScoredMessage } from "./score-chat.js";
 
@@ -67,4 +68,26 @@ export function buildImportReports(
       importKey: message.importKey,
     }),
   );
+}
+
+/**
+ * One `live` report for a prompt the user just sent, built in the content
+ * script from the answers and the length only. It has no import_key: a live
+ * prompt happens once. Throws if the report is invalid.
+ */
+export function buildLiveReport(
+  answers: readonly ScoredAnswer[],
+  track: TrackId,
+  app: ImportApp,
+  scoredAt: Date,
+  promptLength: number,
+): Report {
+  return buildReport({
+    track,
+    app,
+    source: "live",
+    scoredAt,
+    promptLength,
+    answers,
+  });
 }
