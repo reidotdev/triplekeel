@@ -107,21 +107,10 @@ final class Coach: NSObject, NSApplicationDelegate {
             return clear()
         }
 
-        let range = CFRange(location: found.range.location, length: found.range.length)
-        var bounds = AX.bounds(element, range: range)
-        if let rect = bounds, rect.width <= 0 || rect.height <= 0 { bounds = nil }
+        let (bounds, method, multiLine) = locate(found, in: element, value: value)
 
-        // A rectangle much taller than one character means the text wraps.
-        var multiLine = false
-        if let rect = bounds, let first = AX.bounds(element, range: CFRange(location: range.location, length: 1)),
-           first.height > 0, rect.height > first.height * 1.6 {
-            multiLine = true
-            // Underline only the first line.
-            bounds = CGRect(x: rect.minX, y: first.minY, width: rect.maxX - rect.minX, height: first.height)
-        }
-
-        findings.record(app: app, role: role, read: true, bounds: bounds, multiLine: multiLine)
-        statusLine.title = "\(app.localizedName ?? "App"): \(role ?? "?"), \(value.utf16.count) chars, bounds \(bounds == nil ? "missing" : "ok")"
+        findings.record(app: app, role: role, read: true, bounds: bounds, method: method, multiLine: multiLine)
+        statusLine.title = "\(app.localizedName ?? "App"): \(role ?? "?"), \(value.utf16.count) chars, position: \(method ?? "missing")"
 
         targetApp = app
         targetElement = element
@@ -134,6 +123,57 @@ final class Coach: NSObject, NSApplicationDelegate {
             textRect = nil
             underline.orderOut(nil)
         }
+    }
+
+    /// Finds where the suggestion's text is on screen, trying the exact
+    /// methods first and estimates last. Returns Accessibility coordinates.
+    private func locate(_ found: Suggestion, in element: AXUIElement, value: String) -> (CGRect?, String?, Bool) {
+        let range = CFRange(location: found.range.location, length: found.range.length)
+
+        // 1. Exact: ask the field for the range's bounds. Works in native
+        //    text fields; Chromium usually doesn't answer.
+        if let rect = AX.bounds(element, range: range), rect.width > 0, rect.height > 0 {
+            if let first = AX.bounds(element, range: CFRange(location: range.location, length: 1)),
+               first.height > 0, rect.height > first.height * 1.6 {
+                // Wrapped text: underline only the first line.
+                return (CGRect(x: rect.minX, y: first.minY, width: rect.maxX - rect.minX, height: first.height), "range", true)
+            }
+            return (rect, "range", false)
+        }
+
+        // 2. Chromium: find the AXStaticText run that holds the words and
+        //    ask it for the range, or estimate inside its frame.
+        if let child = AX.staticText(containing: found.original, under: element),
+           let childValue = AX.string(child, kAXValueAttribute) {
+            let ns = childValue as NSString
+            let local = ns.range(of: found.original, options: .caseInsensitive)
+            if local.location != NSNotFound {
+                let childRange = CFRange(location: local.location, length: local.length)
+                if let rect = AX.bounds(child, range: childRange), rect.width > 0, rect.height > 0 {
+                    return (rect, "text run range", false)
+                }
+                if let frame = AX.frame(child) {
+                    return (estimate(local, length: ns.length, in: frame), "text run estimate", frame.height > 30)
+                }
+            }
+        }
+
+        // 3. Last resort: estimate inside the whole field.
+        if let frame = AX.frame(element) {
+            return (estimate(found.range, length: (value as NSString).length, in: frame), "field estimate", frame.height > 40)
+        }
+        return (nil, nil, false)
+    }
+
+    /// Places a range proportionally along the first line of a frame. Rough,
+    /// but enough to test the card and the write-back where Chromium gives
+    /// no exact positions.
+    private func estimate(_ range: NSRange, length: Int, in frame: CGRect) -> CGRect {
+        let total = CGFloat(max(length, 1))
+        let lineHeight = min(frame.height, 22)
+        let x = frame.minX + frame.width * CGFloat(range.location) / total
+        let width = max(frame.width * CGFloat(range.length) / total, 12)
+        return CGRect(x: x, y: frame.minY, width: min(width, frame.maxX - x), height: lineHeight)
     }
 
     private func clear() {

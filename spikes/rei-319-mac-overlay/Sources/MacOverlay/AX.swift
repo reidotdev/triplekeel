@@ -41,6 +41,53 @@ enum AX {
         return AXValueGetValue(value as! AXValue, .cgRect, &rect) ? rect : nil
     }
 
+    /// An element's own frame, in Accessibility coordinates.
+    static func frame(_ element: AXUIElement) -> CGRect? {
+        var positionValue: CFTypeRef?
+        var sizeValue: CFTypeRef?
+        guard AXUIElementCopyAttributeValue(element, kAXPositionAttribute as CFString, &positionValue) == .success,
+              AXUIElementCopyAttributeValue(element, kAXSizeAttribute as CFString, &sizeValue) == .success,
+              let positionValue, let sizeValue,
+              CFGetTypeID(positionValue) == AXValueGetTypeID(), CFGetTypeID(sizeValue) == AXValueGetTypeID()
+        else { return nil }
+        var point = CGPoint.zero
+        var size = CGSize.zero
+        guard AXValueGetValue(positionValue as! AXValue, .cgPoint, &point),
+              AXValueGetValue(sizeValue as! AXValue, .cgSize, &size),
+              size.width > 0, size.height > 0
+        else { return nil }
+        return CGRect(origin: point, size: size)
+    }
+
+    static func children(_ element: AXUIElement) -> [AXUIElement] {
+        var value: CFTypeRef?
+        guard AXUIElementCopyAttributeValue(element, kAXChildrenAttribute as CFString, &value) == .success,
+              let array = value as? [AnyObject]
+        else { return [] }
+        return array.compactMap { item in
+            CFGetTypeID(item) == AXUIElementGetTypeID() ? (item as! AXUIElement) : nil
+        }
+    }
+
+    /// Chromium exposes the text of an editable field as AXStaticText
+    /// children, one per line or run. Finds the first one that contains
+    /// `text`, breadth-first, looking at no more than 300 elements.
+    static func staticText(containing text: String, under root: AXUIElement) -> AXUIElement? {
+        var queue = children(root)
+        var seen = 0
+        while !queue.isEmpty, seen < 300 {
+            let element = queue.removeFirst()
+            seen += 1
+            if string(element, kAXRoleAttribute) == "AXStaticText",
+               let value = string(element, kAXValueAttribute),
+               value.range(of: text, options: .caseInsensitive) != nil {
+                return element
+            }
+            queue.append(contentsOf: children(element))
+        }
+        return nil
+    }
+
     @discardableResult
     static func setSelectedRange(_ element: AXUIElement, _ range: CFRange) -> AXError {
         var range = range
@@ -58,7 +105,9 @@ enum AX {
     static func enableTree(for app: NSRunningApplication) {
         let element = AXUIElementCreateApplication(app.processIdentifier)
         AXUIElementSetAttributeValue(element, "AXManualAccessibility" as CFString, kCFBooleanTrue)
-        if (app.bundleIdentifier ?? "").lowercased().contains("chrome") {
+        let id = (app.bundleIdentifier ?? "").lowercased()
+        let chromium = ["chrome", "chromium", "brave", "edgemac", "vivaldi", "arc", "opera"]
+        if chromium.contains(where: { id.contains($0) }) {
             AXUIElementSetAttributeValue(element, "AXEnhancedUserInterface" as CFString, kCFBooleanTrue)
         }
     }
