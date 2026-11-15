@@ -3,7 +3,8 @@ import PackageDescription
 
 let package = Package(
     name: "MacOverlay",
-    platforms: [.macOS(.v14)],
+    // macOS 26 for Apple's on-device model (Foundation Models).
+    platforms: [.macOS(.v26)],
     targets: [
         .executableTarget(name: "MacOverlay")
     ],

@@ -1,13 +1,18 @@
-# REI-319 Mac overlay spike
+# REI-319 and REI-321 Mac coach prototype
 
-A menu bar app that tests the Grammarly-like part of the Mac coach, with no models:
+A menu bar app that coaches prompts like Grammarly:
 
-1. **Read** the text of the focused text field through the Accessibility API.
-2. **Underline** a piece of it on screen.
-3. **Show a card** on hover, with a hint, a suggested fix and an **Approve** button that unlocks after a short reading delay.
-4. **Replace** the text on Approve.
+1. **Reads** the prompt box you're typing in, through the Accessibility API.
+2. **Checks** the prompt with Apple's on-device model when you pause typing for about a second. The model picks up to two weak spots and writes a senior rewrite of each.
+3. **Underlines** those spots on screen.
+4. **Shows a card** on hover: the habit, why it matters, and the rewrite. **Approve** unlocks after a short reading delay.
+5. **Replaces** the text on Approve. Cmd+Z undoes it.
 
-The suggestions are hardcoded. Type `make it better`, `fix it` or `build an app` to get a real-looking one. Any other text gets a test underline over the first few words.
+Rewrites put details only you know in square brackets, like `[your users]`, so you fill them in yourself.
+
+It only acts on multi-line prompt boxes (`AXTextArea`), so address bars and search fields are ignored. If Apple's model isn't available, it falls back to hardcoded fixes for "make it better" and "fix it".
+
+REI-319 tested the overlay with hardcoded suggestions. REI-321 plugged in the model.
 
 ## Privacy
 
@@ -15,7 +20,7 @@ The app reads only the focused field of the app in front. It skips password fiel
 
 ## Requirements
 
-- macOS 14 or later.
+- macOS 26 on Apple silicon, with Apple Intelligence turned on.
 - The Command Line Tools (`xcode-select --install`).
 - Accessibility permission for your terminal app. The app runs inside the terminal, so macOS asks on behalf of Terminal (or iTerm, Warp and so on).
 
