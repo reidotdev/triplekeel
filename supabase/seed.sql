@@ -339,6 +339,7 @@ select public.sync_track_catalog($catalog${
           "id": "target_user",
           "area_id": "problem_discovery",
           "question_text": "Does the prompt name a specific user or audience?",
+          "card_label": "named a specific user or audience",
           "polarity": "good",
           "answers": [
             "yes",
@@ -351,6 +352,7 @@ select public.sync_track_catalog($catalog${
           "id": "problem",
           "area_id": "problem_discovery",
           "question_text": "Does it state the problem, not only the feature?",
+          "card_label": "stated the problem, not just the feature",
           "polarity": "good",
           "answers": [
             "yes",
@@ -363,6 +365,7 @@ select public.sync_track_catalog($catalog${
           "id": "success_metric",
           "area_id": "metrics",
           "question_text": "Does it define what success looks like?",
+          "card_label": "set a success metric",
           "polarity": "good",
           "answers": [
             "yes",
@@ -375,6 +378,7 @@ select public.sync_track_catalog($catalog${
           "id": "acceptance",
           "area_id": "specs",
           "question_text": "Does it give acceptance criteria?",
+          "card_label": "gave acceptance criteria",
           "polarity": "good",
           "answers": [
             "yes",
@@ -387,6 +391,7 @@ select public.sync_track_catalog($catalog${
           "id": "scope_cut",
           "area_id": "prioritization",
           "question_text": "Does it say what's out of scope or MVP-only?",
+          "card_label": "said what's out of scope",
           "polarity": "good",
           "answers": [
             "yes",
@@ -399,6 +404,7 @@ select public.sync_track_catalog($catalog${
           "id": "decomposed",
           "area_id": "eng_design_collab",
           "question_text": "Does it split the task into steps?",
+          "card_label": "split the task into steps",
           "polarity": "good",
           "answers": [
             "yes",
@@ -411,6 +417,7 @@ select public.sync_track_catalog($catalog${
           "id": "context_given",
           "area_id": "ai_prototyping",
           "question_text": "Does it give examples, references or existing context?",
+          "card_label": "gave examples or existing context",
           "polarity": "good",
           "answers": [
             "yes",
@@ -423,6 +430,7 @@ select public.sync_track_catalog($catalog${
           "id": "specific_feedback",
           "area_id": "ai_prototyping",
           "question_text": "When iterating, is the feedback specific?",
+          "card_label": "gave specific feedback",
           "polarity": "good",
           "answers": [
             "yes",
@@ -435,6 +443,7 @@ select public.sync_track_catalog($catalog${
           "id": "asks_tests",
           "area_id": "ai_product_sense",
           "question_text": "Does it ask for a way to check the result?",
+          "card_label": "asked for a way to check the result",
           "polarity": "good",
           "answers": [
             "yes",
@@ -447,6 +456,7 @@ select public.sync_track_catalog($catalog${
           "id": "cost_latency",
           "area_id": "ai_product_sense",
           "question_text": "Does it mention cost, speed or limits?",
+          "card_label": "mentioned cost, speed or limits",
           "polarity": "good",
           "answers": [
             "yes",
@@ -459,6 +469,7 @@ select public.sync_track_catalog($catalog${
           "id": "edge_cases",
           "area_id": "specs",
           "question_text": "Does it mention errors, empty states or edge cases?",
+          "card_label": "covered errors and edge cases",
           "polarity": "good",
           "answers": [
             "yes",
@@ -471,6 +482,7 @@ select public.sync_track_catalog($catalog${
           "id": "constraints",
           "area_id": "eng_design_collab",
           "question_text": "Does it give technical constraints?",
+          "card_label": "gave technical constraints",
           "polarity": "good",
           "answers": [
             "yes",
@@ -483,6 +495,7 @@ select public.sync_track_catalog($catalog${
           "id": "no_why",
           "area_id": "problem_discovery",
           "question_text": "Does it ask for a feature with no user or reason behind it?",
+          "card_label": "asked for a feature with no user or reason",
           "polarity": "bad",
           "answers": [
             "yes",
@@ -495,6 +508,7 @@ select public.sync_track_catalog($catalog${
           "id": "kitchen_sink",
           "area_id": "prioritization",
           "question_text": "Does it ask for a whole product in one prompt, with no steps or priorities?",
+          "card_label": "asked for a whole product in one prompt",
           "polarity": "bad",
           "answers": [
             "yes",
@@ -507,6 +521,7 @@ select public.sync_track_catalog($catalog${
           "id": "vague_fix",
           "area_id": "ai_prototyping",
           "question_text": "Is it a follow-up that only says \"fix it\"?",
+          "card_label": "asked to \"fix it\" with no detail",
           "polarity": "bad",
           "answers": [
             "yes",
@@ -519,6 +534,7 @@ select public.sync_track_catalog($catalog${
           "id": "blind_accept",
           "area_id": "ai_product_sense",
           "question_text": "Does it accept output without checking it?",
+          "card_label": "accepted output without checking it",
           "polarity": "bad",
           "answers": [
             "yes",
@@ -531,6 +547,7 @@ select public.sync_track_catalog($catalog${
           "id": "metric_interpretation",
           "area_id": "metrics",
           "question_text": "Does it ask how the feature changed a product metric?",
+          "card_label": "asked how a feature moved a metric",
           "polarity": "good",
           "answers": [
             "yes",
@@ -543,6 +560,7 @@ select public.sync_track_catalog($catalog${
           "id": "audience_update",
           "area_id": "stakeholder_comms",
           "question_text": "Does it name who needs the update and what they need to decide?",
+          "card_label": "named who the update is for",
           "polarity": "good",
           "answers": [
             "yes",
@@ -555,6 +573,7 @@ select public.sync_track_catalog($catalog${
           "id": "stakeholder_tradeoff",
           "area_id": "stakeholder_comms",
           "question_text": "Does it state the trade-off stakeholders need to resolve?",
+          "card_label": "stated the trade-off to resolve",
           "polarity": "good",
           "answers": [
             "yes",
@@ -567,6 +586,7 @@ select public.sync_track_catalog($catalog${
           "id": "launch_readiness",
           "area_id": "go_to_market",
           "question_text": "Does it name the launch audience and channel?",
+          "card_label": "named the launch audience and channel",
           "polarity": "good",
           "answers": [
             "yes",
@@ -579,6 +599,7 @@ select public.sync_track_catalog($catalog${
           "id": "launch_learning",
           "area_id": "go_to_market",
           "question_text": "Does it ask how launch results will be measured?",
+          "card_label": "planned how to measure the launch",
           "polarity": "good",
           "answers": [
             "yes",
@@ -591,6 +612,7 @@ select public.sync_track_catalog($catalog${
           "id": "strategic_tradeoff",
           "area_id": "strategy",
           "question_text": "Does it connect the product decision to a company goal?",
+          "card_label": "tied the decision to a company goal",
           "polarity": "good",
           "answers": [
             "yes",
@@ -603,6 +625,7 @@ select public.sync_track_catalog($catalog${
           "id": "commercial_impact",
           "area_id": "strategy",
           "question_text": "Does it name a business outcome such as revenue, retention or cost?",
+          "card_label": "named a business outcome",
           "polarity": "good",
           "answers": [
             "yes",
@@ -615,6 +638,7 @@ select public.sync_track_catalog($catalog${
           "id": "agent_context",
           "area_id": "ai_agents_daily",
           "question_text": "Does it provide reusable project context for an AI agent?",
+          "card_label": "gave an AI agent reusable project context",
           "polarity": "good",
           "answers": [
             "yes",
@@ -627,6 +651,7 @@ select public.sync_track_catalog($catalog${
           "id": "agent_workflow",
           "area_id": "ai_agents_daily",
           "question_text": "Does it define a repeatable AI workflow with human review?",
+          "card_label": "set up a repeatable AI workflow with review",
           "polarity": "good",
           "answers": [
             "yes",

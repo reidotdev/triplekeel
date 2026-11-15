@@ -39,6 +39,15 @@ describe("database catalog", () => {
     }
   });
 
+  it("carries a card label for every product-manager question", () => {
+    // public.build_keel_check copies questions.card_label into the card.
+    const pm = catalog.tracks.find((track) => track.id === "product-manager");
+    expect(pm?.questions.length).toBe(25);
+    for (const question of pm?.questions ?? []) {
+      expect(question.card_label, question.id).toMatch(/^[a-z].{0,79}$/);
+    }
+  });
+
   it("fits the signals.answers ceiling of 100", () => {
     // parseReport() allows QUESTION_IDS.length answers. The table allows 100.
     expect(QUESTION_IDS.length).toBeLessThanOrEqual(100);

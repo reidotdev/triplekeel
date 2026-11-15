@@ -87,10 +87,27 @@ export const SkillAreasFileSchema = z
   })
   .strict();
 
+/**
+ * A short label for the keel check card (REI-279). It completes the
+ * sentence "You ___ in 14 of your last 20 prompts", so it starts with a
+ * past-tense verb in lowercase: "set a success metric". One line, no
+ * trailing period.
+ */
+const CardLabelSchema = z
+  .string()
+  .trim()
+  .min(1)
+  .max(80)
+  .regex(/^[a-z][^\r\n]*[^.\s]$/, {
+    message:
+      "must start with a lowercase letter, fit on one line and not end with a period",
+  });
+
 const QuestionSchema = z
   .object({
     id: QuestionIdSchema,
     text: TextSchema,
+    card_label: CardLabelSchema.optional(),
     area: AreaIdSchema,
     polarity: z.enum(POLARITIES),
     answers: z
