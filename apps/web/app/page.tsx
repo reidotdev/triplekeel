@@ -157,9 +157,9 @@ export default function HomePage() {
       <section aria-labelledby="exa-title" className="exa-section">
         <h2 id="exa-title">Powered by Exa</h2>
         <p>
-          Exa helps Triplekeel find fresh ideas and examples from across the
-          web. Your weekly suggestion connects that new practice to the skills
-          you are building, so learning stays relevant to the work ahead.
+          Exa searches the web for recent articles, podcasts, and examples of
+          the skills you want to build. Triplekeel uses what it finds to shape a
+          focused practice suggestion for your week.
         </p>
       </section>
 

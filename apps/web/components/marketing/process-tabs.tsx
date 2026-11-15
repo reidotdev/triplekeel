@@ -14,16 +14,16 @@ const steps = [
   },
   {
     label: "Skill gap monitoring",
-    title: "See where your skills are moving.",
+    title: "Track skills as they grow.",
     description:
-      "Your skill picture connects repeated signals over time, so strengths become visible and the areas to build are easier to spot.",
+      "Triplekeel brings your prompt scores together over time to show your strengths and the skills you can build next.",
     mockup: "your skill picture",
   },
   {
-    label: "Practice nudges",
-    title: "Get one useful next step.",
+    label: "Nudging",
+    title: "Put your next practice to work.",
     description:
-      "A timely suggestion turns a skill gap into a small practice you can try in the work already on your plate.",
+      "Get a weekly suggestion that targets a skill gap and fits the work you already have to do.",
     mockup: "weekly practice",
   },
 ];
