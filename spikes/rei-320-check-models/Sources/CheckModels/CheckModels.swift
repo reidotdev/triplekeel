@@ -30,10 +30,13 @@ struct CheckModels {
         if let only = options.only { rows = rows.filter { only.contains($0.id) } }
         let habits = try Loader.load([Habit].self, from: options.habitsPath)
         try check(habits, against: rows)
-        let batchSchema = try Schemas.batch(habits)
-        let singleSchema = try Schemas.single()
+        // Derived habits aren't asked. The report works them out.
+        let asked = habits.filter { !Derived.ids.contains($0.id) }
+        let batchSchema = try Schemas.batch(asked)
+        let singleSchema = try Schemas.single(allowNA: false)
+        let singleSchemaNA = try Schemas.single(allowNA: true)
 
-        let runner = Runner(habits: habits)
+        let runner = Runner(habits: asked)
         print("Warming up the model…")
         let warmUpMs = try await runner.warmUp()
         print("Warm-up: \(Int(warmUpMs)) ms. Checking \(rows.count) prompts, \(options.runs) run(s), modes: \(options.modes.joined(separator: ", ")).")
@@ -45,8 +48,9 @@ struct CheckModels {
                     if mode == "batch" {
                         calls.append(await runner.batch(row, run: run, schema: batchSchema))
                     } else {
-                        for habit in habits {
-                            calls.append(await runner.single(row, habit: habit, run: run, schema: singleSchema))
+                        for habit in asked {
+                            let schema = Schemas.naHabits.contains(habit.id) ? singleSchemaNA : singleSchema
+                            calls.append(await runner.single(row, habit: habit, run: run, schema: schema))
                         }
                     }
                     let last = calls.last

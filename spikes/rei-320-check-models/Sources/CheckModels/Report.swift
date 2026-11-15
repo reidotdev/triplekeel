@@ -37,6 +37,7 @@ struct Report {
         out.append("- **Strict:** the answer matches the label exactly. Labels of n/a are skipped, as in REI-247.")
         out.append("- **Found vs not found:** yes and partly count as the same.")
         out.append("- **Quote in prompt:** for yes and partly answers, the quote appears word for word in the prompt.")
+        out.append("- **Derived:** `no_why` isn't asked. It's yes when `target_user` and `problem` are both no. n/a is offered only for `specific_feedback` and `vague_fix`.")
         out.append("")
 
         // Per-habit table.
@@ -110,16 +111,39 @@ struct Report {
         }
     }
 
+    /// All answers for each run and prompt, including derived habits.
+    /// Habits with no answer, for example after an error, are "missing",
+    /// so a crash can't raise the score.
+    private func answerSets(mode: String) -> [(promptID: String, answers: [String: Verdict])] {
+        var groups: [String: (promptID: String, answers: [String: Verdict])] = [:]
+        var order: [String] = []
+        for call in calls where call.mode == mode {
+            let key = "\(call.run)/\(call.promptID)"
+            if groups[key] == nil {
+                groups[key] = (call.promptID, [:])
+                order.append(key)
+            }
+            for verdict in call.verdicts { groups[key]?.answers[verdict.habit] = verdict }
+        }
+        return order.compactMap { key in
+            guard var group = groups[key] else { return nil }
+            let plain = group.answers.mapValues(\.answer)
+            for verdict in Derived.verdicts(from: plain) { group.answers[verdict.habit] = verdict }
+            for habit in habits where group.answers[habit.id] == nil {
+                group.answers[habit.id] = Verdict(habit: habit.id, answer: "missing", quote: "")
+            }
+            return group
+        }
+    }
+
     func agreement(mode: String, habit: String? = nil) -> Agreement {
         var a = Agreement()
         let expected = Dictionary(uniqueKeysWithValues: rows.map { ($0.id, $0.expected) })
-        // Errored calls count as misses, so a crash can't raise the score.
-        for call in calls where call.mode == mode {
-            let habitIDs = call.habit.map { [$0] } ?? habits.map(\.id)
-            for id in habitIDs where habit == nil || habit == id {
-                guard let label = expected[call.promptID]?[id], label != "n/a" else { continue }
+        for entry in answerSets(mode: mode) {
+            for id in habits.map(\.id) where habit == nil || habit == id {
+                guard let label = expected[entry.promptID]?[id], label != "n/a" else { continue }
                 a.total += 1
-                let answer = call.verdicts.first { $0.habit == id }?.answer ?? "missing"
+                let answer = entry.answers[id]?.answer ?? "missing"
                 if answer == label { a.strict += 1 }
                 let found = answer == "yes" || answer == "partly"
                 let shouldFind = label == "yes" || label == "partly"
@@ -154,12 +178,18 @@ struct Report {
 
     private func missList(mode: String) -> [String] {
         let expected = Dictionary(uniqueKeysWithValues: rows.map { ($0.id, $0.expected) })
-        return verdicts(mode: mode).compactMap { item -> String? in
-            let (promptID, verdict) = item
-            guard let label = expected[promptID]?[verdict.habit], label != "n/a", label != verdict.answer else { return nil }
-            let quote = verdict.quote.isEmpty ? "" : " · \"\(verdict.quote)\""
-            return "\(promptID) \(verdict.habit): said \(verdict.answer), label \(label)\(quote)"
+        var misses: [String] = []
+        for entry in answerSets(mode: mode) {
+            for habit in habits {
+                guard let verdict = entry.answers[habit.id],
+                      let label = expected[entry.promptID]?[habit.id], label != "n/a", label != verdict.answer
+                else { continue }
+                let quote = verdict.quote.isEmpty ? "" : " · \"\(verdict.quote)\""
+                let derived = Derived.ids.contains(habit.id) ? " (derived)" : ""
+                misses.append("\(entry.promptID) \(habit.id)\(derived): said \(verdict.answer), label \(label)\(quote)")
+            }
         }
+        return misses
     }
 
     // MARK: - Helpers

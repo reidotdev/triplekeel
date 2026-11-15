@@ -4,33 +4,39 @@ import FoundationModels
 /// `DynamicGenerationSchema`. This avoids the `@Generable` macro, whose
 /// plugin ships only with full Xcode, not the Command Line Tools.
 enum Schemas {
-    /// Answer values the model may pick. `notApplicable` maps to "n/a".
-    static let answers = ["yes", "partly", "no", "notApplicable"]
+    /// Only follow-up habits may be n/a. The first full run overused n/a
+    /// when every habit allowed it.
+    static let naHabits: Set<String> = ["specific_feedback", "vague_fix"]
 
-    static let quoteDescription =
-        "The exact words copied from the prompt that show this habit. An empty string if nothing in the prompt shows it."
     static let answerDescription =
-        "yes if the prompt clearly shows the habit, partly if only partly, no if it doesn't, notApplicable only if the habit can't apply to this kind of prompt."
+        "yes if the prompt clearly shows the habit, partly if only partly, no if it doesn't."
+    static let quoteDescription =
+        "Only if the answer is yes or partly: the exact words copied from the prompt that show the habit. Otherwise an empty string."
 
-    private static func answer() -> DynamicGenerationSchema {
-        DynamicGenerationSchema(name: "Answer", description: "One habit answer.", anyOf: answers)
+    private static func answer(allowNA: Bool) -> DynamicGenerationSchema {
+        DynamicGenerationSchema(
+            name: allowNA ? "AnswerWithNA" : "Answer",
+            description: allowNA ? "notApplicable if the prompt starts something new instead of following up." : "One habit answer.",
+            anyOf: allowNA ? ["yes", "partly", "no", "notApplicable"] : ["yes", "partly", "no"]
+        )
     }
 
-    /// One habit check. The quote comes first so the model finds the
-    /// evidence before it answers.
-    private static func habitCheck() -> DynamicGenerationSchema {
+    /// One habit check. The answer comes first, and the quote is only
+    /// asked for when the answer is yes or partly. The first run, with the
+    /// quote first, nearly always found something to quote.
+    private static func habitCheck(allowNA: Bool) -> DynamicGenerationSchema {
         DynamicGenerationSchema(
-            name: "HabitCheck",
+            name: allowNA ? "HabitCheckWithNA" : "HabitCheck",
             properties: [
+                .init(name: "answer", description: answerDescription, schema: DynamicGenerationSchema(referenceTo: allowNA ? "AnswerWithNA" : "Answer")),
                 .init(name: "quote", description: quoteDescription, schema: DynamicGenerationSchema(type: String.self)),
-                .init(name: "answer", description: answerDescription, schema: DynamicGenerationSchema(referenceTo: "Answer")),
             ]
         )
     }
 
     /// Single mode: one habit per call.
-    static func single() throws -> GenerationSchema {
-        try GenerationSchema(root: habitCheck(), dependencies: [answer()])
+    static func single(allowNA: Bool) throws -> GenerationSchema {
+        try GenerationSchema(root: habitCheck(allowNA: allowNA), dependencies: [answer(allowNA: allowNA)])
     }
 
     /// Batch mode: one property per habit, named by its track ID and
@@ -39,16 +45,38 @@ enum Schemas {
         let root = DynamicGenerationSchema(
             name: "PromptCheck",
             properties: habits.map { habit in
-                .init(name: habit.id, description: habit.definition, schema: DynamicGenerationSchema(referenceTo: "HabitCheck"))
+                .init(
+                    name: habit.id,
+                    description: habit.definition,
+                    schema: DynamicGenerationSchema(referenceTo: naHabits.contains(habit.id) ? "HabitCheckWithNA" : "HabitCheck")
+                )
             }
         )
-        return try GenerationSchema(root: root, dependencies: [habitCheck(), answer()])
+        return try GenerationSchema(
+            root: root,
+            dependencies: [habitCheck(allowNA: false), habitCheck(allowNA: true), answer(allowNA: false), answer(allowNA: true)]
+        )
     }
 
     /// Reads one habit check out of generated content.
     static func verdict(from content: GeneratedContent, habit: String) throws -> Verdict {
-        let quote = try content.value(String.self, forProperty: "quote")
         let answer = try content.value(String.self, forProperty: "answer")
+        let quote = try content.value(String.self, forProperty: "quote")
         return Verdict(habit: habit, answer: answer == "notApplicable" ? "n/a" : answer, quote: quote)
+    }
+}
+
+/// Habits worked out from other answers instead of asked. The first run
+/// flagged `no_why` on almost any feature request.
+enum Derived {
+    static let ids: Set<String> = ["no_why"]
+
+    /// `no_why`: a feature with no user and no reason behind it.
+    static func verdicts(from answers: [String: String]) -> [Verdict] {
+        guard let user = answers["target_user"], let problem = answers["problem"] else {
+            return [Verdict(habit: "no_why", answer: "missing", quote: "")]
+        }
+        let answer = (user == "no" && problem == "no") ? "yes" : "no"
+        return [Verdict(habit: "no_why", answer: answer, quote: "")]
     }
 }
