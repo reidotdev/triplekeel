@@ -1,6 +1,8 @@
 import { createScorer } from "@triplekeel/scorer";
 import { adapterForPage } from "./adapters/index.js";
+import { findPromptEditor, promptText } from "./adapters/shared.js";
 import { createImportKeyer, installSecret } from "./import-key.js";
+import { startLiveCapture } from "./live-capture.js";
 import {
   PAGE_STATUS_MESSAGE,
   type PageStatus,
@@ -12,7 +14,9 @@ import { ScoreChatError, scoreChat } from "./score-chat.js";
 
 // The content script reads only what the page shows. It never calls the
 // site's own APIs. Prompt text stays here: the popup gets counts, answers,
-// lengths and import keys. Nothing is stored or logged.
+// lengths and import keys, and the background worker gets live reports.
+// The only place text is kept is live capture's local history of the last
+// 20 scored prompts, in chrome.storage.local. Nothing is logged.
 const adapter = adapterForPage(document, new URL(location.href));
 
 async function runScoreChat(
@@ -66,5 +70,21 @@ if (adapter) {
       }
       void runScoreChat(message, send);
     });
+  });
+
+  // Live capture: each prompt the user sends is scored here, on the page.
+  startLiveCapture({
+    adapter,
+    store: chrome.storage.local,
+    watchStore: (listener) => {
+      const onChanged = (changes: object, area: string) => {
+        if (area === "local") listener(Object.keys(changes));
+      };
+      chrome.storage.onChanged.addListener(onChanged);
+      return () => chrome.storage.onChanged.removeListener(onChanged);
+    },
+    readEditor: () => promptText(findPromptEditor(document)),
+    scorer: createScorer(),
+    sendMessage: (message) => chrome.runtime.sendMessage(message),
   });
 }

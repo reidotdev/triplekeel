@@ -103,6 +103,7 @@ describe("sendReports", () => {
     expect(await sendReports(twice.deps, reports(1))).toEqual({
       ok: false,
       error: "rate_limited",
+      retryAfterMs: 5000,
     });
     expect(twice.server.requests).toHaveLength(2);
     expect(twice.store.data.deviceToken).toBe(TEST_TOKEN);
@@ -111,15 +112,43 @@ describe("sendReports", () => {
     expect(await sendReports(long.deps, reports(1))).toEqual({
       ok: false,
       error: "rate_limited",
+      retryAfterMs: 600_000,
     });
     expect(long.sleeps).toEqual([]);
   });
 
+  it("doesn't wait on a 429 when told not to", async () => {
+    const { deps, server, sleeps } = setup([busy("30"), accepted(1)]);
+    const waits: number[] = [];
+    expect(
+      await sendReports(deps, reports(1), (ms) => waits.push(ms), {
+        wait: false,
+      }),
+    ).toEqual({ ok: false, error: "rate_limited", retryAfterMs: 30_000 });
+    expect(server.requests).toHaveLength(1);
+    expect(sleeps).toEqual([]);
+    expect(waits).toEqual([]);
+
+    const plain = setup([busy()]);
+    expect(
+      await sendReports(plain.deps, reports(1), undefined, { wait: false }),
+    ).toEqual({ ok: false, error: "rate_limited", retryAfterMs: null });
+  });
+
   it("reports other failures without retrying", async () => {
-    const { deps, server } = setup([() => new Response(null, { status: 400 })]);
+    const { deps, server } = setup([() => new Response(null, { status: 500 })]);
     expect(await sendReports(deps, reports(1))).toEqual({
       ok: false,
       error: "failed",
+    });
+    expect(server.requests).toHaveLength(1);
+  });
+
+  it("says when the server refuses the reports with a 400", async () => {
+    const { deps, server } = setup([() => new Response(null, { status: 400 })]);
+    expect(await sendReports(deps, reports(1))).toEqual({
+      ok: false,
+      error: "rejected",
     });
     expect(server.requests).toHaveLength(1);
   });

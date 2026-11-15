@@ -1,7 +1,9 @@
 import {
   type ApiDeps,
+  ApiError,
   apiGet,
   type Me,
+  type PostOptions,
   postSignals,
   type QuestionSet,
   RateLimitedError,
@@ -10,6 +12,7 @@ import {
   type TrackQuestion,
   UnauthorizedError,
 } from "./api.js";
+import { LIVE_DATA_KEYS } from "./live-store.js";
 
 /** The part of `chrome.storage.local` this module uses. */
 export type KeyValueStore = {
@@ -39,10 +42,12 @@ export type SessionDeps = ApiDeps & {
   now?: () => number;
 };
 
-const TOKEN_KEY = "deviceToken";
-const ME_KEY = "me";
-const QUESTIONS_KEY = "questions";
-const ALL_KEYS = [TOKEN_KEY, ME_KEY, QUESTIONS_KEY];
+export const TOKEN_KEY = "deviceToken";
+export const ME_KEY = "me";
+export const QUESTIONS_KEY = "questions";
+// Live capture's queue, history and send state belong to this account, so
+// they go when the account does.
+const ALL_KEYS = [TOKEN_KEY, ME_KEY, QUESTIONS_KEY, ...LIVE_DATA_KEYS];
 
 /** `tkd_` plus 32 random bytes as base64url without padding. */
 const TOKEN_PATTERN = /^tkd_[A-Za-z0-9_-]{43}$/;
@@ -154,7 +159,10 @@ export async function refresh(deps: SessionDeps): Promise<SessionState> {
 
 export type SendResult =
   | ({ ok: true } & SignalsResult)
-  | { ok: false; error: "not_connected" | "rate_limited" | "failed" };
+  | { ok: false; error: "rate_limited"; retryAfterMs: number | null }
+  /** The server answered 400: it won't take these reports, so don't resend. */
+  | { ok: false; error: "rejected" }
+  | { ok: false; error: "not_connected" | "failed" };
 
 /**
  * Sends score reports with the device token. A 401 forgets the token, the
@@ -164,18 +172,29 @@ export async function sendReports(
   deps: SessionDeps,
   reports: readonly unknown[],
   onWait?: (ms: number) => void,
+  options?: PostOptions,
 ): Promise<SendResult> {
   const token = (await deps.store.get([TOKEN_KEY]))[TOKEN_KEY];
   if (!isDeviceToken(token)) return { ok: false, error: "not_connected" };
   try {
-    return { ok: true, ...(await postSignals(deps, token, reports, onWait)) };
+    return {
+      ok: true,
+      ...(await postSignals(deps, token, reports, onWait, options)),
+    };
   } catch (error) {
     if (error instanceof UnauthorizedError) {
       await disconnect(deps.store);
       return { ok: false, error: "not_connected" };
     }
     if (error instanceof RateLimitedError) {
-      return { ok: false, error: "rate_limited" };
+      return {
+        ok: false,
+        error: "rate_limited",
+        retryAfterMs: error.retryAfterMs,
+      };
+    }
+    if (error instanceof ApiError && error.status === 400) {
+      return { ok: false, error: "rejected" };
     }
     return { ok: false, error: "failed" };
   }
@@ -187,7 +206,8 @@ export async function connect(
   token: unknown,
 ): Promise<SessionState> {
   if (!isDeviceToken(token)) return { connected: false };
-  await deps.store.remove([ME_KEY, QUESTIONS_KEY]);
+  // A new connection may be another account: drop the old account's data.
+  await deps.store.remove([ME_KEY, QUESTIONS_KEY, ...LIVE_DATA_KEYS]);
   await deps.store.set({ [TOKEN_KEY]: token });
   return refresh(deps);
 }
