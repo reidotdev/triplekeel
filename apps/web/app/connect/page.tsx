@@ -1,4 +1,5 @@
 import { auth } from "@clerk/nextjs/server";
+import { BrandMark } from "@/components/brand-mark";
 import { ConnectExtension } from "@/components/devices/connect-extension";
 import { Card, Link } from "@/components/ui";
 
@@ -13,7 +14,7 @@ export default async function ConnectPage() {
   return (
     <main className="mx-auto grid min-h-screen max-w-xl content-start gap-6 px-6 py-12">
       <header>
-        <p className="text-sm text-muted">TripleKeel</p>
+        <BrandMark />
         <h1 className="text-3xl font-semibold">Connect the extension</h1>
       </header>
       <Card className="grid gap-4">

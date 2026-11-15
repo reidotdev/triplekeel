@@ -1,6 +1,7 @@
 import { UserButton } from "@clerk/nextjs";
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
+import { BrandMark } from "@/components/brand-mark";
 import { AutoRefresh } from "@/components/dashboard/auto-refresh";
 import { SkillMatrix } from "@/components/skill-matrix";
 import { Card, Link } from "@/components/ui";
@@ -46,7 +47,7 @@ export default async function DashboardPage() {
     <main className="mx-auto grid min-h-screen max-w-4xl content-start gap-8 px-6 py-12">
       <header className="flex items-center justify-between">
         <div>
-          <p className="text-sm text-muted">TripleKeel</p>
+          <BrandMark />
           <h1 className="text-3xl font-semibold">Your dashboard</h1>
         </div>
         <UserButton />
