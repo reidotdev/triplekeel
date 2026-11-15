@@ -1,0 +1,66 @@
+[
+  {
+    "id": "target_user",
+    "definition": "Names a specific user, customer or audience, like \"freelance designers\" or \"busy parents\". \"Users\" or \"people\" alone is no."
+  },
+  {
+    "id": "problem",
+    "definition": "States the problem or pain the work solves, like \"people forget utility changes\". Describing only the feature is no."
+  },
+  {
+    "id": "success_metric",
+    "definition": "Says how to tell the product worked: a number, target or outcome, like \"cut repeat tickets by 20%\" or \"60% completion\". \"Make it good\" is no."
+  },
+  {
+    "id": "acceptance",
+    "definition": "Lists concrete conditions the finished work must meet to count as done, like \"Done means a user can create an invoice\" or \"search returns a useful article for 8 of 10 queries\". A business target like \"signup rate above 5%\" is a success metric, not acceptance criteria. Saying what to skip is scope, not acceptance."
+  },
+  {
+    "id": "scope_cut",
+    "definition": "Says what to leave out, skip or keep for later, or limits the first version, like \"MVP excludes payments\" or \"don't add social sharing yet\"."
+  },
+  {
+    "id": "decomposed",
+    "definition": "Splits the work into ordered steps or phases, like \"first add dates, then schedule reminders\". A list of features is not steps."
+  },
+  {
+    "id": "context_given",
+    "definition": "Gives examples, references, existing material or the current state to build on, like \"use the existing docs\" or \"keep the current export format\"."
+  },
+  {
+    "id": "specific_feedback",
+    "definition": "Only for follow-ups that change something that already exists. yes if it says exactly what is wrong and what to change. notApplicable if the prompt starts something new."
+  },
+  {
+    "id": "asks_tests",
+    "definition": "Asks for tests or a way to check the result, like \"test overdue invoices\" or \"add a way to verify search quality\"."
+  },
+  {
+    "id": "cost_latency",
+    "definition": "Mentions cost, budget, speed, performance, a deadline or another limit the work must respect, like \"loads in under 2 seconds\" or \"launch next month\"."
+  },
+  {
+    "id": "edge_cases",
+    "definition": "Mentions errors, empty states, invalid input or other edge cases to handle, like \"check the empty-data state\"."
+  },
+  {
+    "id": "constraints",
+    "definition": "Names a technology, platform, library, data store or format to use or keep, like \"Use React and local storage\" or \"keep it mobile-first\"."
+  },
+  {
+    "id": "no_why",
+    "definition": "Bad habit. Asks for a feature or product with no user and no reason behind it, like \"Make me a fitness app.\" Quote the request. no if the prompt names who it is for or why."
+  },
+  {
+    "id": "kitchen_sink",
+    "definition": "Bad habit. Asks for a whole product or many features in one prompt with no steps or priorities. Quote the request. partly if it asks for a broad product in a few words."
+  },
+  {
+    "id": "vague_fix",
+    "definition": "Bad habit. A follow-up that only says to fix it or make it work, with no detail, like \"Fix it.\" no if it says what to fix and how."
+  },
+  {
+    "id": "blind_accept",
+    "definition": "Bad habit. Accepts or ships AI output without checking it, like \"ship whatever it generated\". no if it asks to check or test."
+  }
+]
