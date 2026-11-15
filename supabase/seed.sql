@@ -1,41 +1,586 @@
-insert into public.tracks (id, name, alt_titles)
-values ('product-manager', 'Product manager', array['PM', 'Product owner', 'Associate product manager', 'APM', 'Senior PM'])
-on conflict (id) do update set name = excluded.name, alt_titles = excluded.alt_titles;
-
--- Data mirrors tracks/product-manager/track.yaml, skill-areas.yaml and questions.yaml.
-insert into public.skill_areas (id, track_id, name, junior_description, mid_description, senior_description, exa_queries)
-values
-  ('problem_discovery', 'product-manager', 'Problem discovery and user research', 'Runs interviews from a script someone else wrote.', 'Plans their own research and turns it into clear problem statements.', 'Sets the research agenda for a product area and spots problems before users name them.', '{"junior":["how junior product managers do problem discovery and user research now","common mistakes junior product managers make with problem discovery and user research"],"mid":["how mid-level product managers do problem discovery and user research now","common mistakes mid-level product managers make with problem discovery and user research"],"senior":["how senior product managers do problem discovery and user research now","common mistakes senior product managers make with problem discovery and user research"]}'::jsonb),
-  ('specs', 'product-manager', 'Writing specs and PRDs', 'Writes specs from a template, with help.', 'Writes specs with the user, the problem, success metrics, scope and acceptance criteria.', 'Writes short docs that align several teams and make the key trade-offs explicit.', '{"junior":["how junior product managers do writing specs and PRDs now","common mistakes junior product managers make with writing specs and PRDs"],"mid":["how mid-level product managers do writing specs and PRDs now","common mistakes mid-level product managers make with writing specs and PRDs"],"senior":["how senior product managers do writing specs and PRDs now","common mistakes senior product managers make with writing specs and PRDs"]}'::jsonb),
-  ('prioritization', 'product-manager', 'Prioritization and roadmapping', 'Keeps a backlog in order.', 'Prioritizes with a clear method and explains the trade-offs.', 'Owns the roadmap for an area and says no to good ideas for better ones.', '{"junior":["how junior product managers do prioritization and roadmapping now","common mistakes junior product managers make with prioritization and roadmapping"],"mid":["how mid-level product managers do prioritization and roadmapping now","common mistakes mid-level product managers make with prioritization and roadmapping"],"senior":["how senior product managers do prioritization and roadmapping now","common mistakes senior product managers make with prioritization and roadmapping" ]}'::jsonb),
-  ('metrics', 'product-manager', 'Metrics and experiments', 'Tracks the metrics they''re given.', 'Defines success metrics and designs A/B tests for their features.', 'Sets the metric strategy for an area and judges trade-offs between metrics.', '{"junior":["how junior product managers do metrics and experiments now","common mistakes junior product managers make with metrics and experiments"],"mid":["how mid-level product managers do metrics and experiments now","common mistakes mid-level product managers make with metrics and experiments"],"senior":["how senior product managers do metrics and experiments now","common mistakes senior product managers make with metrics and experiments"]}'::jsonb),
-  ('eng_design_collab', 'product-manager', 'Working with engineering and design', 'Answers questions and writes tickets.', 'Breaks work into steps with the team and handles scope changes.', 'Shapes how the teams work together and unblocks across teams.', '{"junior":["how junior product managers do working with engineering and design now","common mistakes junior product managers make with working with engineering and design"],"mid":["how mid-level product managers do working with engineering and design now","common mistakes mid-level product managers make with working with engineering and design"],"senior":["how senior product managers do working with engineering and design now","common mistakes senior product managers make with working with engineering and design"]}'::jsonb),
-  ('stakeholder_comms', 'product-manager', 'Stakeholder communication', 'Shares updates when asked.', 'Writes clear updates and handles pushback.', 'Aligns leaders on direction and handles conflict between teams.', '{"junior":["how junior product managers do stakeholder communication now","common mistakes junior product managers make with stakeholder communication"],"mid":["how mid-level product managers do stakeholder communication now","common mistakes mid-level product managers make with stakeholder communication"],"senior":["how senior product managers do stakeholder communication now","common mistakes senior product managers make with stakeholder communication"]}'::jsonb),
-  ('ai_prototyping', 'product-manager', 'Prototyping with AI tools', 'Uses Lovable, v0 or Claude to make simple mock-ups.', 'Builds working prototypes to test ideas with users.', 'Uses prototypes to make decisions faster and teaches the team how.', '{"junior":["how junior product managers do prototyping with AI tools now","common mistakes junior product managers make with prototyping with AI tools"],"mid":["how mid-level product managers do prototyping with AI tools now","common mistakes mid-level product managers make with prototyping with AI tools"],"senior":["how senior product managers do prototyping with AI tools now","common mistakes senior product managers make with prototyping with AI tools"]}'::jsonb),
-  ('ai_product_sense', 'product-manager', 'AI product sense', 'Knows what LLMs can and can''t do.', 'Designs features with LLMs, including errors, evals and cost.', 'Decides where AI belongs in the product, and how to measure and govern it.', '{"junior":["how junior product managers do AI product sense now","common mistakes junior product managers make with AI product sense"],"mid":["how mid-level product managers do AI product sense now","common mistakes mid-level product managers make with AI product sense"],"senior":["how senior product managers do AI product sense now","common mistakes senior product managers make with AI product sense"]}'::jsonb),
-  ('go_to_market', 'product-manager', 'Go-to-market and launch', 'Helps with launch checklists.', 'Plans launches with marketing and sales.', 'Shapes positioning and pricing, and learns from launches.', '{"junior":["how junior product managers do go-to-market and launches now","common mistakes junior product managers make with go-to-market and launches"],"mid":["how mid-level product managers do go-to-market and launches now","common mistakes mid-level product managers make with go-to-market and launches"],"senior":["how senior product managers do go-to-market and launches now","common mistakes senior product managers make with go-to-market and launches"]}'::jsonb),
-  ('strategy', 'product-manager', 'Strategy and vision', 'Understands the product strategy.', 'Connects their features to the strategy.', 'Writes the strategy and vision for a product area.', '{"junior":["how junior product managers do product strategy and vision now","common mistakes junior product managers make with product strategy and vision"],"mid":["how mid-level product managers do product strategy and vision now","common mistakes mid-level product managers make with product strategy and vision"],"senior":["how senior product managers do product strategy and vision now","common mistakes senior product managers make with product strategy and vision"]}'::jsonb)
-on conflict (id) do update set track_id = excluded.track_id, name = excluded.name,
-  junior_description = excluded.junior_description, mid_description = excluded.mid_description,
-  senior_description = excluded.senior_description, exa_queries = excluded.exa_queries;
-
-insert into public.questions (id, track_id, area_id, question_text, polarity)
-values
-  ('target_user', 'product-manager', 'problem_discovery', 'Does the prompt name a specific user or audience?', 'good'),
-  ('problem', 'product-manager', 'problem_discovery', 'Does it state the problem, not only the feature?', 'good'),
-  ('success_metric', 'product-manager', 'metrics', 'Does it define what success looks like?', 'good'),
-  ('acceptance', 'product-manager', 'specs', 'Does it give acceptance criteria?', 'good'),
-  ('scope_cut', 'product-manager', 'prioritization', 'Does it say what''s out of scope or MVP-only?', 'good'),
-  ('decomposed', 'product-manager', 'eng_design_collab', 'Does it split the task into steps?', 'good'),
-  ('context_given', 'product-manager', 'ai_prototyping', 'Does it give examples, references or existing context?', 'good'),
-  ('specific_feedback', 'product-manager', 'ai_prototyping', 'When iterating, is the feedback specific?', 'good'),
-  ('asks_tests', 'product-manager', 'ai_product_sense', 'Does it ask for a way to check the result?', 'good'),
-  ('cost_latency', 'product-manager', 'ai_product_sense', 'Does it mention cost, speed or limits?', 'good'),
-  ('edge_cases', 'product-manager', 'specs', 'Does it mention errors, empty states or edge cases?', 'good'),
-  ('constraints', 'product-manager', 'eng_design_collab', 'Does it give technical constraints?', 'good'),
-  ('no_why', 'product-manager', 'problem_discovery', 'Does it ask for a feature with no user or reason behind it?', 'bad'),
-  ('kitchen_sink', 'product-manager', 'prioritization', 'Does it ask for a whole product in one prompt, with no steps or priorities?', 'bad'),
-  ('vague_fix', 'product-manager', 'ai_prototyping', 'Is it a follow-up that only says "fix it"?', 'bad'),
-  ('blind_accept', 'product-manager', 'ai_product_sense', 'Does it accept output without checking it?', 'bad')
-on conflict (id) do update set track_id = excluded.track_id, area_id = excluded.area_id,
-  question_text = excluded.question_text, polarity = excluded.polarity;
+-- Generated from tracks/ by `node scripts/sync-catalog.mts --write-seed`.
+-- Do not edit by hand. A test fails when this file is out of date.
+-- Production gets the same catalog from the deploy job (REI-311).
+select public.sync_track_catalog($catalog${
+  "tracks": [
+    {
+      "id": "product-manager",
+      "name": "Product manager",
+      "alt_titles": [
+        "PM",
+        "Product owner",
+        "Associate product manager",
+        "APM",
+        "Senior PM"
+      ],
+      "areas": [
+        {
+          "id": "problem_discovery",
+          "name": "Problem discovery and user research",
+          "junior_description": "Runs user interviews and reads feedback and usage data, with a senior PM checking the questions.",
+          "mid_description": "Plans their own research and turns it into clear problem statements.",
+          "senior_description": "Sets the research agenda for a product area and spots problems before users name them.",
+          "exa_queries": {
+            "junior": [
+              "product managers talking about user interviews and continuous discovery",
+              "mistakes product managers make with user research",
+              "how junior product managers run user interviews now"
+            ],
+            "mid": [
+              "product managers talking about user interviews and continuous discovery",
+              "mistakes product managers make with user research",
+              "how mid-level product managers run user interviews now"
+            ],
+            "senior": [
+              "product managers talking about user interviews and continuous discovery",
+              "mistakes product managers make with user research",
+              "how senior product managers run user interviews now"
+            ]
+          }
+        },
+        {
+          "id": "specs",
+          "name": "Writing specs and PRDs",
+          "junior_description": "Writes clear tickets with user stories and acceptance criteria.",
+          "mid_description": "Drafts specs with AI, then stress-tests the draft against the user, problem, success metrics, scope and acceptance criteria.",
+          "senior_description": "Reviews AI-drafted specs and keeps the decisions and reasons written down.",
+          "exa_queries": {
+            "junior": [
+              "product managers talking about writing specs and PRDs",
+              "product managers writing PRDs with AI",
+              "common PRD mistakes engineers complain about"
+            ],
+            "mid": [
+              "product managers talking about writing specs and PRDs",
+              "product managers writing PRDs with AI",
+              "common PRD mistakes engineers complain about"
+            ],
+            "senior": [
+              "product managers talking about writing specs and PRDs",
+              "product managers writing PRDs with AI",
+              "common PRD mistakes engineers complain about"
+            ]
+          }
+        },
+        {
+          "id": "prioritization",
+          "name": "Prioritization and roadmapping",
+          "junior_description": "Keeps a backlog in order.",
+          "mid_description": "Prioritizes with a clear method and explains the trade-offs.",
+          "senior_description": "Owns the roadmap for an area and says no to good ideas for better ones.",
+          "exa_queries": {
+            "junior": [
+              "product managers talking about prioritization and roadmapping",
+              "mistakes product managers make with prioritization and roadmapping",
+              "why product roadmaps fail"
+            ],
+            "mid": [
+              "product managers talking about prioritization and roadmapping",
+              "mistakes product managers make with prioritization and roadmapping",
+              "why product roadmaps fail"
+            ],
+            "senior": [
+              "product managers talking about prioritization and roadmapping",
+              "mistakes product managers make with prioritization and roadmapping",
+              "why product roadmaps fail"
+            ]
+          }
+        },
+        {
+          "id": "metrics",
+          "name": "Metrics and experiments",
+          "junior_description": "Reads product metrics and reports how their features perform.",
+          "mid_description": "Defines success metrics, designs A/B tests for their features and evaluates AI output.",
+          "senior_description": "Sets the metric strategy for an area and judges trade-offs between metrics.",
+          "exa_queries": {
+            "junior": [
+              "product managers talking about metrics and experiments",
+              "mistakes product managers make with A/B tests",
+              "how product managers evaluate AI feature quality"
+            ],
+            "mid": [
+              "product managers talking about metrics and experiments",
+              "mistakes product managers make with A/B tests",
+              "how product managers evaluate AI feature quality"
+            ],
+            "senior": [
+              "product managers talking about metrics and experiments",
+              "mistakes product managers make with A/B tests",
+              "how product managers evaluate AI feature quality"
+            ]
+          }
+        },
+        {
+          "id": "eng_design_collab",
+          "name": "Delivery with engineering and design",
+          "junior_description": "Runs the backlog, triages bugs and checks release readiness.",
+          "mid_description": "Brings design and engineering in while the problem is still open, then handles scope changes.",
+          "senior_description": "Shapes how the teams work together and unblocks across teams.",
+          "exa_queries": {
+            "junior": [
+              "how PMs work with designers",
+              "product manager and engineering lead relationship",
+              "how junior product managers run backlog, bug triage and release readiness"
+            ],
+            "mid": [
+              "how PMs work with designers",
+              "product manager and engineering lead relationship",
+              "PM and tech lead trade-offs"
+            ],
+            "senior": [
+              "how PMs work with designers",
+              "product manager and engineering lead relationship",
+              "shipping with your engineering team"
+            ]
+          }
+        },
+        {
+          "id": "stakeholder_comms",
+          "name": "Stakeholder communication",
+          "junior_description": "Shares updates when asked.",
+          "mid_description": "Writes clear updates for each audience and influences without authority.",
+          "senior_description": "Aligns leaders on direction and handles conflict between teams.",
+          "exa_queries": {
+            "junior": [
+              "product managers talking about stakeholder communication",
+              "mistakes product managers make with stakeholder communication",
+              "how junior product managers write stakeholder updates"
+            ],
+            "mid": [
+              "product managers talking about stakeholder communication",
+              "mistakes product managers make with stakeholder communication",
+              "how mid-level product managers write stakeholder updates"
+            ],
+            "senior": [
+              "product managers talking about stakeholder communication",
+              "mistakes product managers make with stakeholder communication",
+              "how senior product managers write stakeholder updates"
+            ]
+          }
+        },
+        {
+          "id": "ai_prototyping",
+          "name": "Prototyping with AI tools",
+          "junior_description": "Builds clickable prototypes with AI tools so the team sees a working example.",
+          "mid_description": "Builds working prototypes with the real prompt and realistic data, and tests them with users.",
+          "senior_description": "Uses prototypes to make decisions faster and teaches the team how.",
+          "exa_queries": {
+            "junior": [
+              "product managers talking about prototyping with AI tools",
+              "mistakes product managers make with prototyping with AI tools",
+              "AI prototyping mistakes product managers make"
+            ],
+            "mid": [
+              "product managers talking about prototyping with AI tools",
+              "mistakes product managers make with prototyping with AI tools",
+              "AI prototyping mistakes product managers make"
+            ],
+            "senior": [
+              "product managers talking about prototyping with AI tools",
+              "mistakes product managers make with prototyping with AI tools",
+              "AI prototyping mistakes product managers make"
+            ]
+          }
+        },
+        {
+          "id": "ai_product_sense",
+          "name": "AI product sense",
+          "junior_description": "Knows what LLMs can and can’t do, and checks AI output instead of trusting it.",
+          "mid_description": "Designs features with LLMs, including errors, evals and cost.",
+          "senior_description": "Decides where AI belongs in the product, and treats trust as a product requirement.",
+          "exa_queries": {
+            "junior": [
+              "when not to use AI in a product",
+              "LLM product decisions",
+              "evals for AI features"
+            ],
+            "mid": [
+              "when not to use AI in a product",
+              "LLM product decisions",
+              "evals for AI features"
+            ],
+            "senior": [
+              "when not to use AI in a product",
+              "LLM product decisions",
+              "evals for AI features"
+            ]
+          }
+        },
+        {
+          "id": "go_to_market",
+          "name": "Go-to-market and launch",
+          "junior_description": "Helps with launch checklists.",
+          "mid_description": "Plans launches with marketing and sales.",
+          "senior_description": "Shapes positioning and pricing, and learns from launches.",
+          "exa_queries": {
+            "junior": [
+              "product managers talking about launching a product with marketing and sales",
+              "mistakes product managers make with go-to-market and launch",
+              "how junior product managers prepare a product launch"
+            ],
+            "mid": [
+              "product managers talking about launching a product with marketing and sales",
+              "mistakes product managers make with go-to-market and launch",
+              "how mid-level product managers prepare a product launch"
+            ],
+            "senior": [
+              "product managers talking about launching a product with marketing and sales",
+              "mistakes product managers make with go-to-market and launch",
+              "senior product manager positioning and pricing decisions"
+            ]
+          }
+        },
+        {
+          "id": "strategy",
+          "name": "Strategy and vision",
+          "junior_description": "Understands the product strategy.",
+          "mid_description": "Writes the strategy for their own product area, tied to company goals.",
+          "senior_description": "Owns the strategy for a domain or several products, and ties it to commercial results.",
+          "exa_queries": {
+            "junior": [
+              "product managers talking about strategy and vision",
+              "mistakes product managers make with strategy and vision",
+              "how junior product managers write a product strategy"
+            ],
+            "mid": [
+              "product managers talking about strategy and vision",
+              "mistakes product managers make with strategy and vision",
+              "how mid-level product managers write a product strategy"
+            ],
+            "senior": [
+              "product managers talking about strategy and vision",
+              "mistakes product managers make with strategy and vision",
+              "how senior product managers write a product strategy"
+            ]
+          }
+        },
+        {
+          "id": "ai_agents_daily",
+          "name": "Working with AI agents day to day",
+          "junior_description": "Uses AI assistants for drafts, notes and research, and checks the output.",
+          "mid_description": "Keeps context files and reusable prompts or skills, and automates routine work.",
+          "senior_description": "Builds a shared AI workflow for the team.",
+          "exa_queries": {
+            "junior": [
+              "how junior product managers use AI tools in their work",
+              "product managers showing their AI workflow with Claude Code, Codex or Cursor",
+              "how junior product managers use AI agents in their daily work"
+            ],
+            "mid": [
+              "how mid-level product managers use AI tools in their work",
+              "product managers showing their AI workflow with Claude Code, Codex or Cursor",
+              "how mid-level product managers use AI agents in their daily work"
+            ],
+            "senior": [
+              "how senior product managers use AI tools in their work",
+              "product managers showing their AI workflow with Claude Code, Codex or Cursor",
+              "how senior product managers use AI agents in their daily work"
+            ]
+          }
+        }
+      ],
+      "questions": [
+        {
+          "id": "target_user",
+          "area_id": "problem_discovery",
+          "question_text": "Does the prompt name a specific user or audience?",
+          "polarity": "good",
+          "answers": [
+            "yes",
+            "partly",
+            "no",
+            "n/a"
+          ]
+        },
+        {
+          "id": "problem",
+          "area_id": "problem_discovery",
+          "question_text": "Does it state the problem, not only the feature?",
+          "polarity": "good",
+          "answers": [
+            "yes",
+            "partly",
+            "no",
+            "n/a"
+          ]
+        },
+        {
+          "id": "success_metric",
+          "area_id": "metrics",
+          "question_text": "Does it define what success looks like?",
+          "polarity": "good",
+          "answers": [
+            "yes",
+            "partly",
+            "no",
+            "n/a"
+          ]
+        },
+        {
+          "id": "acceptance",
+          "area_id": "specs",
+          "question_text": "Does it give acceptance criteria?",
+          "polarity": "good",
+          "answers": [
+            "yes",
+            "partly",
+            "no",
+            "n/a"
+          ]
+        },
+        {
+          "id": "scope_cut",
+          "area_id": "prioritization",
+          "question_text": "Does it say what's out of scope or MVP-only?",
+          "polarity": "good",
+          "answers": [
+            "yes",
+            "partly",
+            "no",
+            "n/a"
+          ]
+        },
+        {
+          "id": "decomposed",
+          "area_id": "eng_design_collab",
+          "question_text": "Does it split the task into steps?",
+          "polarity": "good",
+          "answers": [
+            "yes",
+            "partly",
+            "no",
+            "n/a"
+          ]
+        },
+        {
+          "id": "context_given",
+          "area_id": "ai_prototyping",
+          "question_text": "Does it give examples, references or existing context?",
+          "polarity": "good",
+          "answers": [
+            "yes",
+            "partly",
+            "no",
+            "n/a"
+          ]
+        },
+        {
+          "id": "specific_feedback",
+          "area_id": "ai_prototyping",
+          "question_text": "When iterating, is the feedback specific?",
+          "polarity": "good",
+          "answers": [
+            "yes",
+            "partly",
+            "no",
+            "n/a"
+          ]
+        },
+        {
+          "id": "asks_tests",
+          "area_id": "ai_product_sense",
+          "question_text": "Does it ask for a way to check the result?",
+          "polarity": "good",
+          "answers": [
+            "yes",
+            "partly",
+            "no",
+            "n/a"
+          ]
+        },
+        {
+          "id": "cost_latency",
+          "area_id": "ai_product_sense",
+          "question_text": "Does it mention cost, speed or limits?",
+          "polarity": "good",
+          "answers": [
+            "yes",
+            "partly",
+            "no",
+            "n/a"
+          ]
+        },
+        {
+          "id": "edge_cases",
+          "area_id": "specs",
+          "question_text": "Does it mention errors, empty states or edge cases?",
+          "polarity": "good",
+          "answers": [
+            "yes",
+            "partly",
+            "no",
+            "n/a"
+          ]
+        },
+        {
+          "id": "constraints",
+          "area_id": "eng_design_collab",
+          "question_text": "Does it give technical constraints?",
+          "polarity": "good",
+          "answers": [
+            "yes",
+            "partly",
+            "no",
+            "n/a"
+          ]
+        },
+        {
+          "id": "no_why",
+          "area_id": "problem_discovery",
+          "question_text": "Does it ask for a feature with no user or reason behind it?",
+          "polarity": "bad",
+          "answers": [
+            "yes",
+            "partly",
+            "no",
+            "n/a"
+          ]
+        },
+        {
+          "id": "kitchen_sink",
+          "area_id": "prioritization",
+          "question_text": "Does it ask for a whole product in one prompt, with no steps or priorities?",
+          "polarity": "bad",
+          "answers": [
+            "yes",
+            "partly",
+            "no",
+            "n/a"
+          ]
+        },
+        {
+          "id": "vague_fix",
+          "area_id": "ai_prototyping",
+          "question_text": "Is it a follow-up that only says \"fix it\"?",
+          "polarity": "bad",
+          "answers": [
+            "yes",
+            "partly",
+            "no",
+            "n/a"
+          ]
+        },
+        {
+          "id": "blind_accept",
+          "area_id": "ai_product_sense",
+          "question_text": "Does it accept output without checking it?",
+          "polarity": "bad",
+          "answers": [
+            "yes",
+            "partly",
+            "no",
+            "n/a"
+          ]
+        },
+        {
+          "id": "metric_interpretation",
+          "area_id": "metrics",
+          "question_text": "Does it ask how the feature changed a product metric?",
+          "polarity": "good",
+          "answers": [
+            "yes",
+            "partly",
+            "no",
+            "n/a"
+          ]
+        },
+        {
+          "id": "audience_update",
+          "area_id": "stakeholder_comms",
+          "question_text": "Does it name who needs the update and what they need to decide?",
+          "polarity": "good",
+          "answers": [
+            "yes",
+            "partly",
+            "no",
+            "n/a"
+          ]
+        },
+        {
+          "id": "stakeholder_tradeoff",
+          "area_id": "stakeholder_comms",
+          "question_text": "Does it state the trade-off stakeholders need to resolve?",
+          "polarity": "good",
+          "answers": [
+            "yes",
+            "partly",
+            "no",
+            "n/a"
+          ]
+        },
+        {
+          "id": "launch_readiness",
+          "area_id": "go_to_market",
+          "question_text": "Does it name the launch audience and channel?",
+          "polarity": "good",
+          "answers": [
+            "yes",
+            "partly",
+            "no",
+            "n/a"
+          ]
+        },
+        {
+          "id": "launch_learning",
+          "area_id": "go_to_market",
+          "question_text": "Does it ask how launch results will be measured?",
+          "polarity": "good",
+          "answers": [
+            "yes",
+            "partly",
+            "no",
+            "n/a"
+          ]
+        },
+        {
+          "id": "strategic_tradeoff",
+          "area_id": "strategy",
+          "question_text": "Does it connect the product decision to a company goal?",
+          "polarity": "good",
+          "answers": [
+            "yes",
+            "partly",
+            "no",
+            "n/a"
+          ]
+        },
+        {
+          "id": "commercial_impact",
+          "area_id": "strategy",
+          "question_text": "Does it name a business outcome such as revenue, retention or cost?",
+          "polarity": "good",
+          "answers": [
+            "yes",
+            "partly",
+            "no",
+            "n/a"
+          ]
+        },
+        {
+          "id": "agent_context",
+          "area_id": "ai_agents_daily",
+          "question_text": "Does it provide reusable project context for an AI agent?",
+          "polarity": "good",
+          "answers": [
+            "yes",
+            "partly",
+            "no",
+            "n/a"
+          ]
+        },
+        {
+          "id": "agent_workflow",
+          "area_id": "ai_agents_daily",
+          "question_text": "Does it define a repeatable AI workflow with human review?",
+          "polarity": "good",
+          "answers": [
+            "yes",
+            "partly",
+            "no",
+            "n/a"
+          ]
+        }
+      ]
+    }
+  ]
+}$catalog$::jsonb);

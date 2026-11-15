@@ -1,6 +1,6 @@
 # Supabase database
 
-Run `supabase start`, then `supabase db reset` to apply migrations and load the placeholder product-manager track. Run database tests with `supabase test db`.
+Run `supabase start`, then `supabase db reset` to apply migrations and load the track catalog from `supabase/seed.sql`. Run database tests with `supabase test db`.
 
 ## Device signal writes
 
@@ -19,7 +19,15 @@ Only the `anon` database role has `EXECUTE` on the function. The role has no dir
 
 The `authenticated` role can read a user's own profile, devices, signals, and levels using the Clerk JWT `sub`. It cannot read device token hashes or execute the device write function. Anonymous and authenticated users can read the seeded track catalog.
 
-`signals` stores only the report fields: track, app, source, UTC hour, length bucket, answers, and optional import key. It has no prompt text or arbitrary text field. The RPC validates exact report and answer keys before insertion. The SQL seed mirrors the placeholder PM track files under `tracks/product-manager/`, including skill descriptions, Exa queries, and questions.
+`signals` stores only the report fields: track, app, source, UTC hour, length bucket, answers, and optional import key. It has no prompt text or arbitrary text field. The RPC validates exact report and answer keys before insertion. A report can have one answer per question in its track, and the table caps answers at 100.
+
+## Track catalog
+
+`tracks/` is the source of truth for `tracks`, `skill_areas` and `questions`. `public.sync_track_catalog(jsonb)` upserts them. It never deletes rows, because stored signals name question IDs. It raises `catalog_question_in_other_track` or `catalog_area_in_other_track` instead of moving a row between tracks. Only `service_role` can execute it.
+
+- Local: `supabase/seed.sql` is generated and calls the function. After you change a track file, run `node scripts/sync-catalog.mts --write-seed`. A test fails while the seed is out of date.
+- Production: the deploy job runs `node scripts/sync-catalog.mts` after `supabase db push`, with the service-role key. The script then reads the catalog back with the anon key and fails if it differs from `tracks/`.
+- CI: after `supabase db reset`, CI runs the same sync and check against the local stack.
 
 ## Device connect
 
