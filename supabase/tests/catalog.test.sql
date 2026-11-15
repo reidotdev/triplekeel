@@ -1,6 +1,6 @@
 begin;
 
-select plan(20);
+select plan(24);
 
 -- seed.sql loads the catalog from tracks/ through sync_track_catalog.
 select is((select count(*)::int from public.questions where track_id = 'product-manager'), 25, 'seed loads all 25 PM questions');
@@ -11,6 +11,12 @@ select is(
   '{"junior": 0, "mid": 1, "senior": 2}'::jsonb,
   'seed loads area thresholds from the track file'
 );
+select is(
+  (select count(*)::int from public.questions where track_id = 'product-manager' and card_label is not null),
+  25,
+  'seed loads a card label for every PM question'
+);
+select is((select card_label from public.questions where id = 'success_metric'), 'set a success metric', 'seed loads card labels from the track file');
 
 insert into public.devices (id, user_id, token_hash)
 values ('00000000-0000-0000-0000-000000000011', 'clerk_user_catalog', repeat('d', 64));
@@ -47,7 +53,7 @@ create temporary table catalog_input as
 select jsonb_build_object('tracks', jsonb_build_array(jsonb_build_object(
   'id', t.id, 'name', t.name, 'alt_titles', to_jsonb(t.alt_titles),
   'areas', (select jsonb_agg(jsonb_build_object('id', a.id, 'name', a.name, 'thresholds', a.thresholds, 'junior_description', a.junior_description, 'mid_description', a.mid_description, 'senior_description', a.senior_description, 'exa_queries', a.exa_queries)) from public.skill_areas a where a.track_id = t.id),
-  'questions', (select jsonb_agg(jsonb_build_object('id', q.id, 'area_id', q.area_id, 'question_text', q.question_text, 'polarity', q.polarity, 'answers', to_jsonb(q.answers))) from public.questions q where q.track_id = t.id)
+  'questions', (select jsonb_agg(jsonb_build_object('id', q.id, 'area_id', q.area_id, 'question_text', q.question_text, 'card_label', q.card_label, 'polarity', q.polarity, 'answers', to_jsonb(q.answers))) from public.questions q where q.track_id = t.id)
 ))) as catalog
 from public.tracks t where t.id = 'product-manager';
 
@@ -74,6 +80,17 @@ select public.sync_track_catalog(jsonb_set(
    where q->>'id' <> 'agent_workflow')
 ));
 select is((select question_text from public.questions where id = 'problem'), 'New wording?', 'sync updates changed question text');
+
+select public.sync_track_catalog(jsonb_set(
+  (select catalog from catalog_input), '{tracks,0,questions}',
+  (select jsonb_agg(case when q->>'id' = 'problem' then jsonb_set(q, '{card_label}', '"named the problem"') else q end)
+   from jsonb_array_elements((select catalog from catalog_input)->'tracks'->0->'questions') as q)
+));
+select is((select card_label from public.questions where id = 'problem'), 'named the problem', 'sync updates a changed card label');
+select throws_ok(
+  $$select public.sync_track_catalog(jsonb_set((select catalog from catalog_input), '{tracks,0,questions,0,card_label}', '7'))$$,
+  'P0001', 'invalid_catalog', 'a card label that is not a string is rejected'
+);
 
 select public.sync_track_catalog(jsonb_set(
   (select catalog from catalog_input), '{tracks,0,areas}',

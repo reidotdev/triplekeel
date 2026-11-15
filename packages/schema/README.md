@@ -14,7 +14,7 @@ Each track lives in `tracks/<track-id>/` with three files:
 
 - `track.yaml`: `id`, `name`, `levels` (always `[junior, mid, senior]`), `alt_titles`.
 - `skill-areas.yaml`: `areas`, each with `id`, `name`, and `levels.{junior,mid,senior}` holding a `description` and `exa_queries`.
-- `questions.yaml`: `questions`, each with `id`, `text`, `area`, `polarity` and `answers`.
+- `questions.yaml`: `questions`, each with `id`, `text`, `area`, `polarity` and `answers`, and an optional `card_label` for the keel check card.
 
 `checkTrack()` validates the three parsed files. It also checks that:
 

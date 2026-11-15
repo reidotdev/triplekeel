@@ -68,6 +68,18 @@ describe("checkTrack", () => {
     ).toMatch(/questions\.yaml/);
   });
 
+  it("accepts a short card label and rejects a sentence", () => {
+    const input = validInput() as Mutable;
+    input.questions.questions[0].card_label = "set a success metric";
+    expect(checkTrack(input as TrackInput).ok).toBe(true);
+    for (const label of ["Set a success metric", "set a metric.", "a\nb", ""]) {
+      const errors = errorsFor(
+        (i) => (i.questions.questions[0].card_label = label),
+      );
+      expect(errors.join()).toMatch(/card_label/);
+    }
+  });
+
   it("rejects a track ID that doesn't match the folder", () => {
     const errors = errorsFor((i) => (i.folder = "other-track"));
     expect(errors.join()).toMatch(/must match the folder name/);

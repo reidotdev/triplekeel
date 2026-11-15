@@ -19,6 +19,8 @@ export type CatalogQuestion = {
   id: string;
   area_id: string;
   question_text: string;
+  /** The keel check card label (REI-279), or null when the track has none. */
+  card_label: string | null;
   polarity: "good" | "bad";
   answers: string[];
 };
@@ -61,6 +63,7 @@ export function buildCatalog(tracks: readonly Track[]): Catalog {
         id: question.id,
         area_id: question.area,
         question_text: question.text,
+        card_label: question.card_label ?? null,
         polarity: question.polarity,
         answers: [...question.answers],
       })),
