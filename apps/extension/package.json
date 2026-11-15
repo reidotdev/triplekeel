@@ -6,6 +6,10 @@
   "scripts": {
     "build": "node scripts/build.mjs"
   },
+  "dependencies": {
+    "@triplekeel/schema": "workspace:*",
+    "@triplekeel/scorer": "workspace:*"
+  },
   "devDependencies": {
     "@types/chrome": "^0.3.7",
     "@types/node": "^22.20.5",

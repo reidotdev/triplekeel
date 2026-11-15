@@ -6,5 +6,9 @@
     "lib": ["ES2022", "DOM", "DOM.Iterable"],
     "types": ["chrome", "node"]
   },
-  "include": ["src/**/*.ts"]
+  "include": ["src/**/*.ts"],
+  "references": [
+    { "path": "../../packages/schema" },
+    { "path": "../../packages/scorer" }
+  ]
 }

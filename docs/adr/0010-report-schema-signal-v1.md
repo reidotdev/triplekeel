@@ -89,6 +89,13 @@ Chosen: **option 1.**
 - Good: easier to extend and debug.
 - Bad: any string field can carry prompt text. Breaks the hard rule.
 
+## Update (2026-11-15)
+
+- **The extension's import key is an HMAC, not a plain hash** (REI-266). It is HMAC-SHA256 over the site, the conversation ID, the message's position and the message text. The HMAC key is 32 random bytes made once per install and kept in `chrome.storage.local`. A plain hash of a short prompt could be guessed with a list of common prompts, so the text can only go in under a secret key.
+- The report contract doesn't change: `import_key` is still 64 lowercase hex characters, and the server can't tell the two apart.
+- Re-scoring a chat on the same install gives the same keys. A reinstall makes a new secret, so a chat scored before and after a reinstall counts twice.
+- `computeImportKey()` in `@triplekeel/schema` is no longer used by the extension. Code: `apps/extension/src/import-key.ts`.
+
 ## More information
 
 - Ticket: REI-257. Code: `packages/schema/src/report.ts`, tests in `report.test.ts`.
