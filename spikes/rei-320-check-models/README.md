@@ -15,12 +15,12 @@ It runs two modes:
 - **batch:** one call per prompt, with all 16 habits in one typed response.
 - **single:** one call per habit. Slower, but each call is short.
 
-Both use guided generation (`@Generable`), so answers are always `yes`, `partly`, `no` or `notApplicable`.
+Both use guided generation, so answers are always `yes`, `partly`, `no` or `notApplicable`. The output schema is built at runtime with `DynamicGenerationSchema` instead of the `@Generable` macro, because the macro's plugin ships only with full Xcode.
 
 ## Requirements
 
 - An Apple silicon Mac on macOS 26, with Apple Intelligence turned on and its model downloaded.
-- Xcode 26 or the matching Command Line Tools (`xcode-select --install`).
+- The Command Line Tools for macOS 26 (`xcode-select --install`). Full Xcode isn't needed.
 
 ## Run it
 
@@ -57,10 +57,10 @@ While it runs, watch **Memory Pressure** in Activity Monitor. The model runs in 
 
 ## Tuning the definitions
 
-`habits.json` holds a one-line definition for each habit, with examples. They're sharper than the track's question texts, because the manual Shortcuts tests showed the model confusing `acceptance` with `success_metric` and missing stack choices as `constraints`. Edit the file and run again to compare. Keep all 16 IDs; the harness checks them.
+`habits.json` holds a one-line definition for each habit, with examples. They're sharper than the track's question texts, because the manual Shortcuts tests showed the model confusing `acceptance` with `success_metric` and missing stack choices as `constraints`. Edit the file and run again to compare. Each definition becomes the description of that habit in the output schema. Every habit ID needs labels in the prompts file; the harness checks this.
 
 ## Caveats
 
 - The labels come from REI-247 and are one person's judgement. The keyword scorer was built against the same prompts, so its 86.2% is likely flattering.
 - 20 prompts is a small set. Treat differences of a few points as noise.
-- The harness was written on Linux and hasn't been compiled yet. If the build fails, paste the error into the session.
+- The harness was written on Linux, so it's only been compiled on a Mac by running it. If the build fails, paste the error into the session.

@@ -24,15 +24,11 @@ struct Runner {
     }
 
     /// One call per prompt, all 16 habits at once.
-    func batch(_ row: PromptRow, run: Int) async -> CallRecord {
-        let list = habits
-            .map { "- \(HabitFields.field(for: $0.id)): \($0.definition)" }
-            .joined(separator: "\n")
+    func batch(_ row: PromptRow, run: Int, schema: GenerationSchema) async -> CallRecord {
         let instructions = """
             \(Self.preamble)
 
-            Each field of your answer is one habit:
-            \(list)
+            Each property of your answer is one habit. Its description defines the habit.
             """
         let session = LanguageModelSession(instructions: instructions)
 
@@ -41,15 +37,13 @@ struct Runner {
         do {
             let response = try await session.respond(
                 to: Self.wrap(row.text),
-                generating: PromptCheck.self,
+                schema: schema,
                 options: options
             )
             let ms = start.duration(to: clock.now).milliseconds
-            let checks = response.content.byID
-            let verdicts = habits.compactMap { habit in
-                checks[habit.id].map {
-                    Verdict(habit: habit.id, answer: $0.answer.label, quote: $0.quote)
-                }
+            let verdicts = try habits.map { habit in
+                let check = try response.content.value(GeneratedContent.self, forProperty: habit.id)
+                return try Schemas.verdict(from: check, habit: habit.id)
             }
             return record(mode: "batch", run: run, row: row, habit: nil, ms: ms, verdicts: verdicts)
         } catch {
@@ -59,7 +53,7 @@ struct Runner {
     }
 
     /// One call per habit. Slower, but each call has a short context.
-    func single(_ row: PromptRow, habit: Habit, run: Int) async -> CallRecord {
+    func single(_ row: PromptRow, habit: Habit, run: Int, schema: GenerationSchema) async -> CallRecord {
         let instructions = """
             \(Self.preamble)
 
@@ -73,12 +67,11 @@ struct Runner {
         do {
             let response = try await session.respond(
                 to: Self.wrap(row.text),
-                generating: HabitCheck.self,
+                schema: schema,
                 options: options
             )
             let ms = start.duration(to: clock.now).milliseconds
-            let check = response.content
-            let verdict = Verdict(habit: habit.id, answer: check.answer.label, quote: check.quote)
+            let verdict = try Schemas.verdict(from: response.content, habit: habit.id)
             return record(mode: "single", run: run, row: row, habit: habit.id, ms: ms, verdicts: [verdict])
         } catch {
             let ms = start.duration(to: clock.now).milliseconds

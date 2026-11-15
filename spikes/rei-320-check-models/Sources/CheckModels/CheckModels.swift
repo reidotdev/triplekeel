@@ -29,7 +29,9 @@ struct CheckModels {
         var rows = try Loader.load([PromptRow].self, from: options.promptsPath)
         if let only = options.only { rows = rows.filter { only.contains($0.id) } }
         let habits = try Loader.load([Habit].self, from: options.habitsPath)
-        try check(habits)
+        try check(habits, against: rows)
+        let batchSchema = try Schemas.batch(habits)
+        let singleSchema = try Schemas.single()
 
         let runner = Runner(habits: habits)
         print("Warming up the model…")
@@ -41,10 +43,10 @@ struct CheckModels {
             for mode in options.modes {
                 for (index, row) in rows.enumerated() {
                     if mode == "batch" {
-                        calls.append(await runner.batch(row, run: run))
+                        calls.append(await runner.batch(row, run: run, schema: batchSchema))
                     } else {
                         for habit in habits {
-                            calls.append(await runner.single(row, habit: habit, run: run))
+                            calls.append(await runner.single(row, habit: habit, run: run, schema: singleSchema))
                         }
                     }
                     let last = calls.last
@@ -60,14 +62,16 @@ struct CheckModels {
         print(markdown)
     }
 
-    /// habits.json must hold exactly the 16 habits `PromptCheck` knows.
-    static func check(_ habits: [Habit]) throws {
-        let known = Set(HabitFields.all.map(\.id))
-        let given = Set(habits.map(\.id))
-        guard known == given, habits.count == known.count else {
-            let missing = known.subtracting(given).sorted()
-            let unknown = given.subtracting(known).sorted()
-            throw HarnessError("habits.json must list each of the 16 habits once. Missing: \(missing). Unknown: \(unknown).")
+    /// Each habit in habits.json must be listed once and have labels.
+    static func check(_ habits: [Habit], against rows: [PromptRow]) throws {
+        let ids = habits.map(\.id)
+        guard Set(ids).count == ids.count, !ids.isEmpty else {
+            throw HarnessError("habits.json must list each habit once.")
+        }
+        let labelled = Set(rows.flatMap { $0.expected.keys })
+        let unlabelled = ids.filter { !labelled.contains($0) }
+        guard unlabelled.isEmpty else {
+            throw HarnessError("These habits have no labels in the prompts file: \(unlabelled).")
         }
     }
 
