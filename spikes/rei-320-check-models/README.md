@@ -1,0 +1,80 @@
+# REI-320 check model spike
+
+A command-line harness that tests Apple's on-device model as the Stage 1 check for the Mac coach. It answers the 16 habit questions for the 20 invented REI-247 prompts and compares the answers with the hand labels.
+
+Everything runs on the Mac. The harness has no network code. The prompts are invented, so no real prompt text is used.
+
+## What it measures
+
+- **Agreement** with the REI-247 labels, strict and "found vs not found". It's compared with the keyword scorer's 86.2% on the same labels.
+- **Quotes:** for each yes or partly answer, the model quotes the words that show the habit. The harness checks the quote appears in the prompt. The app would underline these words.
+- **Speed:** p50 and p95 per call and per prompt, plus the first third vs the last third of calls, to catch the M1 Air slowing down as it heats up.
+
+It runs two modes:
+
+- **batch:** one call per prompt, with all 16 habits in one typed response.
+- **single:** one call per habit. Slower, but each call is short.
+
+Both use guided generation, so answers are always `yes`, `partly`, `no` or `notApplicable`. The output schema is built at runtime with `DynamicGenerationSchema` instead of the `@Generable` macro, because the macro's plugin ships only with full Xcode.
+
+## Requirements
+
+- An Apple silicon Mac on macOS 26, with Apple Intelligence turned on and its model downloaded.
+- The Command Line Tools for macOS 26 (`xcode-select --install`). Full Xcode isn't needed.
+
+## Run it
+
+From this folder:
+
+```bash
+swift run CheckModels
+```
+
+The first build takes a minute or two. The full run is 20 batch calls and 320 single calls, so expect several minutes. Keep the Mac plugged in and Low Power Mode off.
+
+Options:
+
+| Option                       | Default                               | Meaning                                                  |
+| ---------------------------- | ------------------------------------- | -------------------------------------------------------- |
+| `--mode batch\|single\|both` | `both`                                | Which modes to run                                       |
+| `--runs N`                   | `1`                                   | Repeat the whole set. Use 3 or more to see heat slowdown |
+| `--only p01,p03`             | all                                   | Run only some prompts                                    |
+| `--habits path`              | `habits.json`                         | Habit definitions to test                                |
+| `--prompts path`             | `../rei-247-gemma-speed/prompts.json` | Prompts and labels                                       |
+| `--out dir`                  | `results`                             | Where to save the results                                |
+
+A quick first check:
+
+```bash
+swift run CheckModels --mode batch --only p01,p03,p10
+```
+
+## Results
+
+The Markdown summary prints at the end and is saved to `results/<time>.md`. Paste it into REI-320. Every call, with its answers and quotes, is saved to `results/<time>.json`. The `results` folder is ignored by git.
+
+While it runs, watch **Memory Pressure** in Activity Monitor. The model runs in a system process, so the harness can't measure its memory itself.
+
+## Tuning the definitions
+
+`habits.json` holds a one-line definition for each habit, with examples. They're sharper than the track's question texts, because the manual Shortcuts tests showed the model confusing `acceptance` with `success_metric` and missing stack choices as `constraints`. Edit the file and run again to compare. Each definition becomes the description of that habit in the output schema. Every habit ID needs labels in the prompts file; the harness checks this.
+
+## Caveats
+
+- The labels come from REI-247 and are one person's judgement. The keyword scorer was built against the same prompts, so its 86.2% is likely flattering.
+- 20 prompts is a small set. Treat differences of a few points as noise.
+- The harness was written on Linux, so it's only been compiled on a Mac by running it. If the build fails, paste the error into the session.
+
+## Decision models through Ollaya
+
+`check_ollaya.py` runs the same prompts and labels against a decision model, such as Kev, through a local [Ollaya](https://github.com/ollaya-dev/ollaya) server. Decision models pick from fixed answers and return probabilities instead of writing text, so they should be much faster than the Apple model.
+
+It asks all 16 habits in one request as `choice` questions (`yes`, `partly`, `no`, and `n/a` only for the two follow-up habits). It uses only the Python standard library.
+
+```bash
+ollaya pull kev:0.8b
+ollaya serve                      # in a separate Terminal window
+python3 check_ollaya.py --model kev:0.8b
+```
+
+The server speaks TypeSafe's decision API, so the same script can test another model with `--model`, or a hosted API with `--base` and a `TYPESAFE_API_KEY` environment variable. Use hosted APIs only with these invented prompts, because they send the text off the Mac.
