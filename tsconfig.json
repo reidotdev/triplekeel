@@ -2,6 +2,7 @@
   "files": [],
   "references": [
     { "path": "./apps/web" },
+    { "path": "./apps/video" },
     { "path": "./apps/jobs" },
     { "path": "./apps/extension" },
     { "path": "./packages/schema" },
