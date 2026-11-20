@@ -14,3 +14,4 @@ apps/extension/triplekeel-extension.zip
 research-cache/
 __pycache__/
 apps/extension/.tsc/
+.playwright-mcp/
