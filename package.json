@@ -11,7 +11,9 @@
     "test": "vitest run",
     "build:extension": "pnpm --filter @triplekeel/extension build",
     "build:web": "pnpm --filter @triplekeel/web build",
-    "build:web:cloudflare": "pnpm --filter @triplekeel/web exec opennextjs-cloudflare build"
+    "build:web:cloudflare": "pnpm --filter @triplekeel/web exec opennextjs-cloudflare build",
+    "video:studio": "pnpm --filter @triplekeel/video studio",
+    "video:render": "pnpm --filter @triplekeel/video render"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.3.8",
